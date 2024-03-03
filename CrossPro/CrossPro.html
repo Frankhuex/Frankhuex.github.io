@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>My HTML</title>
+    <style>
+      html {
+        font-family: sans-serif;
+      }
+      body {
+        width: 50%;
+        max-width: 800px;
+        min-width: 480px;
+        margin: 0 auto;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>三维向量叉乘计算器</h1>
+    <div class="form">
+        <li>
+            <label for="first">向量1:</label>
+            <input type="number" id="first" class="f1"/>
+            <input type="number" id="first" class="f2"/>
+            <input type="number" id="first" class="f3"/>
+        </li>
+        <li>
+            <label for="second">向量2:</label>
+            <input type="number" id="second" class="s1"/>
+            <input type="number" id="second" class="s2"/>
+            <input type="number" id="second" class="s3"/>
+        </li>   
+        <button type="submit" class="submit">计算</button>
+        <button type="submit" class="reset">清空全部</button>           
+    </div>
+    <p class="answer"></p>
+    <script src="CrossPro.js" defer></script>
+  </body>
+</html>
