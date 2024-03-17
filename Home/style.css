@@ -1,0 +1,192 @@
+html {
+    font-family: sans-serif;
+}
+* {
+    padding:0;
+    margin:0;
+}
+header {
+    background-color: rgba(0,0,0,0.8);
+    height:80px;
+    width:100%;
+    position:fixed;
+}
+h1 {
+    color:white;
+    position:absolute;
+    left:0px;
+    top:0;
+    line-height: 80px;
+    background-image:url(Images/Huex_logo.png);
+    background-repeat:no-repeat;
+    background-position:center;
+    width:200px;
+    text-indent:-9999px;
+}
+header ul {
+    position:absolute;
+    right:5vw;
+    top:0;
+    line-height:80px;
+}
+header li {
+    display: inline;
+    margin-right:4vw;
+}
+header a {
+    color:white;
+    text-decoration:none;
+}
+header a:hover {
+    text-decoration:underline;
+}
+.intro {
+    background-color: #222222;
+    color:white;
+    height:10vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+.news {
+    background-color: white;
+    color:white;
+    height:100vh;
+    background-image:url("Images/OutofRangeBG.jpg");
+    background-repeat:no-repeat;
+    background-size:cover;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+.news h2 {
+    font-size:60px;
+}
+.news p {
+    color:#FEF7E6;
+    font-size:18px;
+    margin:10px 0;
+}
+.news a {
+    color:white;
+    text-decoration: none;
+    border:1px solid #ACACAC;
+    padding:10px 20px;
+    border-radius: 5px;
+}
+.Huex {
+    display:flex;
+}
+.Huex img {
+    width:50%;
+}
+.Huex_info {
+    width:50%;
+    background-color: black;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+}
+.Huex_info h2 {
+    font-size:40px;
+    margin-bottom:30px;
+    color: white;
+}
+.Huex_info p {
+    text-align:center;
+    line-height:2em;
+    color: white;
+}
+
+.songs {
+    display:flex;
+    background-color:black;
+    justify-content: space-between;
+    align-items: center;
+    padding:100px;
+}
+.songs div {
+    width:300px;
+    text-align: center;
+}
+.songs img {
+    width:100%;
+    border-radius: 10px;
+}
+.songs h3 {
+    font-size:20px;
+    color:white;
+}
+.songs p {
+    font-size:14px;
+    line-height:1.6em;
+    color:white;
+}
+
+
+
+footer {
+    background-color: #485652;
+    color:#B7B7B7;
+    height:60px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:14px;
+}
+
+
+.menu {
+    display:none;
+}
+
+@media screen and (max-width:768px) {
+    /*
+    header ul {
+        display:none;
+    }
+    */
+    header h1 {
+        left:50%;
+        transform:translateX(-50%);
+    }
+    
+    .news h2 {
+        font-size:40px;
+    }
+    .menu {
+        display:block;
+        background-color: transparent;
+        color:white;
+        font-size:35px;
+        position:absolute;
+        top:15px;
+        left:20px;
+        border:none;
+        cursor:pointer;
+    }
+    .Huex {
+        flex-direction:column;
+    }
+    .Huex img {
+        width:100%;
+    }
+    .Huex_info {
+        width:100%;
+        padding:40px 0;
+    }
+    .info h2 {
+        font-size:30px;
+    }
+
+    .songs {
+        flex-direction:column;
+        padding:60px 0;
+    }
+    .songs div {
+        margin-bottom:30px;
+    }
+}
