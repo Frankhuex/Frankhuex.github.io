@@ -5,11 +5,18 @@ html {
     padding:0;
     margin:0;
 }
+
+
+
+/*header*/
 header {
     background-color: rgba(0,0,0,0.8);
     height:80px;
     width:100%;
     position:fixed;
+}
+.menu {
+    display:none;
 }
 h1 {
     color:white;
@@ -40,6 +47,9 @@ header a {
 header a:hover {
     text-decoration:underline;
 }
+
+
+/*intro*/
 .intro {
     background-color: #222222;
     color:white;
@@ -49,33 +59,10 @@ header a:hover {
     align-items:center;
     justify-content:center;
 }
-.news {
-    background-color: white;
-    color:white;
-    height:100vh;
-    background-image:url("Images/OutofRangeBG.jpg");
-    background-repeat:no-repeat;
-    background-size:cover;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-}
-.news h2 {
-    font-size:60px;
-}
-.news p {
-    color:#FEF7E6;
-    font-size:18px;
-    margin:10px 0;
-}
-.news a {
-    color:white;
-    text-decoration: none;
-    border:1px solid #ACACAC;
-    padding:10px 20px;
-    border-radius: 5px;
-}
+
+
+
+/*Huex*/
 .Huex {
     display:flex;
 }
@@ -101,15 +88,57 @@ header a:hover {
     color: white;
 }
 
+
+
+/*news*/
+.news {
+    background-color: white;
+    color:white;
+    height:100vh;
+    background-image:url("Images/OutofRangeBG.png");
+    background-repeat:no-repeat;
+    background-size:cover;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+.news h2 {
+    font-size:60px;
+}
+.news p {
+    color:#FEF7E6;
+    font-size:18px;
+    margin:10px 0;
+}
+.news a {
+    color:white;
+    text-decoration: none;
+    border:1px solid #ACACAC;
+    padding:10px 20px;
+    border-radius: 5px;
+}
+
+
+
+/*songs*/
 .songs {
     display:flex;
     background-color:black;
     justify-content: space-between;
     align-items: center;
-    padding:100px;
+    padding:50px;
+}
+.songs a {
+    color:white;
+    text-decoration: none;
+    border:1px solid #ACACAC;
+    padding:10px 20px;
+    border-radius: 5px;
+    line-height: 3.2em;
 }
 .songs div {
-    width:300px;
+    width:30%;
     text-align: center;
 }
 .songs img {
@@ -128,6 +157,7 @@ header a:hover {
 
 
 
+/*footer*/
 footer {
     background-color: #485652;
     color:#B7B7B7;
@@ -139,54 +169,58 @@ footer {
 }
 
 
-.menu {
+
+/*适配屏幕*/
+@media screen and (max-width:300px) {
+/*
+header ul {
     display:none;
 }
+header h1 {
+    left:50%;
+    transform:translateX(-50%);
+}
+*/
 
-@media screen and (max-width:768px) {
-    /*
-    header ul {
-        display:none;
-    }
-    */
-    header h1 {
-        left:50%;
-        transform:translateX(-50%);
-    }
-    
-    .news h2 {
-        font-size:40px;
-    }
-    .menu {
-        display:block;
-        background-color: transparent;
-        color:white;
-        font-size:35px;
-        position:absolute;
-        top:15px;
-        left:20px;
-        border:none;
-        cursor:pointer;
-    }
-    .Huex {
-        flex-direction:column;
-    }
-    .Huex img {
-        width:100%;
-    }
-    .Huex_info {
-        width:100%;
-        padding:40px 0;
-    }
-    .info h2 {
-        font-size:30px;
-    }
+.menu {
+    display:block;
+    background-color: transparent;
+    color:white;
+    font-size:35px;
+    position:absolute;
+    top:15px;
+    right:20px;
+    border:none;
+    cursor:pointer;
+}
 
-    .songs {
-        flex-direction:column;
-        padding:60px 0;
-    }
-    .songs div {
-        margin-bottom:30px;
-    }
+
+
+.Huex {
+    flex-direction:column;
+}
+.Huex img {
+    width:100%;
+}
+.Huex_info {
+    width:100%;
+    padding:40px 0;
+}
+
+
+
+.news h2 {
+    font-size:40px;
+}
+
+
+
+.songs {
+    flex-direction:column;
+    padding:60px 0;
+}
+.songs div {
+    width:50%;
+    margin-bottom:30px;
+}
 }
