@@ -42,7 +42,12 @@ header li {
 }
 header a {
     color:white;
-    text-decoration:none;
+    text-decoration: none;
+    padding:20px 10px;
+    /*
+    border:1px solid #ACACAC;
+    border-radius: 5px;
+    */
 }
 header a:hover {
     text-decoration:underline;
