@@ -15,9 +15,7 @@ header {
     width:100%;
     position:fixed;
 }
-.menu {
-    display:none;
-}
+
 h1 {
     color:white;
     position:absolute;
@@ -30,40 +28,89 @@ h1 {
     width:200px;
     text-indent:-9999px;
 }
-header ul {
+
+li {
+    list-style-type:none;
+}
+
+.normal_list {
     position:absolute;
     right:5vw;
     top:0;
     line-height:80px;
 }
-header li {
-    display: inline;
+.normal_list li {
+    display:inline;
     margin-right:4vw;
 }
-header a {
+.normal_list a {
     color:white;
     text-decoration: none;
-    padding:20px 10px;
+    padding:10px 10px;
     /*
     border:1px solid #ACACAC;
     border-radius: 5px;
     */
 }
-header a:hover {
-    text-decoration:underline;
+.normal_list a:hover {
+    background-color: #444;
 }
 
+.menu {
+    display:none;
+}
 
+.menu:hover {
+    background-color: #444;
+}
+
+.menu_button {
+    display:flex;
+}
+
+.menu_button:hover .droplist{
+    display:flex;
+}
+
+.droplist {
+    position:absolute;
+    right:0;
+    top:44px;
+    line-height:40px;
+    width:80px;
+    display:none;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+}
+
+.droplist li {
+    background-color:#222;
+}
+
+.droplist a {
+    color:white;
+    text-decoration:none;
+    padding:10px 10px;
+    /*
+    border:1px solid #ACACAC;
+    border-radius: 5px;
+    */
+}
+.droplist a:hover {
+    background-color: #444;
+}
 /*intro*/
 .intro {
     background-color: #222222;
     color:white;
-    height:10vh;
+    height:80px;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
 }
+
 
 
 
@@ -124,8 +171,6 @@ header a:hover {
     border-radius: 5px;
 }
 
-
-
 /*songs*/
 .songs {
     display:flex;
@@ -137,7 +182,7 @@ header a:hover {
 .songs a {
     color:white;
     text-decoration: none;
-    border:1px solid #ACACAC;
+    border:1px solid #fda8a8;
     padding:10px 20px;
     border-radius: 5px;
     line-height: 3.2em;
@@ -160,6 +205,39 @@ header a:hover {
     color:white;
 }
 
+/*game*/
+.game_intro {
+    background-color: #222222;
+    color:white;
+    height:80px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+.game_list {
+    display:flex;
+    background-color:black;
+    justify-content: space-between;
+    align-items: center;
+    padding:50px 0px;
+}
+
+.game_list div {
+    width:30%;
+    text-align: center;
+}
+
+.game_list a {
+    color:white;
+    text-decoration: none;
+    border:1px solid #ACACAC;
+    padding:10px 20px;
+    border-radius: 5px;
+}
+
+
 
 
 /*footer*/
@@ -177,10 +255,11 @@ footer {
 
 /*适配屏幕*/
 @media screen and (max-width:700px) {
-/*
+
 header ul {
     display:none;
 }
+/*
 header h1 {
     left:50%;
     transform:translateX(-50%);
@@ -198,8 +277,6 @@ header h1 {
     border:none;
     cursor:pointer;
 }
-
-
 
 .Huex {
     flex-direction:column;
@@ -228,4 +305,18 @@ header h1 {
     width:50%;
     margin-bottom:30px;
 }
+
+
+.game_list {
+    flex-direction:column;
+    padding:60px 0px;
 }
+.game_list div {
+    width:50%;
+    margin-bottom:30px;
+}
+
+}
+
+
+
