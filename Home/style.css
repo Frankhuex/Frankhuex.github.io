@@ -237,7 +237,10 @@ li {
     border-radius: 5px;
 }
 
-
+.game_list h2 {
+    color:white;
+    text-align:center;
+}
 
 
 /*footer*/
