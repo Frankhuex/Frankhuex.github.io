@@ -215,6 +215,15 @@ li {
     align-items:center;
     justify-content:center;
 }
+.game_sub_intro {
+    background-color: black;
+    color:white;
+    height:80px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
 
 .game_list {
     display:flex;
