@@ -1,12 +1,31 @@
-document.addEventListener('DOMContentLoaded', function() {
+const indexNum=17;
+var curIndex=[1];
+document.addEventListener('DOMContentLoaded', refreshContent);
+document.getElementById("previous").addEventListener('click',previousItem);
+document.getElementById("next").addEventListener('click',nextItem);
+
+
+
+function refreshContent() {
     Promise.all([
         fetchJson('../records/info.json'),
-        fetchText('../records/contents/1.txt')
+        fetchText(`../records/contents/${curIndex}.txt`)
     ]).then(([jsonData, txtData]) => {
         displayData(jsonData,txtData);
         //displayText(txtData);
     });
-});
+}
+
+function previousItem() {
+    curIndex[0]-=1;
+    refreshContent();
+}
+
+function nextItem() {
+    curIndex[0]+=1;
+    refreshContent();
+}
+
 
 function fetchJson(url) {
     return fetch(url)
@@ -24,7 +43,8 @@ function displayData(data,text) {
     const jsonDataContainer = document.getElementById('itemContent');
     jsonDataContainer.innerHTML = `
         <p>${data.title}</p>
-        <p>${text}</p>
+        <p>${curIndex}</p>
+        <pre>${text}</pre>
     `;
     // 将JSON数据存储在变量中
     window.jsonData = data; // 注意：window对象用于全局变量，但实际开发中应避免使用全局变量
@@ -48,12 +68,3 @@ function someOperationWithJsonData() {
 // 调用后续操作函数
 //someOperationWithJsonData();
 
-document.getElementById("next").addEventListener(onclick,function() {
-    Promise.all([
-        fetchJson('../records/info.json'),
-        fetchText('../records/contents/2.txt')
-    ]).then(([jsonData, txtData]) => {
-        displayData(jsonData,txtData);
-        //displayText(txtData);
-    });
-})
