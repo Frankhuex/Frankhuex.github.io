@@ -17,12 +17,16 @@ function refreshContent() {
 }
 
 function previousItem() {
-    curIndex[0]-=1;
+    var i=curIndex[0];
+    i=((i-1)+16)%indexNum+1;
+    curIndex[0]=i;
     refreshContent();
 }
 
 function nextItem() {
-    curIndex[0]+=1;
+    var i=curIndex[0];
+    i=((i+1)+16)%indexNum+1;
+    curIndex[0]=i;
     refreshContent();
 }
 
