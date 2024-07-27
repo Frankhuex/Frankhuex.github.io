@@ -17,7 +17,12 @@
     right: 20%;
     white-space: pre-wrap;
     word-wrap: break-word;
+    min-height:101%;
 }
 pre {
     line-height: 30px;
+}
+
+#copyright {
+    text-align: center;
 }
