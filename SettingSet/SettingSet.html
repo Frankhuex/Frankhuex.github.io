@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设定集</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section id="Infos">
+        <section id="basicInfo">
+            <h1 id="title"></h1>
+            <p id="startingDate"></p>
+            <p id="authors"></p>
+        </section>   
+
+        <section id="itemInfo">
+            <h2 id="itemIndex"></h2>
+            <p id="itemAuthorAndDate"></p>
+            <div id="itemSwitcher">
+                <button id="previous">上一条</button>
+                <button id="next">下一条</button>
+            </div>
+
+            <div id="itemDirector">
+                <div id="from" class="subDirector"></div>
+                <div id="to" class="subDirector"></div>
+            </div>
+
+            
+        </section>
+    </section>
+    <section id="itemContent">
+        <pre id="itemText"></pre>
+    </section>
+    
+
+    <script src="./recordReader.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+#Infos {
+    text-align: center;
+}
+#itemSwitcher {
+    min-height: 40px;
+}
+#itemDirector {
+    min-height: 80px;
+}
+.subDirector {
+    height: 40px;
+}
+#itemText {
+    position:absolute;
+    font-size: 15px;
+    left: 20%;
+    right: 20%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre {
+    line-height: 30px;
+}

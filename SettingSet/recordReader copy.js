@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('../records/info.json') // 假设JSON文件名为data.json
+    fetch('./records/info.json') // 假设JSON文件名为data.json
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
