@@ -147,6 +147,22 @@
         "type":"setting",
         "ref_from":[4],
         "cont_from":[12]
+    },
+    {
+        "index":19,
+        "author":"Huex",
+        "date":"2024.7.30",
+        "type":"story",
+        "ref_from":[16],
+        "cont_from":[]
+    },
+    {
+        "index":20,
+        "author":"纯鹿人",
+        "date":"2024.7.30",
+        "type":"setting",
+        "ref_from":[],
+        "cont_from":[8]
     }
 ]
 }
