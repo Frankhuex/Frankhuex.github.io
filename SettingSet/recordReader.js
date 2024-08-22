@@ -2,6 +2,7 @@ const jsonPath="./records/";
 const txtPath="./records/contents/"
 
 const itemDirector=document.getElementById("itemDirector");
+const allList=document.getElementById("allList");
 const previousBtn=document.getElementById("previous");
 const nextBtn=document.getElementById("next");
 
@@ -11,12 +12,15 @@ let jsonSave=[null];
 document.addEventListener('DOMContentLoaded', initContent);
 previousBtn.addEventListener('click',previousItem);
 nextBtn.addEventListener('click',nextItem);
-itemDirector.addEventListener('click', function(event) {
+itemDirector.addEventListener('click',swapListener);
+allList.addEventListener('click',swapListener);
+function swapListener(event) {
     if (event.target.tagName === 'BUTTON') {
         let index = event.target.getAttribute('data-index');
         switchItem(parseInt(index, 10)); 
     }
-});
+}
+
 
 function displayData(data,text) {
     let curItem=data.items[curIndex[0]];
@@ -27,6 +31,7 @@ function displayData(data,text) {
     setHtml("itemAuthorAndDate",curItem.author+"写于"+curItem.date);
     setHtml("from","");
     setHtml("to","");
+    setHtml("allList","");
     setAllListBtn("allList",indexNum[0]);
     if (curItem.ref_from.length>0) {
         addHtml("from","引用自：");
@@ -44,6 +49,7 @@ function displayData(data,text) {
         addHtml("to","下接：");
         addBtn("to",curItem.cont_to);
     }
+    
     setHtml("itemText",text);
 }
 
@@ -55,14 +61,6 @@ function setHtml(id,innerHTML) {
 function addHtml(id,innerHTML) {
     const element=document.getElementById(id);
     element.innerHTML+=`${innerHTML}`;
-}
-
-function setAllListBtn(id,indexNum) {
-    let element=document.getElementById(id);
-    setHtml(id,"");
-    for (let i=1;i<=indexNum;++i) {
-        element.appendChild(itemBtn(i));
-    }
 }
 
 function itemBtn(index) {
@@ -79,6 +77,13 @@ function addBtn(id,indexList) {
     for (let i=0;i<indexList.length;++i) {
         element.appendChild(itemBtn(indexList[i]));
     } 
+}
+
+function setAllListBtn(id,indexNum) {
+    let element=document.getElementById(id);
+    for (let i=1;i<=indexNum;++i) {
+        element.appendChild(itemBtn(i));
+    }
 }
 
 function initContent() {
