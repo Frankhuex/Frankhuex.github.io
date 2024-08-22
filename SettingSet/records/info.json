@@ -219,6 +219,14 @@
         "type":"story",
         "ref_from":[11],
         "cont_from":[]
+    },
+    {
+        "index":28,
+        "author":"Huex",
+        "date":"2024.8.23",
+        "type":"story",
+        "ref_from":[15],
+        "cont_from":[]
     }
 ]
 }
