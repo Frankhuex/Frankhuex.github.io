@@ -17,6 +17,7 @@ itemDirector.addEventListener('click', function(event) {
         switchItem(parseInt(index, 10)); 
     }
 });
+
 function displayData(data,text) {
     let curItem=data.items[curIndex[0]];
     setHtml("title",data.title);
@@ -26,6 +27,7 @@ function displayData(data,text) {
     setHtml("itemAuthorAndDate",curItem.author+"写于"+curItem.date);
     setHtml("from","");
     setHtml("to","");
+    setHtml("allList","");
     setAllListBtn("allList",indexNum[0]);
     if (curItem.ref_from.length>0) {
         addHtml("from","引用自：");
