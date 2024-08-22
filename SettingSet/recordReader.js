@@ -26,6 +26,7 @@ function displayData(data,text) {
     setHtml("itemAuthorAndDate",curItem.author+"写于"+curItem.date);
     setHtml("from","");
     setHtml("to","");
+    setAllListBtn("allList",indexNum[0]);
     if (curItem.ref_from.length>0) {
         addHtml("from","引用自：");
         addBtn("from",curItem.ref_from);
@@ -53,6 +54,13 @@ function setHtml(id,innerHTML) {
 function addHtml(id,innerHTML) {
     const element=document.getElementById(id);
     element.innerHTML+=`${innerHTML}`;
+}
+
+function setAllListBtn(id,indexNum) {
+    let element=document.getElementById(id);
+    for (let i=1;i<=indexNum;++i) {
+        element.appendChild(itemBtn(i));
+    }
 }
 
 function itemBtn(index) {

@@ -225,8 +225,8 @@
         "author":"Huex",
         "date":"2024.8.23",
         "type":"story",
-        "ref_from":[15],
-        "cont_from":[]
+        "ref_from":[],
+        "cont_from":[15]
     }
 ]
 }
