@@ -227,6 +227,38 @@
         "type":"story",
         "ref_from":[],
         "cont_from":[15]
+    },
+    {
+        "index":29,
+        "author":"纯鹿人",
+        "date":"2024.8.23",
+        "type":"story",
+        "ref_from":[],
+        "cont_from":[14,22]
+    },
+    {
+        "index":30,
+        "author":"Huex",
+        "date":"2024.8.25",
+        "type":"story",
+        "ref_from":[],
+        "cont_from":[28]
+    },
+    {
+        "index":31,
+        "author":"直升机",
+        "date":"2024.9.8",
+        "type":"setting",
+        "ref_from":[],
+        "cont_from":[]
+    },
+    {
+        "index":32,
+        "author":"Huex",
+        "date":"2024.10.2",
+        "type":"story",
+        "ref_from":[7],
+        "cont_from":[30]
     }
 ]
 }
