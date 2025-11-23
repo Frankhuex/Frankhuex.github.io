@@ -215,11 +215,10 @@
             background: #2d3436; padding: 0 10px; color: #b2bec3; font-size: 0.8rem;
         }
 
-        /* --- 4. 移动端适配 (核心修复点) --- */
+        /* --- 4. 移动端适配 --- */
         @media (max-width: 768px) {
             body { height: auto; overflow-y: auto; }
             
-            /* 修复：flexDirection -> flex-direction */
             .app-container { 
                 flex-direction: column; 
                 padding: 5px; 
@@ -526,6 +525,7 @@ function appendText(text, type) {
 function trainModels() {
     const text = document.getElementById('corpusInput').value;
     if (!text.trim()) { alert("请输入训练文本！"); return; }
+    // 处理 Emoji
     let charList = ['<s>', ...Array.from(text), '</s>'];
     
     const statusEl = document.getElementById('trainStatus');
@@ -541,10 +541,29 @@ function trainModels() {
             statusEl.style.color = "#27ae60";
             
             const outBox = document.getElementById('consoleOutput');
+            
+            // 如果是初始状态，清空欢迎语
             if (outBox.innerText.includes("请先点击左侧")) {
                 outBox.innerHTML = '<div style="color:gray; text-align:center; padding-top:20px;">输入文字开始接龙...</div>';
-                currentDOMContainer = null;
+            } else {
+                // 如果是重新训练，输出分割线提示
+                const msg = document.createElement('div');
+                msg.style.textAlign = 'center';
+                msg.style.color = '#27ae60';
+                msg.style.fontSize = '0.85rem';
+                msg.style.margin = '15px 0';
+                msg.style.borderTop = '1px dashed #444'; 
+                msg.style.borderBottom = '1px dashed #444';
+                msg.style.padding = '5px 0';
+                msg.innerText = "--- 模型已更新 / 上下文已重置 ---";
+                outBox.appendChild(msg);
+                outBox.scrollTop = outBox.scrollHeight;
             }
+
+            // 关键：重置上下文，确保新模型立刻生效
+            sessionHistory = ['<s>'];
+            currentDOMContainer = null;
+
         } catch (e) {
             alert("训练出错：" + e.message);
             statusEl.innerText = "出错";
