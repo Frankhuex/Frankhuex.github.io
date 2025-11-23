@@ -2,51 +2,39 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>N-Gram 文艺复兴</title>
     <style>
         /* --- 1. 全局与重置 --- */
         * { box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', 'Microsoft YaHei', "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+            /* 定义一套美观的系统字体栈 */
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
             background-color: #f4f4f9;
             margin: 0;
             color: #333;
             line-height: 1.6;
-            /* 桌面端默认：锁定视口高度，禁止 body 滚动 */
             height: 100vh;
             overflow: hidden; 
             display: flex;
             flex-direction: column;
         }
 
-        /* --- 2. 布局容器 (响应式核心) --- */
+        /* --- 2. 布局容器 --- */
         .app-container {
             width: 100%;
             height: 100%;
             display: flex;
             gap: 20px;
             padding: 20px;
-            max-width: 1600px; /* 大屏限制最大宽，防太宽难看 */
+            max-width: 1600px;
             margin: 0 auto;
         }
 
-        /* 左侧面板：训练语料 */
+        /* 左侧面板 */
         .left-panel {
-            flex: 1; /* 桌面端占 1 份 */
-            display: flex;
-            flex-direction: column;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            min-width: 0; /* 防止 flex 子项溢出 */
-        }
-
-        /* 右侧面板：交互区 */
-        .right-panel {
-            flex: 1.2; /* 桌面端占 1.2 份，稍宽一点 */
+            flex: 1;
             display: flex;
             flex-direction: column;
             background: white;
@@ -56,42 +44,59 @@
             min-width: 0;
         }
 
-        /* 标题 */
+        /* 右侧面板 */
+        .right-panel {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            min-width: 0;
+        }
+
         h1 { margin: 0 0 10px 0; text-align: center; color: #2c3e50; font-size: 1.5rem; letter-spacing: 1px; }
         h2 { margin: 0 0 10px 0; font-size: 1.1rem; color: #34495e; border-bottom: 2px solid #eee; padding-bottom: 5px; }
 
         /* --- 3. 组件样式 --- */
 
-        /* 语料输入框 (桌面端：撑满剩余高度) */
+        /* 修复重点：强制 Textarea 使用标准字体，解决数字空格显示异常问题 */
+        textarea {
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif !important;
+            font-size: 1rem;
+            line-height: 1.5;
+            letter-spacing: normal; /* 确保间距正常 */
+        }
+
+        /* 语料输入框 */
         #corpusInput {
-            flex-grow: 1; /* 关键：撑满高度 */
+            flex-grow: 1;
             width: 100%;
             padding: 10px;
             border: 1px solid #ced4da;
             border-radius: 4px;
             resize: none;
-            font-family: inherit;
             overflow-y: auto;
             margin-bottom: 10px;
         }
         #corpusInput:focus { border-color: #3498db; outline: none; }
 
-        /* 训练按钮容器 */
         .train-actions {
             display: flex;
-            justify-content: flex-end; /* 靠右 */
+            justify-content: flex-end;
             align-items: center;
             gap: 10px;
         }
 
-        /* 输出框 (桌面端：撑满剩余高度) */
+        /* 输出框：使用更好看的等宽字体 Consolas/Menlo，而非 Courier New */
         .output-wrapper {
-            flex-grow: 1; /* 关键：撑满高度 */
+            flex-grow: 1;
             border: 2px solid #b2bec3;
             border-radius: 6px;
             background-color: #2d3436;
             margin-bottom: 10px;
-            overflow: hidden; /* 内部处理滚动 */
+            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
@@ -100,17 +105,18 @@
             flex-grow: 1;
             padding: 15px;
             color: #dfe6e9;
-            font-family: 'Courier New', Courier, monospace;
+            /* 优化后的代码字体栈，中英文混排更舒服 */
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; 
             font-size: 1.1rem;
             line-height: 1.6;
             white-space: pre-wrap;
             word-break: break-all;
-            overflow-y: auto; /* 允许内部滚动 */
+            overflow-y: auto;
             user-select: text;
             cursor: text;
         }
 
-        /* 中间控制栏 (移到了输出框和输入框之间) */
+        /* 中间控制栏 */
         .middle-controls {
             flex-shrink: 0;
             background: #f1f2f6;
@@ -127,7 +133,7 @@
 
         .control-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-        /* 底部用户输入区 */
+        /* 底部输入区 */
         .input-area {
             flex-shrink: 0;
             display: flex;
@@ -146,23 +152,34 @@
             border-radius: 6px;
             font-size: 1rem;
             outline: none;
-            font-family: inherit;
             resize: none;
             overflow-y: auto;
-            line-height: 1.5;
             
-            /* 桌面端默认高度控制 */
+            /* 桌面端高度 */
             height: auto; 
             min-height: 48px;
-            max-height: 130px; /* 约 5 行 (1.5em * 5 + padding) */
+            max-height: 130px; 
         }
         #userCharInput:focus { border-color: #3498db; }
 
-        /* 按钮与输入控件通用 */
+        /* 按钮样式：禁用触摸缩放，防止连点延迟 */
         button {
-            background-color: #3498db; color: white; border: none; padding: 8px 16px;
-            border-radius: 4px; cursor: pointer; transition: background 0.2s; font-size: 0.9rem; white-space: nowrap;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.1s;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            /* 关键：禁用双击缩放，允许快速连点 */
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
         }
+        
+        button:active { transform: scale(0.98); }
         button:hover { background-color: #2980b9; }
         button.action-btn { background-color: #27ae60; }
         button.action-btn:hover { background-color: #219150; }
@@ -173,11 +190,12 @@
         }
         .setting-group input[type="number"] {
             width: 45px; border: none; border-bottom: 1px solid #bdc3c7; text-align: center; outline: none;
+            font-family: inherit; /* 确保数字输入框字体正常 */
         }
         .switch-label { display: flex; align-items: center; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
         .switch-label input { margin-right: 6px; }
 
-        /* 文本颜色 */
+        /* 文本标记颜色 */
         .text-user { color: #ff7675; font-weight: bold; }
         .text-model { color: #55efc4; }
         .text-cursor {
@@ -194,48 +212,15 @@
             background: #2d3436; padding: 0 10px; color: #b2bec3; font-size: 0.8rem;
         }
 
-        /* --- 4. 移动端/窄屏 适配 (CSS Media Query) --- */
+        /* --- 4. 移动端适配 --- */
         @media (max-width: 768px) {
-            body {
-                height: auto; /* 解除高度锁定 */
-                overflow-y: auto; /* 允许全局滚动 */
-            }
-
-            .app-container {
-                flex-direction: column; /* 上下堆叠 */
-                padding: 5px; /* 极小边距 */
-                gap: 15px;
-            }
-
-            .left-panel, .right-panel {
-                width: 100%;
-                padding: 10px;
-                box-shadow: none;
-                border: 1px solid #eee;
-            }
-
-            /* 语料框：高度限制 4~10 行 */
-            #corpusInput {
-                flex-grow: 0; /* 不再撑满 */
-                /* CSS 控制最大最小高度，具体高度由 JS auto-expand 微调 */
-                min-height: 100px; /* 约 4行 */
-                max-height: 240px; /* 约 10行 */
-            }
-
-            /* 输出框：高度限制 4~10 行 */
-            .output-wrapper {
-                flex-grow: 0; /* 不再撑满 */
-                height: auto;
-            }
-            .output-box {
-                min-height: 120px; /* 约 4-5 行 */
-                max-height: 250px; /* 约 10 行 */
-                /* overflow-y 在通用样式里已经是 auto */
-            }
-            
+            body { height: auto; overflow-y: auto; }
+            .app-container { flexDirection: column; padding: 5px; gap: 15px; }
+            .left-panel, .right-panel { width: 100%; padding: 10px; box-shadow: none; border: 1px solid #eee; }
+            #corpusInput { flex-grow: 0; min-height: 100px; max-height: 240px; }
+            .output-wrapper { flex-grow: 0; height: auto; }
+            .output-box { min-height: 120px; max-height: 250px; }
             h1 { font-size: 1.2rem; }
-            
-            /* 控制栏优化 */
             .middle-controls { flex-direction: column; align-items: stretch; gap: 10px; }
             .control-group { justify-content: space-between; }
         }
@@ -283,7 +268,7 @@ Biology is the study of life. The cell is the basic unit of life. 🧬
             </div>
         </div>
 
-        <!-- 2. 中间控制栏 (移至此处) -->
+        <!-- 2. 中间控制栏 -->
         <div class="middle-controls">
             <div class="control-group">
                 <div>
@@ -318,36 +303,24 @@ Biology is the study of life. The cell is the basic unit of life. 🧬
 
 <script>
 // --- 响应式高度调整逻辑 ---
-
 function initResponsiveResize() {
     const userResultBox = document.getElementById('userCharInput');
     const corpusBox = document.getElementById('corpusInput');
 
-    // 通用调整高度函数
-    function setHeight(el, maxPixels) {
-        el.style.height = 'auto'; // 重置以获取 shrinking
-        // 如果是桌面端，corpusBox 不需要 auto-resize (由 CSS flex 控制)
-        // 但 userResultBox 始终需要
+    function setHeight(el) {
+        el.style.height = 'auto'; 
         if (el.id === 'corpusInput' && window.innerWidth > 768) {
             el.style.height = '100%'; 
             return;
         }
-        
-        // 计算新高度
         let newHeight = el.scrollHeight;
-        // 应用 CSS 中定义的 max-height 限制 (用户输入框 ~5行，移动端语料框 ~10行)
-        // 这里只是为了让 overflow 生效
         el.style.height = newHeight + 'px';
     }
 
-    // 监听输入
     userResultBox.addEventListener('input', () => setHeight(userResultBox));
     corpusBox.addEventListener('input', () => setHeight(corpusBox));
 
-    // 窗口变化时重置
     window.addEventListener('resize', () => {
-        // 触发一次调整以适应新模式
-        // 对于 corpusInput，如果是桌面端，清除内联高度样式让 CSS flex 接管
         if (window.innerWidth > 768) {
             corpusBox.style.height = ''; 
         } else {
@@ -356,15 +329,13 @@ function initResponsiveResize() {
         setHeight(userResultBox);
     });
 
-    // 初始化
     if (window.innerWidth <= 768) setHeight(corpusBox);
     setHeight(userResultBox);
 }
-
 window.addEventListener('DOMContentLoaded', initResponsiveResize);
 
 
-// --- N-Gram 算法核心 (保持不变) ---
+// --- N-Gram 算法核心 ---
 class Counter extends Map {
     get(key) { return super.get(key) || 0; }
     add(key, val = 1) { this.set(key, this.get(key) + val); }
@@ -511,7 +482,6 @@ function ensureContainer() {
     const box = document.getElementById('consoleOutput');
     const isContinuous = document.getElementById('continuousMode').checked;
     
-    // 检查是否有实质内容
     const hasContent = Array.from(box.childNodes).some(n => 
         (n.nodeType === 1 && n.tagName !== 'DIV' && !n.classList?.contains('text-cursor')) || 
         (n.nodeType === 1 && n.tagName === 'DIV') 
@@ -546,7 +516,6 @@ function appendText(text, type) {
 function trainModels() {
     const text = document.getElementById('corpusInput').value;
     if (!text.trim()) { alert("请输入训练文本！"); return; }
-    // 处理 Emoji
     let charList = ['<s>', ...Array.from(text), '</s>'];
     
     const statusEl = document.getElementById('trainStatus');
@@ -561,7 +530,6 @@ function trainModels() {
             statusEl.innerText = "已就绪";
             statusEl.style.color = "#27ae60";
             
-            // 第一次训练后清空欢迎语
             const outBox = document.getElementById('consoleOutput');
             if (outBox.innerText.includes("请先点击左侧")) {
                 outBox.innerHTML = '<div style="color:gray; text-align:center; padding-top:20px;">输入文字开始接龙...</div>';
@@ -611,7 +579,9 @@ function generateNextToken() {
 function triggerRandomGeneration() {
     if (!isTrained) { alert("请先训练模型"); return; }
     ensureContainer();
-    const length = parseInt(document.getElementById('aiCount').value) || 20; 
+    let count = parseInt(document.getElementById('aiCount').value);
+    const length = (isNaN(count) || count < 1) ? 20 : count;
+
     for (let i = 0; i < length; i++) {
         let w = generateNextToken();
         sessionHistory.push(w);
@@ -633,14 +603,12 @@ function processInput() {
 
     ensureContainer();
 
-    // 1. 上屏用户输入
     const chars = Array.from(val);
     chars.forEach(c => {
         sessionHistory.push(c);
         appendText(c, 'user');
     });
 
-    // 2. 生成 AI 回复
     for (let i = 0; i < aiCount; i++) {
         let nextW = generateNextToken();
         sessionHistory.push(nextW);
@@ -652,12 +620,10 @@ function processInput() {
 
     inputEl.value = '';
     inputEl.focus();
-    // 触发高度重置
     inputEl.style.height = 'auto';
     inputEl.style.height = inputEl.scrollHeight + 'px';
 }
 
-// 键盘监听
 document.getElementById('userCharInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
         if (e.ctrlKey || e.metaKey) {
@@ -667,7 +633,7 @@ document.getElementById('userCharInput').addEventListener('keydown', function(e)
             const value = this.value;
             this.value = value.substring(0, start) + "\n" + value.substring(end);
             this.selectionStart = this.selectionEnd = start + 1;
-            this.dispatchEvent(new Event('input')); // 触发 auto-resize
+            this.dispatchEvent(new Event('input')); 
         } else {
             e.preventDefault(); 
             processInput();
