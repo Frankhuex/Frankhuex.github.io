@@ -5,37 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>N-Gram 文艺复兴</title>
     <style>
+        /* 1. 基础布局：允许页面滚动，支持 Emoji 字体 */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'Microsoft YaHei', "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
             background-color: #f4f4f9;
             margin: 0;
-            padding: 10px;
+            padding: 20px;
             color: #333;
-            height: 100vh;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
+            /* 移除 height: 100vh 和 overflow: hidden，让页面自然滚动 */
+            line-height: 1.6;
         }
+
         .container {
             max-width: 900px;
             width: 100%;
             margin: 0 auto;
             background: white;
-            padding: 15px;
+            padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-sizing: border-box;
+            /* 移除 flex-grow 等强制撑满屏幕的属性 */
         }
         
-        /* 标题样式 */
         h1 { 
-            margin: 0 0 10px 0; 
+            margin: 0 0 20px 0; 
             text-align: center; 
             color: #2c3e50; 
-            font-size: 1.6rem; 
+            font-size: 1.8rem; 
             font-family: "Microsoft YaHei", "Songti SC", serif;
             font-weight: bold;
             letter-spacing: 2px;
@@ -43,17 +40,16 @@
         
         /* 顶部控制栏 */
         .top-controls {
-            flex-shrink: 0;
             background: #f8f9fa;
-            padding: 12px;
+            padding: 15px;
             border-radius: 8px;
             border: 1px solid #e9ecef;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .training-section {
-            margin-bottom: 10px;
-            padding-bottom: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
             border-bottom: 1px solid #e0e0e0;
         }
         
@@ -65,28 +61,33 @@
             justify-content: space-between;
         }
         
-        .control-left {
+        .control-left, .control-right {
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
-        .control-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        textarea.corpus-area {
+        /* 2. 自适应高度文本域 (语料框) */
+        textarea.auto-expand {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             border: 1px solid #ced4da;
             border-radius: 4px;
-            resize: vertical;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             box-sizing: border-box;
             margin-bottom: 5px;
             font-family: inherit;
+            resize: none; /* 禁止手动拖拽，交由 JS 控制 */
+            overflow-y: hidden; /* 默认隐藏滚动条，超出 max-height 后由 JS/CSS 切换 */
+            min-height: 60px;   /* 约 2 行 */
+            max-height: 500px;  /* 限制最大高度约 20 行 */
+            transition: border-color 0.2s;
+            line-height: 1.5;
+        }
+        textarea.auto-expand:focus {
+            border-color: #3498db;
+            outline: none;
         }
 
         button {
@@ -102,7 +103,6 @@
         }
         button:hover { background-color: #2980b9; }
         button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
-        
         button.action-btn { background-color: #27ae60; }
         button.action-btn:hover { background-color: #219150; }
 
@@ -137,27 +137,36 @@
             outline: none;
         }
 
+        /* 3. 输出区域：高度限制与滚动 */
         .output-wrapper {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
+            /* 移除 flex-grow，改为自适应块 */
+            width: 100%;
+            margin-bottom: 20px;
             border: 2px solid #b2bec3;
             border-radius: 6px;
             background-color: #2d3436;
-            overflow: hidden;
             position: relative;
         }
 
         .output-box {
-            flex-grow: 1;
+            width: 100%;
+            box-sizing: border-box;
             padding: 20px;
-            overflow-y: auto;
             color: #dfe6e9;
             font-family: 'Courier New', Courier, monospace;
             font-size: 1.1rem;
             line-height: 1.8;
             white-space: pre-wrap;
             word-break: break-all;
+            
+            /* 高度控制核心 */
+            min-height: 200px;
+            max-height: 600px; /* 约等于 20 行文本的高度 */
+            overflow-y: auto;  /* 内容超出时显示垂直滚动条 */
+            
+            /* 关键：允许文本选择与右键 */
+            user-select: text; 
+            cursor: text;
         }
 
         .text-user { color: #ff7675; font-weight: bold; }
@@ -195,38 +204,45 @@
             font-size: 0.8rem;
         }
 
+        /* 4. 底部输入栏 */
         .input-area {
-            flex-shrink: 0;
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-            align-items: flex-end; 
             background: #ecf0f1;
-            padding: 10px;
+            padding: 15px;
             border-radius: 8px;
+            display: flex;
+            align-items: flex-end; /* 底部对齐，防止按钮随文本框拉伸变形 */
+            gap: 10px;
+            border: 1px solid #bdc3c7;
         }
-        .input-area textarea {
-            flex-grow: 1;
-            padding: 10px;
+        
+        /* 输入框特定样式 */
+        .input-area textarea.auto-expand {
+            margin-bottom: 0;
             border: 2px solid #bdc3c7;
-            border-radius: 6px;
-            font-size: 1rem;
-            outline: none;
-            resize: none; 
-            height: 45px; 
-            font-family: inherit;
-            line-height: 1.4;
+            background: white;
+            min-height: 48px; /* 初始高度稍大一点 */
         }
-        .input-area textarea:focus { border-color: #3498db; }
+        .input-area textarea.auto-expand:focus {
+            border-color: #3498db;
+        }
 
         .status-bar {
             text-align: right;
             font-size: 0.8rem;
             color: #7f8c8d;
-            margin-top: 5px;
+            margin-top: 8px;
             display: flex;
             justify-content: space-between;
         }
+        
+        /* 滚动条美化 (Webkit) */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.4); }
+        /* 输出框深色模式滚动条 */
+        .output-box::-webkit-scrollbar-track { background: #2d3436; }
+        .output-box::-webkit-scrollbar-thumb { background: #636e72; }
     </style>
 </head>
 <body>
@@ -239,16 +255,17 @@
         <!-- 训练行 -->
         <div class="training-section">
             <label style="font-weight:bold; color:#2c3e50; display:block; margin-bottom:5px;">📂 训练语料设置:</label>
-            <div style="display:flex; gap:10px;">
-                <textarea id="corpusInput" class="corpus-area" rows="2">
-春天到了，万物复苏。小草从土里探出头来，花儿在风中跳舞。
-燕子从南方飞回来了，它们在屋檐下筑巢。
-河水解冻了，叮叮咚咚地流向远方。
-小朋友们脱下厚厚的棉袄，在草地上奔跑，放风筝。
+            <div style="display:flex; gap:10px; align-items: flex-start;">
+                <!-- 语料输入框：应用 auto-expand 类 -->
+                <textarea id="corpusInput" class="auto-expand" rows="1" placeholder="在此粘贴语料...">
+春天到了，万物复苏。小草从土里探出头来，花儿在风中跳舞。🌸
+燕子从南方飞回来了，它们在屋檐下筑巢。🐦
+河水解冻了，叮叮咚咚地流向远方。🌊
+小朋友们脱下厚厚的棉袄，在草地上奔跑，放风筝。🪁
 我也想去郊游，看看这美丽的春天。
-Biology is the study of life. The cell is the basic unit of life.
+Biology is the study of life. The cell is the basic unit of life. 🧬
                 </textarea>
-                <div style="display:flex; flex-direction:column; justify-content:center; gap:5px;">
+                <div style="display:flex; flex-direction:column; gap:8px;">
                     <button onclick="trainModels()">🚀 训练模型</button>
                     <div id="trainStatus" style="text-align:center; font-size:0.8rem; color:#e74c3c;">未训练</div>
                 </div>
@@ -257,7 +274,6 @@ Biology is the study of life. The cell is the basic unit of life.
         
         <!-- 操作行 -->
         <div class="control-row">
-            <!-- 左侧 -->
             <div class="control-left">
                 <div>
                     <strong>模型:</strong>
@@ -272,7 +288,6 @@ Biology is the study of life. The cell is the basic unit of life.
                 </div>
             </div>
 
-            <!-- 右侧 -->
             <div class="control-right">
                 <div class="setting-group" title="设置AI接龙时每次生成的字数">
                     <label for="aiCount">AI字数:</label>
@@ -284,9 +299,10 @@ Biology is the study of life. The cell is the basic unit of life.
     </div>
 
     <!-- 输出屏幕 -->
-    <div class="output-wrapper" onclick="document.getElementById('userCharInput').focus()">
+    <div class="output-wrapper">
+        <!-- 注意：click聚焦由JS处理，避免干扰选中文本 -->
         <div id="consoleOutput" class="output-box">
-            <div style="color:#b2bec3; text-align:center; margin-top:50px; font-style:italic;">
+            <div style="color:#b2bec3; text-align:center; padding-top:40px; font-style:italic;">
                 请先点击“训练模型”，然后在此处开始创作...
             </div>
         </div>
@@ -294,8 +310,9 @@ Biology is the study of life. The cell is the basic unit of life.
 
     <!-- 底部输入栏 -->
     <div class="input-area">
-        <textarea id="userCharInput" placeholder="输入文字 (Enter发送，Ctrl+Enter换行)..."></textarea>
-        <button onclick="processInput()" style="padding:10px 25px; font-weight:bold; height:45px;">发送</button>
+        <!-- 用户输入框：应用 auto-expand 类 -->
+        <textarea id="userCharInput" class="auto-expand" placeholder="输入文字 (Enter发送，Ctrl+Enter换行)..."></textarea>
+        <button onclick="processInput()" style="padding:10px 25px; font-weight:bold; height:48px;">发送</button>
     </div>
     
     <div class="status-bar">
@@ -305,6 +322,44 @@ Biology is the study of life. The cell is the basic unit of life.
 </div>
 
 <script>
+// --- JS 1. 自适应高度逻辑 (Auto-Resize) ---
+function initAutoResize() {
+    const textareas = document.querySelectorAll('textarea.auto-expand');
+    
+    function resize(el) {
+        // 重置高度以获得正确的 scrollHeight (处理缩减的情况)
+        el.style.height = 'auto'; 
+        
+        // 设置新高度，但不超过 max-height (CSS中设置)
+        // 这里的 500 是硬编码的上限，CSS 中已设置 max-height 控制 UI，
+        // JS 只要设置足够大，CSS 的 overflow 就会生效
+        const newHeight = Math.min(el.scrollHeight, 500); 
+        
+        // 如果内容很少，保持 min-height (CSS控制)
+        el.style.height = el.scrollHeight + 'px';
+        
+        // 如果达到最大高度，显示滚动条
+        if (el.scrollHeight > 500) {
+            el.style.overflowY = "auto";
+        } else {
+            el.style.overflowY = "hidden";
+        }
+    }
+
+    textareas.forEach(el => {
+        // 初始化调整
+        resize(el);
+        // 输入时调整
+        el.addEventListener('input', () => resize(el));
+        // 窗口大小改变时调整
+        window.addEventListener('resize', () => resize(el));
+    });
+}
+
+// 页面加载完成后初始化
+window.addEventListener('DOMContentLoaded', initAutoResize);
+
+
 // --- N-Gram 算法核心 ---
 class Counter extends Map {
     get(key) { return super.get(key) || 0; }
@@ -340,15 +395,10 @@ class SimpleNGramLMBase {
         if (!this.trigram_counts.has(key)) return 0;
         return this.trigram_counts.get(key).get(w3);
     }
-
-    /**
-     * 新增：从词表中随机获取一个有效的普通字符
-     * 排除 <s> 和 </s>
-     */
     getRandomChar() {
-        // 将Set转为数组
+        // 过滤掉标记符，随机选字
         let validChars = Array.from(this.vocab).filter(c => c !== '<s>' && c !== '</s>');
-        if (validChars.length === 0) return ' '; // 防御性编程：如果词表为空
+        if (validChars.length === 0) return ' '; 
         return validChars[Math.floor(Math.random() * validChars.length)];
     }
 }
@@ -457,7 +507,12 @@ function updateCursor() {
 function ensureContainer() {
     const box = document.getElementById('consoleOutput');
     const isContinuous = document.getElementById('continuousMode').checked;
-    const hasContent = box.childNodes.length > 0;
+    
+    // 检查是否有内容节点（忽略空白文本节点）
+    const hasContent = Array.from(box.childNodes).some(n => 
+        (n.nodeType === 1 && n.tagName !== 'DIV' && !n.classList?.contains('text-cursor')) || 
+        (n.nodeType === 1 && n.tagName === 'DIV') 
+    );
     
     if (!currentDOMContainer || (!isContinuous && hasContent)) {
         if (hasContent) {
@@ -470,6 +525,8 @@ function ensureContainer() {
             box.innerHTML = ''; 
         }
         currentDOMContainer = document.createElement('div');
+        // 为新容器保留样式，确保行高
+        currentDOMContainer.style.display = "inline"; 
         sessionHistory = ['<s>'];
         box.appendChild(currentDOMContainer);
     }
@@ -487,7 +544,8 @@ function appendText(text, type) {
 function trainModels() {
     const text = document.getElementById('corpusInput').value;
     if (!text.trim()) { alert("请输入训练文本！"); return; }
-    let charList = ['<s>', ...text.split(''), '</s>'];
+    // 使用 Array.from 确保正确处理 emoji (它们由 surrogate pairs 组成)
+    let charList = ['<s>', ...Array.from(text), '</s>'];
     
     setTimeout(() => {
         try {
@@ -511,16 +569,11 @@ function getModel() {
     return document.querySelector('input[name="modelType"]:checked').value === 'bigram' ? bigramModel : trigramModel;
 }
 
-/**
- * 核心生成逻辑修改：
- * 如果模型生成了 </s>，则强制随机选择一个普通字符，确保输出不中断。
- */
 function generateNextToken() {
     const model = getModel();
     if (!model) return null;
     let nextWord;
     try {
-        // 1. 获取模型预测
         if (model instanceof SimpleTrigramLM) {
             let context;
             if (sessionHistory.length >= 2) {
@@ -534,30 +587,22 @@ function generateNextToken() {
             nextWord = model.generate_word(context);
         }
 
-        // 2. 检查是否为终结符，如果是，强制随机抽字
         if (nextWord === '</s>') {
             nextWord = model.getRandomChar();
         }
         
     } catch(e) { 
-        // 出错兜底也随机抽
         nextWord = model.getRandomChar(); 
     }
     return nextWord;
 }
 
-// 功能1：随机生成一段
 function triggerRandomGeneration() {
     if (!isTrained) { alert("请先训练模型"); return; }
-    
     ensureContainer();
-    
-    // 默认生成长度20
-    const length = parseInt(document.getElementById('aiCount').value) || 20; 
-    
+    const length = 20; 
     for (let i = 0; i < length; i++) {
         let w = generateNextToken();
-        // 因为 generateNextToken 保证不返回 </s>，这里直接由逻辑添加
         sessionHistory.push(w);
         appendText(w, 'model');
     }
@@ -565,7 +610,6 @@ function triggerRandomGeneration() {
     scrollToBottom();
 }
 
-// 功能2：处理用户输入
 function processInput() {
     if (!isTrained) { alert("请先训练模型"); return; }
 
@@ -578,17 +622,16 @@ function processInput() {
 
     ensureContainer();
 
-    // 1. 上屏用户输入
-    const chars = val.split('');
+    // 1. 上屏用户输入 (使用 Array.from 处理 emoji)
+    const chars = Array.from(val);
     chars.forEach(c => {
         sessionHistory.push(c);
         appendText(c, 'user');
     });
 
-    // 2. 瞬间生成 AI 回复
+    // 2. 生成 AI 回复
     for (let i = 0; i < aiCount; i++) {
         let nextW = generateNextToken();
-        // 因为 generateNextToken 保证不返回 </s>，直接添加
         sessionHistory.push(nextW);
         appendText(nextW, 'model');
     }
@@ -598,9 +641,13 @@ function processInput() {
 
     inputEl.value = '';
     inputEl.focus();
+    
+    // 触发一下输入框的高度重置
+    inputEl.style.height = 'auto'; 
+    inputEl.style.height = inputEl.scrollHeight + 'px';
 }
 
-// 键盘监听：Enter 发送，Ctrl/Cmd + Enter 换行
+// 键盘监听
 document.getElementById('userCharInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
         if (e.ctrlKey || e.metaKey) {
@@ -610,10 +657,21 @@ document.getElementById('userCharInput').addEventListener('keydown', function(e)
             const value = this.value;
             this.value = value.substring(0, start) + "\n" + value.substring(end);
             this.selectionStart = this.selectionEnd = start + 1;
+            // 触发高度调整
+            this.dispatchEvent(new Event('input'));
         } else {
             e.preventDefault(); 
             processInput();
         }
+    }
+});
+
+// 点击 Output 框时让输入框聚焦，但要判断是否选中了文字
+document.getElementById('consoleOutput').addEventListener('click', function(e) {
+    const selection = window.getSelection();
+    // 如果没有选中文本，才聚焦输入框，方便用户进行复制操作
+    if (selection.toString().length === 0) {
+        document.getElementById('userCharInput').focus();
     }
 });
 
