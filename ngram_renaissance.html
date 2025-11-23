@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N-Gram 文艺复兴</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 10px;
+            color: #333;
+            height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        
+        /* 标题样式 */
+        h1 { 
+            margin: 0 0 10px 0; 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 1.6rem; 
+            font-family: "Microsoft YaHei", "Songti SC", serif; /* 文艺一点的字体 */
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        /* 顶部控制栏 */
+        .top-controls {
+            flex-shrink: 0;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 10px;
+        }
+
+        .training-section {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between; /* 两端对齐布局 */
+        }
+        
+        .control-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .control-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 文本域通用样式 */
+        textarea.corpus-area {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            resize: vertical;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+            font-family: inherit;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        button:hover { background-color: #2980b9; }
+        button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        
+        button.action-btn { background-color: #27ae60; }
+        button.action-btn:hover { background-color: #219150; }
+
+        .switch-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+        .switch-label input { margin-right: 6px; transform: scale(1.2); }
+
+        /* 字数设置样式 */
+        .setting-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            background: #fff;
+            padding: 4px 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+        }
+        .setting-group input[type="number"] {
+            width: 45px;
+            padding: 3px;
+            border: none;
+            border-bottom: 1px solid #bdc3c7;
+            text-align: center;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        /* 输出区域 */
+        .output-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #b2bec3;
+            border-radius: 6px;
+            background-color: #2d3436;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .output-box {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            color: #dfe6e9;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .text-user { color: #ff7675; font-weight: bold; }
+        .text-model { color: #55efc4; }
+        
+        /* 光标 */
+        .text-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.2rem;
+            background-color: #dfe6e9;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* 分割线样式 */
+        .topic-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0));
+            margin: 20px 0;
+            position: relative;
+            display: block; 
+            width: 100%;
+        }
+        .topic-divider::after {
+            content: "新话题";
+            position: absolute;
+            left: 50%;
+            top: -10px;
+            transform: translateX(-50%);
+            background: #2d3436;
+            padding: 0 10px;
+            color: #b2bec3;
+            font-size: 0.8rem;
+        }
+
+        /* 底部输入栏 */
+        .input-area {
+            flex-shrink: 0;
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end; /* 底部对齐，适应多行文本框 */
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        /* 将 input 改为 textarea 样式 */
+        .input-area textarea {
+            flex-grow: 1;
+            padding: 10px;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            resize: none; /* 禁止手动调整大小，由JS或固定高度控制 */
+            height: 45px; /* 初始高度 */
+            font-family: inherit;
+            line-height: 1.4;
+        }
+        .input-area textarea:focus { border-color: #3498db; }
+
+        .status-bar {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>N-Gram 文艺复兴</h1>
+    
+    <!-- 控制区 -->
+    <div class="top-controls">
+        <!-- 训练行 -->
+        <div class="training-section">
+            <label style="font-weight:bold; color:#2c3e50; display:block; margin-bottom:5px;">📂 训练语料设置:</label>
+            <div style="display:flex; gap:10px;">
+                <textarea id="corpusInput" class="corpus-area" rows="2">
+春天到了，万物复苏。小草从土里探出头来，花儿在风中跳舞。
+燕子从南方飞回来了，它们在屋檐下筑巢。
+河水解冻了，叮叮咚咚地流向远方。
+小朋友们脱下厚厚的棉袄，在草地上奔跑，放风筝。
+我也想去郊游，看看这美丽的春天。
+Biology is the study of life. The cell is the basic unit of life.
+                </textarea>
+                <div style="display:flex; flex-direction:column; justify-content:center; gap:5px;">
+                    <button onclick="trainModels()">🚀 训练模型</button>
+                    <div id="trainStatus" style="text-align:center; font-size:0.8rem; color:#e74c3c;">未训练</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 操作行 -->
+        <div class="control-row">
+            <!-- 左侧：模型选择与开关 -->
+            <div class="control-left">
+                <div>
+                    <strong>模型:</strong>
+                    <input type="radio" id="modelBigram" name="modelType" value="bigram" checked> <label for="modelBigram">Bigram</label>
+                    <input type="radio" id="modelTrigram" name="modelType" value="trigram"> <label for="modelTrigram">Trigram</label>
+                </div>
+                
+                <div style="border-left: 1px solid #ccc; padding-left: 15px;">
+                    <label class="switch-label" title="开启后，新生成的内容将直接接在上一段文字后面">
+                        <input type="checkbox" id="continuousMode" checked> 🔗 延续上文
+                    </label>
+                </div>
+            </div>
+
+            <!-- 右侧：生成控制 -->
+            <div class="control-right">
+                <div class="setting-group" title="设置AI接龙时每次生成的字数">
+                    <label for="aiCount">AI字数:</label>
+                    <input type="number" id="aiCount" value="1" min="1" max="100">
+                </div>
+                <button class="action-btn" onclick="triggerRandomGeneration()">🎲 随机生成一段</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 输出屏幕 -->
+    <div class="output-wrapper" onclick="document.getElementById('userCharInput').focus()">
+        <div id="consoleOutput" class="output-box">
+            <div style="color:#b2bec3; text-align:center; margin-top:50px; font-style:italic;">
+                请先点击“训练模型”，然后在此处开始创作...
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部输入栏 -->
+    <div class="input-area">
+        <!-- 改为 textarea 以支持换行 -->
+        <textarea id="userCharInput" placeholder="输入文字 (Enter发送，Ctrl+Enter换行)..."></textarea>
+        <button onclick="processInput()" style="padding:10px 25px; font-weight:bold; height:45px;">发送</button>
+    </div>
+    
+    <div class="status-bar">
+        <span>⌨️ 快捷键: Enter 发送 / Ctrl+Enter 换行</span>
+        <span><span style="color:#ff7675;">■ 用户</span> / <span style="color:#55efc4;">■ AI</span></span>
+    </div>
+</div>
+
+<script>
+// --- N-Gram 算法核心 (保持不变) ---
+class Counter extends Map {
+    get(key) { return super.get(key) || 0; }
+    add(key, val = 1) { this.set(key, this.get(key) + val); }
+}
+
+function weightedRandom(choices, weights) {
+    let total = weights.reduce((a, b) => a + b, 0);
+    let randomVal = Math.random() * total;
+    let cumulative = 0;
+    for (let i = 0; i < choices.length; i++) {
+        cumulative += weights[i];
+        if (randomVal < cumulative) return choices[i];
+    }
+    return choices[choices.length - 1]; 
+}
+
+class SimpleNGramLMBase {
+    constructor() {
+        this.vocab = new Set();
+        this.unigram_counts = new Counter();
+        this.bigram_counts = new Map(); 
+        this.trigram_counts = new Map();
+        this.smoothing = 1.0;
+        this.vocab_size = 0;
+    }
+    get_bigram_count(w1, w2) {
+        if (!this.bigram_counts.has(w1)) return 0;
+        return this.bigram_counts.get(w1).get(w2);
+    }
+    get_trigram_count(w1, w2, w3) {
+        let key = w1 + "|" + w2;
+        if (!this.trigram_counts.has(key)) return 0;
+        return this.trigram_counts.get(key).get(w3);
+    }
+}
+
+class SimpleBigramLM extends SimpleNGramLMBase {
+    train(corpus) {
+        for (let i = 0; i < corpus.length; i++) {
+            let word = corpus[i];
+            this.vocab.add(word);
+            this.unigram_counts.add(word);
+            if (i < corpus.length - 1) {
+                let next_word = corpus[i+1];
+                if (!this.bigram_counts.has(word)) this.bigram_counts.set(word, new Counter());
+                this.bigram_counts.get(word).add(next_word);
+            }
+        }
+        this.vocab_size = this.vocab.size;
+    }
+    get_probability(word, given_word) {
+        let bigram_c = this.get_bigram_count(given_word, word) + this.smoothing;
+        let unigram_c = this.unigram_counts.get(given_word) + this.smoothing * this.vocab_size;
+        return bigram_c / unigram_c;
+    }
+    generate_word(given_word) {
+        let next_counter = this.bigram_counts.get(given_word);
+        let next_words = next_counter ? Array.from(next_counter.keys()) : [];
+        if (next_words.length === 0) return '</s>';
+        let probabilities = next_words.map(w => this.get_probability(w, given_word));
+        return weightedRandom(next_words, probabilities); 
+    }
+}
+
+class SimpleTrigramLM extends SimpleNGramLMBase {
+    train(corpus) {
+        for (let i = 0; i < corpus.length; i++) {
+            let word = corpus[i];
+            this.vocab.add(word);
+            this.unigram_counts.add(word);
+            if (i < corpus.length - 1) {
+                let next_word = corpus[i+1];
+                if (!this.bigram_counts.has(word)) this.bigram_counts.set(word, new Counter());
+                this.bigram_counts.get(word).add(next_word);
+            }
+            if (i < corpus.length - 2) {
+                let next_word = corpus[i+1];
+                let next_next_word = corpus[i+2];
+                let bigram_key = word + "|" + next_word;
+                if (!this.trigram_counts.has(bigram_key)) this.trigram_counts.set(bigram_key, new Counter());
+                this.trigram_counts.get(bigram_key).add(next_next_word);
+            }
+        }
+        this.vocab_size = this.vocab.size;
+    }
+    get_probability(word, given_word) {
+        if (Array.isArray(given_word) && given_word.length === 2) {
+            let [w1, w2] = given_word;
+            let trigram_c = this.get_trigram_count(w1, w2, word) + this.smoothing;
+            let bigram_c = this.get_bigram_count(w1, w2) + this.smoothing * this.vocab_size;
+            return trigram_c / bigram_c;
+        } else {
+            let bg_count = this.get_bigram_count(given_word, word) + this.smoothing;
+            let ug_count = this.unigram_counts.get(given_word) + this.smoothing * this.vocab_size;
+            return bg_count / ug_count;
+        }
+    }
+    generate_word(given_word) {
+        let next_words = [];
+        if (Array.isArray(given_word) && given_word.length === 2) {
+            let key = given_word[0] + "|" + given_word[1];
+            let counter = this.trigram_counts.get(key);
+            if (counter) next_words = Array.from(counter.keys());
+            else return this.generate_word(given_word[1]);
+        } else {
+            let counter = this.bigram_counts.get(given_word);
+            if (counter) next_words = Array.from(counter.keys());
+        }
+        if (next_words.length === 0) return '</s>';
+        let probabilities = next_words.map(w => this.get_probability(w, given_word));
+        return weightedRandom(next_words, probabilities);
+    }
+}
+
+// --- 全局状态 ---
+let bigramModel = null;
+let trigramModel = null;
+let isTrained = false;
+let sessionHistory = ['<s>']; 
+let currentDOMContainer = null;
+
+// --- 界面逻辑 ---
+
+function scrollToBottom() {
+    const box = document.getElementById('consoleOutput');
+    box.scrollTop = box.scrollHeight;
+}
+
+function updateCursor() {
+    if (!currentDOMContainer) return;
+    const oldCursor = document.querySelector('.text-cursor');
+    if (oldCursor) oldCursor.remove();
+    const cursor = document.createElement('span');
+    cursor.className = 'text-cursor';
+    currentDOMContainer.appendChild(cursor);
+}
+
+function ensureContainer() {
+    const box = document.getElementById('consoleOutput');
+    const isContinuous = document.getElementById('continuousMode').checked;
+    const hasContent = box.childNodes.length > 0;
+    
+    if (!currentDOMContainer || (!isContinuous && hasContent)) {
+        if (hasContent) {
+            const oldCursor = document.querySelector('.text-cursor');
+            if(oldCursor) oldCursor.remove();
+            const divider = document.createElement('hr');
+            divider.className = "topic-divider";
+            box.appendChild(divider);
+        } else {
+            box.innerHTML = ''; 
+        }
+        currentDOMContainer = document.createElement('div');
+        sessionHistory = ['<s>'];
+        box.appendChild(currentDOMContainer);
+    }
+}
+
+function appendText(text, type) {
+    if (!currentDOMContainer) ensureContainer();
+    const span = document.createElement('span');
+    span.innerText = text;
+    if (type === 'user') span.className = 'text-user';
+    else if (type === 'model') span.className = 'text-model';
+    currentDOMContainer.appendChild(span);
+}
+
+function trainModels() {
+    const text = document.getElementById('corpusInput').value;
+    if (!text.trim()) { alert("请输入训练文本！"); return; }
+    let charList = ['<s>', ...text.split(''), '</s>'];
+    
+    setTimeout(() => {
+        try {
+            bigramModel = new SimpleBigramLM(); bigramModel.train(charList);
+            trigramModel = new SimpleTrigramLM(); trigramModel.train(charList);
+            isTrained = true;
+            const statusEl = document.getElementById('trainStatus');
+            statusEl.innerText = "✅ 模型已就绪";
+            statusEl.style.color = "#27ae60";
+            statusEl.style.fontWeight = "bold";
+            document.getElementById('consoleOutput').innerHTML = '<div style="color:gray; text-align:center; padding-top:20px;">模型已加载，输入文字开始接龙...</div>';
+            currentDOMContainer = null; 
+        } catch (e) {
+            alert("训练出错：" + e.message);
+        }
+    }, 10);
+}
+
+function getModel() {
+    if (!isTrained) { alert("请先点击训练模型！"); return null; }
+    return document.querySelector('input[name="modelType"]:checked').value === 'bigram' ? bigramModel : trigramModel;
+}
+
+function generateNextToken() {
+    const model = getModel();
+    if (!model) return null;
+    let nextWord;
+    try {
+        if (model instanceof SimpleTrigramLM) {
+            let context;
+            if (sessionHistory.length >= 2) {
+                context = [sessionHistory[sessionHistory.length-2], sessionHistory[sessionHistory.length-1]];
+            } else {
+                context = sessionHistory[sessionHistory.length-1];
+            }
+            nextWord = model.generate_word(context);
+        } else {
+            let context = sessionHistory[sessionHistory.length-1];
+            nextWord = model.generate_word(context);
+        }
+    } catch(e) { nextWord = "</s>"; }
+    return nextWord;
+}
+
+// 功能1：随机生成一段
+function triggerRandomGeneration() {
+    if (!isTrained) { alert("请先训练模型"); return; }
+    
+    ensureContainer();
+    
+    // 默认生成长度20，如果您想让这里的长度也跟随顶部输入框，
+    // 可以改为: parseInt(document.getElementById('aiCount').value) || 20;
+    const length = parseInt(document.getElementById('aiCount').value) || 20; 
+    
+    for (let i = 0; i < length; i++) {
+        let w = generateNextToken();
+        if (w === '</s>') { sessionHistory.push('<s>'); } 
+        sessionHistory.push(w);
+        appendText(w, 'model');
+    }
+    updateCursor();
+    scrollToBottom();
+}
+
+// 功能2：处理用户输入
+function processInput() {
+    if (!isTrained) { alert("请先训练模型"); return; }
+
+    const inputEl = document.getElementById('userCharInput');
+    const val = inputEl.value;
+    if (!val) return;
+
+    // 实时读取顶部的AI字数设置
+    let aiCount = parseInt(document.getElementById('aiCount').value);
+    if (isNaN(aiCount) || aiCount < 1) aiCount = 1;
+
+    ensureContainer();
+
+    // 1. 上屏用户输入 (保留换行符)
+    const chars = val.split('');
+    chars.forEach(c => {
+        sessionHistory.push(c);
+        appendText(c, 'user');
+    });
+
+    // 2. 瞬间生成 AI 回复
+    for (let i = 0; i < aiCount; i++) {
+        let nextW = generateNextToken();
+        if (nextW === '</s>') {
+            sessionHistory.push('<s>');
+        } 
+        sessionHistory.push(nextW);
+        appendText(nextW, 'model');
+    }
+
+    updateCursor();
+    scrollToBottom();
+
+    inputEl.value = '';
+    inputEl.focus();
+}
+
+// 键盘监听：Enter 发送，Ctrl/Cmd + Enter 换行
+document.getElementById('userCharInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        if (e.ctrlKey || e.metaKey) {
+            // 用户按下了 Ctrl+Enter (Win) 或 Cmd+Enter (Mac) -> 插入换行符
+            e.preventDefault();
+            const start = this.selectionStart;
+            const end = this.selectionEnd;
+            const value = this.value;
+            // 在光标位置插入换行符
+            this.value = value.substring(0, start) + "\n" + value.substring(end);
+            // 恢复光标位置到换行符之后
+            this.selectionStart = this.selectionEnd = start + 1;
+        } else {
+            // 仅按 Enter -> 发送
+            e.preventDefault(); // 阻止默认的换行行为
+            processInput();
+        }
+    }
+});
+
+</script>
+
+</body>
+</html>
