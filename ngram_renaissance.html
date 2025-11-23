@@ -36,7 +36,7 @@
             text-align: center; 
             color: #2c3e50; 
             font-size: 1.6rem; 
-            font-family: "Microsoft YaHei", "Songti SC", serif; /* 文艺一点的字体 */
+            font-family: "Microsoft YaHei", "Songti SC", serif;
             font-weight: bold;
             letter-spacing: 2px;
         }
@@ -62,7 +62,7 @@
             flex-wrap: wrap;
             gap: 15px;
             align-items: center;
-            justify-content: space-between; /* 两端对齐布局 */
+            justify-content: space-between;
         }
         
         .control-left {
@@ -77,7 +77,6 @@
             gap: 10px;
         }
 
-        /* 文本域通用样式 */
         textarea.corpus-area {
             width: 100%;
             padding: 8px;
@@ -118,7 +117,6 @@
         }
         .switch-label input { margin-right: 6px; transform: scale(1.2); }
 
-        /* 字数设置样式 */
         .setting-group {
             display: flex;
             align-items: center;
@@ -139,7 +137,6 @@
             outline: none;
         }
 
-        /* 输出区域 */
         .output-wrapper {
             flex-grow: 1;
             display: flex;
@@ -166,7 +163,6 @@
         .text-user { color: #ff7675; font-weight: bold; }
         .text-model { color: #55efc4; }
         
-        /* 光标 */
         .text-cursor {
             display: inline-block;
             width: 8px;
@@ -178,7 +174,6 @@
         }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* 分割线样式 */
         .topic-divider {
             border: 0;
             height: 1px;
@@ -200,18 +195,16 @@
             font-size: 0.8rem;
         }
 
-        /* 底部输入栏 */
         .input-area {
             flex-shrink: 0;
             margin-top: 10px;
             display: flex;
             gap: 10px;
-            align-items: flex-end; /* 底部对齐，适应多行文本框 */
+            align-items: flex-end; 
             background: #ecf0f1;
             padding: 10px;
             border-radius: 8px;
         }
-        /* 将 input 改为 textarea 样式 */
         .input-area textarea {
             flex-grow: 1;
             padding: 10px;
@@ -219,8 +212,8 @@
             border-radius: 6px;
             font-size: 1rem;
             outline: none;
-            resize: none; /* 禁止手动调整大小，由JS或固定高度控制 */
-            height: 45px; /* 初始高度 */
+            resize: none; 
+            height: 45px; 
             font-family: inherit;
             line-height: 1.4;
         }
@@ -264,7 +257,7 @@ Biology is the study of life. The cell is the basic unit of life.
         
         <!-- 操作行 -->
         <div class="control-row">
-            <!-- 左侧：模型选择与开关 -->
+            <!-- 左侧 -->
             <div class="control-left">
                 <div>
                     <strong>模型:</strong>
@@ -279,7 +272,7 @@ Biology is the study of life. The cell is the basic unit of life.
                 </div>
             </div>
 
-            <!-- 右侧：生成控制 -->
+            <!-- 右侧 -->
             <div class="control-right">
                 <div class="setting-group" title="设置AI接龙时每次生成的字数">
                     <label for="aiCount">AI字数:</label>
@@ -301,7 +294,6 @@ Biology is the study of life. The cell is the basic unit of life.
 
     <!-- 底部输入栏 -->
     <div class="input-area">
-        <!-- 改为 textarea 以支持换行 -->
         <textarea id="userCharInput" placeholder="输入文字 (Enter发送，Ctrl+Enter换行)..."></textarea>
         <button onclick="processInput()" style="padding:10px 25px; font-weight:bold; height:45px;">发送</button>
     </div>
@@ -313,7 +305,7 @@ Biology is the study of life. The cell is the basic unit of life.
 </div>
 
 <script>
-// --- N-Gram 算法核心 (保持不变) ---
+// --- N-Gram 算法核心 ---
 class Counter extends Map {
     get(key) { return super.get(key) || 0; }
     add(key, val = 1) { this.set(key, this.get(key) + val); }
@@ -347,6 +339,17 @@ class SimpleNGramLMBase {
         let key = w1 + "|" + w2;
         if (!this.trigram_counts.has(key)) return 0;
         return this.trigram_counts.get(key).get(w3);
+    }
+
+    /**
+     * 新增：从词表中随机获取一个有效的普通字符
+     * 排除 <s> 和 </s>
+     */
+    getRandomChar() {
+        // 将Set转为数组
+        let validChars = Array.from(this.vocab).filter(c => c !== '<s>' && c !== '</s>');
+        if (validChars.length === 0) return ' '; // 防御性编程：如果词表为空
+        return validChars[Math.floor(Math.random() * validChars.length)];
     }
 }
 
@@ -508,11 +511,16 @@ function getModel() {
     return document.querySelector('input[name="modelType"]:checked').value === 'bigram' ? bigramModel : trigramModel;
 }
 
+/**
+ * 核心生成逻辑修改：
+ * 如果模型生成了 </s>，则强制随机选择一个普通字符，确保输出不中断。
+ */
 function generateNextToken() {
     const model = getModel();
     if (!model) return null;
     let nextWord;
     try {
+        // 1. 获取模型预测
         if (model instanceof SimpleTrigramLM) {
             let context;
             if (sessionHistory.length >= 2) {
@@ -525,7 +533,16 @@ function generateNextToken() {
             let context = sessionHistory[sessionHistory.length-1];
             nextWord = model.generate_word(context);
         }
-    } catch(e) { nextWord = "</s>"; }
+
+        // 2. 检查是否为终结符，如果是，强制随机抽字
+        if (nextWord === '</s>') {
+            nextWord = model.getRandomChar();
+        }
+        
+    } catch(e) { 
+        // 出错兜底也随机抽
+        nextWord = model.getRandomChar(); 
+    }
     return nextWord;
 }
 
@@ -535,13 +552,12 @@ function triggerRandomGeneration() {
     
     ensureContainer();
     
-    // 默认生成长度20，如果您想让这里的长度也跟随顶部输入框，
-    // 可以改为: parseInt(document.getElementById('aiCount').value) || 20;
+    // 默认生成长度20
     const length = parseInt(document.getElementById('aiCount').value) || 20; 
     
     for (let i = 0; i < length; i++) {
         let w = generateNextToken();
-        if (w === '</s>') { sessionHistory.push('<s>'); } 
+        // 因为 generateNextToken 保证不返回 </s>，这里直接由逻辑添加
         sessionHistory.push(w);
         appendText(w, 'model');
     }
@@ -557,13 +573,12 @@ function processInput() {
     const val = inputEl.value;
     if (!val) return;
 
-    // 实时读取顶部的AI字数设置
     let aiCount = parseInt(document.getElementById('aiCount').value);
     if (isNaN(aiCount) || aiCount < 1) aiCount = 1;
 
     ensureContainer();
 
-    // 1. 上屏用户输入 (保留换行符)
+    // 1. 上屏用户输入
     const chars = val.split('');
     chars.forEach(c => {
         sessionHistory.push(c);
@@ -573,9 +588,7 @@ function processInput() {
     // 2. 瞬间生成 AI 回复
     for (let i = 0; i < aiCount; i++) {
         let nextW = generateNextToken();
-        if (nextW === '</s>') {
-            sessionHistory.push('<s>');
-        } 
+        // 因为 generateNextToken 保证不返回 </s>，直接添加
         sessionHistory.push(nextW);
         appendText(nextW, 'model');
     }
@@ -591,18 +604,14 @@ function processInput() {
 document.getElementById('userCharInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
         if (e.ctrlKey || e.metaKey) {
-            // 用户按下了 Ctrl+Enter (Win) 或 Cmd+Enter (Mac) -> 插入换行符
             e.preventDefault();
             const start = this.selectionStart;
             const end = this.selectionEnd;
             const value = this.value;
-            // 在光标位置插入换行符
             this.value = value.substring(0, start) + "\n" + value.substring(end);
-            // 恢复光标位置到换行符之后
             this.selectionStart = this.selectionEnd = start + 1;
         } else {
-            // 仅按 Enter -> 发送
-            e.preventDefault(); // 阻止默认的换行行为
+            e.preventDefault(); 
             processInput();
         }
     }
