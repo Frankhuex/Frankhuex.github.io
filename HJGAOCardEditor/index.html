@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>卡组编辑器</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-hidden="true"></div>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Deck Template Studio</p>
+          <h1>卡组编辑器</h1>
+          <p class="hero-text">
+            创建、导入、调整顺序并导出仅包含 `ordered_card_templates` 的卡组模板。
+          </p>
+          <div class="hero-toolbar">
+            <button id="new-deck-button" class="button button-primary" type="button">
+              新建空白卡组
+            </button>
+            <button id="import-button" class="button button-secondary" type="button">
+              导入 JSON
+            </button>
+            <button id="load-sample-button" class="button button-secondary" type="button">
+              导入示例
+            </button>
+            <input id="file-input" type="file" accept=".json,application/json" hidden />
+          </div>
+          <div class="hero-feedback">
+            <div id="status-banner" class="status-banner" role="status" aria-live="polite">
+              欢迎使用卡组编辑器。可以先从空白卡组开始，也可以导入已有 JSON。
+            </div>
+            <div class="validation-inline">
+              <span id="validation-badge" class="validation-badge validation-ok">已通过</span>
+              <ul id="validation-list" class="validation-list"></ul>
+            </div>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="metric">
+            <span class="metric-label">牌种数量</span>
+            <strong id="unique-card-count">0</strong>
+          </div>
+          <div class="metric">
+            <span class="metric-label">总张数</span>
+            <strong id="total-card-count">0</strong>
+          </div>
+          <div class="metric">
+            <span class="metric-label">当前状态</span>
+            <strong id="validation-summary">等待编辑</strong>
+          </div>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="panel panel-editor" aria-labelledby="editor-title">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">卡牌列表</p>
+              <h2 id="editor-title">拖拽排序并编辑字段</h2>
+            </div>
+            <p class="panel-description">
+              拖动左侧手柄可调整顺序。数组顺序就是最终的牌面顺序。
+            </p>
+          </div>
+
+          <div id="empty-state" class="empty-state">
+            <p>当前没有卡牌，点击中间的加号开始插入第一张牌。</p>
+          </div>
+
+          <div id="card-list" class="card-list" aria-live="polite"></div>
+        </section>
+
+        <section class="panel panel-preview" aria-labelledby="preview-title">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">结构预览</p>
+              <h2 id="preview-title">导出 JSON</h2>
+            </div>
+            <div class="preview-header-actions">
+              <p class="panel-description">
+                下载前可在这里确认 `ordered_card_templates` 的最终结构。
+              </p>
+              <label class="filename-field">
+                <span>文件名：</span>
+                <div class="filename-input-wrap">
+                  <input id="download-filename-input" type="text" value="deck" placeholder="deck" />
+                  <span class="filename-suffix">.json</span>
+                </div>
+              </label>
+              <button id="copy-json-button" class="button button-secondary" type="button">
+                复制 JSON
+              </button>
+              <button id="download-button" class="button button-accent" type="button">
+                下载 JSON
+              </button>
+            </div>
+          </div>
+
+          <textarea id="json-preview" class="json-preview" readonly spellcheck="false"></textarea>
+        </section>
+      </main>
+
+      <section class="panel panel-prompt" aria-labelledby="prompt-title">
+        <div class="panel-header">
+          <div>
+            <p class="panel-kicker">AI 辅助</p>
+            <h2 id="prompt-title">提示词生成</h2>
+          </div>
+          <p class="panel-description">
+            复制下面的提示词给 AI，即可让 AI 按当前 JSON 结构生成或修改卡牌数据。
+          </p>
+        </div>
+
+        <div class="prompt-controls">
+          <label class="toggle-field" for="include-current-json">
+            <input id="include-current-json" type="checkbox" />
+            <span>引入当前 JSON</span>
+          </label>
+        </div>
+
+        <div class="prompt-layout">
+          <label class="prompt-field">
+            <span class="prompt-field-head">
+              <span>生成给 AI 的提示词</span>
+              <button id="copy-prompt-button" class="button button-secondary button-copy" type="button">
+                复制提示词
+              </button>
+            </span>
+            <textarea id="prompt-output" class="prompt-output" readonly spellcheck="false"></textarea>
+          </label>
+
+          <label class="prompt-field">
+            <span class="prompt-field-head">
+              <span>补充你的卡牌设计要求</span>
+              <button id="copy-extra-input-button" class="button button-secondary button-copy" type="button">
+                复制设计要求
+              </button>
+            </span>
+            <textarea
+              id="prompt-extra-input"
+              class="prompt-extra-input"
+              placeholder="请生成一套标准扑克牌卡组，共 54 张。普通牌牌名使用“♠️A”“♥️10”这种“花色 emoji + 点数”的格式；四种花色顺序固定为黑桃、红心、梅花、方块，并且同一点数排在一起，例如：♠️A♥️A♣️A♦️A、♠️2♥️2♣️2♦️2，依此类推。最后两张分别命名为“小王🃏”和“大王🤡”。"
+            ></textarea>
+          </label>
+        </div>
+      </section>
+    </div>
+
+    <template id="card-item-template">
+      <article class="card-row" draggable="true">
+        <button class="drag-handle" type="button" aria-label="拖拽排序">☰</button>
+        <span class="row-index"></span>
+        <label class="field field-name">
+          <input class="name-input" type="text" placeholder="牌名" aria-label="牌名" />
+        </label>
+        <label class="field field-count">
+          <input class="count-input" type="number" min="0" step="1" placeholder="数量" aria-label="数量" />
+        </label>
+        <label class="field field-description">
+          <textarea
+            class="description-input"
+            rows="1"
+            placeholder="描述"
+            aria-label="描述"
+          ></textarea>
+        </label>
+        <button class="delete-button" type="button">删除</button>
+      </article>
+    </template>
+
+    <template id="insert-button-template">
+      <div class="insert-slot">
+        <button class="insert-button" type="button" aria-label="在此处新增一张牌">+</button>
+      </div>
+    </template>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
