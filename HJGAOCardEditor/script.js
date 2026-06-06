@@ -28,6 +28,14 @@ const elements = {
   includeCurrentJson: document.getElementById("include-current-json"),
   downloadFilenameInput: document.getElementById("download-filename-input"),
   toast: document.getElementById("toast"),
+  pasteJsonModal: document.getElementById("paste-json-modal"),
+  pasteJsonInput: document.getElementById("paste-json-input"),
+  pasteJsonError: document.getElementById("paste-json-error"),
+  pasteJsonButton: document.getElementById("paste-json-button"),
+  closePasteJsonButton: document.getElementById("close-paste-json-button"),
+  clearPasteJsonButton: document.getElementById("clear-paste-json-button"),
+  cancelPasteJsonButton: document.getElementById("cancel-paste-json-button"),
+  confirmPasteJsonButton: document.getElementById("confirm-paste-json-button"),
   copyJsonButton: document.getElementById("copy-json-button"),
   copyPromptButton: document.getElementById("copy-prompt-button"),
   copyExtraInputButton: document.getElementById("copy-extra-input-button"),
@@ -101,6 +109,76 @@ function showToast(kind, message) {
     elements.toast.setAttribute("aria-hidden", "true");
     state.toastTimer = null;
   }, 2600);
+}
+
+function openPasteJsonModal() {
+  elements.pasteJsonError.textContent = "";
+  elements.pasteJsonModal.hidden = false;
+  elements.pasteJsonModal.classList.add("is-visible");
+  elements.pasteJsonModal.setAttribute("aria-hidden", "false");
+  window.setTimeout(() => {
+    elements.pasteJsonInput.focus();
+  }, 0);
+}
+
+function closePasteJsonModal() {
+  elements.pasteJsonError.textContent = "";
+  elements.pasteJsonModal.classList.remove("is-visible");
+  elements.pasteJsonModal.setAttribute("aria-hidden", "true");
+  elements.pasteJsonModal.hidden = true;
+}
+
+function parseCardsFromJson(json) {
+  const orderedCardTemplates = json?.ordered_card_templates;
+
+  if (!Array.isArray(orderedCardTemplates)) {
+    throw new Error("缺少合法的 ordered_card_templates 数组。");
+  }
+
+  return orderedCardTemplates.map((card, index) => {
+    if (!card || typeof card !== "object" || Array.isArray(card)) {
+      throw new Error(`第 ${index + 1} 项不是合法的卡牌对象。`);
+    }
+
+    const name = escapeJsonText(card.name);
+    const count = normalizeCount(card.count);
+
+    if (!name) {
+      throw new Error(`第 ${index + 1} 项的 name 不能为空。`);
+    }
+
+    if (!Number.isInteger(count) || count < 0) {
+      throw new Error(`第 ${index + 1} 项的 count 必须是大于等于 0 的整数。`);
+    }
+
+    return createCard(name, count, String(card.description ?? ""));
+  });
+}
+
+function importCards(cards, sourceLabel) {
+  state.cards = cards;
+  setStatus("success", `已导入 ${sourceLabel}，共 ${cards.length} 种牌。`);
+  render();
+}
+
+function submitPastedJson() {
+  const raw = elements.pasteJsonInput.value.trim();
+  elements.pasteJsonError.textContent = "";
+
+  if (!raw) {
+    elements.pasteJsonError.textContent = "请先粘贴 JSON 内容。";
+    return;
+  }
+
+  try {
+    const json = JSON.parse(raw);
+    const cards = parseCardsFromJson(json);
+    importCards(cards, "粘贴的 JSON");
+    closePasteJsonModal();
+    elements.pasteJsonInput.value = "";
+  } catch (error) {
+    elements.pasteJsonError.textContent = `导入失败：${error.message}`;
+  }
 }
 
 async function copyText(text, successMessage) {
@@ -557,34 +635,8 @@ function addCardAt(index) {
 
 function loadCardsFromJson(json, sourceLabel) {
   try {
-    const orderedCardTemplates = json?.ordered_card_templates;
-
-    if (!Array.isArray(orderedCardTemplates)) {
-      throw new Error("缺少合法的 ordered_card_templates 数组。");
-    }
-
-    const cards = orderedCardTemplates.map((card, index) => {
-      if (!card || typeof card !== "object" || Array.isArray(card)) {
-        throw new Error(`第 ${index + 1} 项不是合法的卡牌对象。`);
-      }
-
-      const name = escapeJsonText(card.name);
-      const count = normalizeCount(card.count);
-
-      if (!name) {
-        throw new Error(`第 ${index + 1} 项的 name 不能为空。`);
-      }
-
-      if (!Number.isInteger(count) || count < 0) {
-        throw new Error(`第 ${index + 1} 项的 count 必须是大于等于 0 的整数。`);
-      }
-
-      return createCard(name, count, String(card.description ?? ""));
-    });
-
-    state.cards = cards;
-    setStatus("success", `已导入 ${sourceLabel}，共 ${cards.length} 种牌。`);
-    render();
+    const cards = parseCardsFromJson(json);
+    importCards(cards, sourceLabel);
   } catch (error) {
     setStatus("error", `导入失败：${error.message}`);
     render();
@@ -655,8 +707,17 @@ function downloadJson() {
 function bindEvents() {
   elements.newDeckButton.addEventListener("click", createEmptyDeck);
   elements.importButton.addEventListener("click", () => elements.fileInput.click());
+  elements.pasteJsonButton.addEventListener("click", openPasteJsonModal);
   elements.loadSampleButton.addEventListener("click", loadSampleJson);
   elements.downloadButton.addEventListener("click", downloadJson);
+  elements.closePasteJsonButton.addEventListener("click", closePasteJsonModal);
+  elements.clearPasteJsonButton.addEventListener("click", () => {
+    elements.pasteJsonInput.value = "";
+    elements.pasteJsonError.textContent = "";
+    elements.pasteJsonInput.focus();
+  });
+  elements.cancelPasteJsonButton.addEventListener("click", closePasteJsonModal);
+  elements.confirmPasteJsonButton.addEventListener("click", submitPastedJson);
   elements.copyJsonButton.addEventListener("click", () => {
     copyText(elements.jsonPreview.value, "已复制当前 JSON。");
   });
@@ -686,6 +747,22 @@ function bindEvents() {
     renderPrompt();
     schedulePersistEditorState();
   });
+  elements.pasteJsonModal.addEventListener("click", (event) => {
+    if (event.target === elements.pasteJsonModal) {
+      closePasteJsonModal();
+    }
+  });
+  elements.pasteJsonInput.addEventListener("input", () => {
+    if (elements.pasteJsonError.textContent) {
+      elements.pasteJsonError.textContent = "";
+    }
+  });
+  elements.pasteJsonInput.addEventListener("keydown", (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+      event.preventDefault();
+      submitPastedJson();
+    }
+  });
 
   elements.fileInput.addEventListener("change", (event) => {
     const [file] = event.target.files || [];
@@ -706,6 +783,12 @@ function initializeApp() {
 
 window.addEventListener("beforeunload", () => {
   schedulePersistEditorState();
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && elements.pasteJsonModal.classList.contains("is-visible")) {
+    closePasteJsonModal();
+  }
 });
 
 bindEvents();
