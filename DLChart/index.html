@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DancingLine 对音工具</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <strong>DancingLine 对音工具</strong>
+        <span id="audioName">未导入音频</span>
+      </div>
+
+      <div class="toolbar">
+        <label class="fileButton">
+          导入音频
+          <input id="audioInput" type="file" accept="audio/*" />
+        </label>
+        <label class="fileButton">
+          导入 TXT
+          <input id="txtInput" type="file" accept=".txt,text/plain" />
+        </label>
+        <label class="fileButton">
+          加载工程
+          <input id="projectInput" type="file" accept=".json,application/json" />
+        </label>
+        <button id="saveProjectBtn">保存工程</button>
+        <button id="exportBtn" class="primary">导出 TXT</button>
+      </div>
+    </header>
+
+    <main class="appShell">
+      <section class="workspace waveformPanel">
+        <div class="playbar">
+          <div class="playbarRow">
+            <button id="playBtn" class="primary">播放</button>
+            <button id="restartBtn">重新开始</button>
+            <button id="cursorLeftBtn">← 光标</button>
+            <button id="cursorRightBtn">光标 →</button>
+            <label>当前时间<input id="currentTimeInput" type="number" min="0" step="0.001" value="0" /></label>
+            <label>当前段分音<input id="divisionInput" type="number" min="1" step="1" value="4" /></label>
+            <label>音频延迟<input id="audioDelayInput" type="number" min="0" step="0.001" value="0" /></label>
+          </div>
+          <div class="playbarRow">
+            <button id="tapBtn">插入音符</button>
+            <button id="addBpmBtn">插入 BPM 分界</button>
+            <button id="extendProjectBtn">拓展工程 +10s</button>
+            <button id="undoBtn">撤销</button>
+            <button id="deleteSelectedBtn">删除选中</button>
+            <button id="validateBtn">检查</button>
+          </div>
+          <div class="playbarRow">
+            <label>播放速度<select id="playbackRateInput"><option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>1x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="2">2x</option></select></label>
+            <label class="pluckControl">打击音高<input id="pluckPitchInput" type="range" min="800" max="3200" step="10" value="1760" /></label>
+            <label class="pluckControl">打击音响度<input id="pluckVolumeInput" type="range" min="0" max="1" step="0.01" value="0.18" /></label>
+          </div>
+          <div class="hiddenControls">
+            <input id="seekInput" type="range" min="0" max="0" step="0.001" value="0" />
+            <input id="zoomInput" type="range" min="0.001" max="3" step="0.001" value="0.35" />
+            <input id="snapInput" type="checkbox" checked />
+            <button id="fitSongBtn">显示整首</button>
+            <button id="redoBtn">重做</button>
+          </div>
+        </div>
+        <canvas id="overviewCanvas" width="1200" height="30"></canvas>
+        <canvas id="timelineCanvas" width="1200" height="120"></canvas>
+        <canvas id="placerCanvas" width="1200" height="90"></canvas>
+        <div class="statusbar">
+          <span id="timeReadout">0 / 0 ms</span>
+          <span id="selectionReadout">未选中音符</span>
+          <span id="gridReadout">BPM 120, 1/4</span>
+        </div>
+      </section>
+
+      <section class="menus">
+        <aside class="panel rightPanel">
+        <section>
+          <div class="sectionHeader">
+            <h2>最终 TXT 预览</h2>
+            <div class="sectionActions">
+              <button id="normalizeBpmBtn">排序</button>
+              <button id="clearNotesBtn">清空音符</button>
+            </div>
+          </div>
+          <div id="bpmList" class="list"></div>
+        </section>
+
+        <section>
+          <h2>校验</h2>
+          <div id="issuesList" class="issues">暂无问题</div>
+        </section>
+        </aside>
+      </section>
+    </main>
+
+    <audio id="audio" preload="metadata"></audio>
+    <script src="app.js"></script>
+  </body>
+</html>
