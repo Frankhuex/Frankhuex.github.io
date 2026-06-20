@@ -901,12 +901,15 @@ function moveSelectedNotes(deltaMs) {
 
 function hitTestNote(x, y) {
   if (y < PLACER.laneTop - 10) return null;
+  const clickTimeMs = xToTime(x);
   let closest = null;
   let distance = Infinity;
   for (const note of state.notes) {
-    const noteX = timeToX(note.timeMs);
-    const d = Math.abs(noteX - x);
-    if (d < 9 && d < distance) {
+    const segment = getSegmentAtTime(note.timeMs);
+    const halfGridMs = getGridMs(segment.bpm, getSegmentDivision(segment)) / 2;
+    const hitMs = Math.max(halfGridMs, 6 / state.zoom);
+    const d = Math.abs(note.timeMs - clickTimeMs);
+    if (d <= hitMs && d < distance) {
       closest = note;
       distance = d;
     }
