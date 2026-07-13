@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Huex 的个人主页。">
+    <title>Huex</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="site-shell">
+        <div class="ambient ambient-a" aria-hidden="true"></div>
+        <div class="ambient ambient-b" aria-hidden="true"></div>
+        <div class="ambient ambient-c" aria-hidden="true"></div>
+
+        <header class="topbar">
+            <a class="brand" href="#top" aria-label="返回页面顶部">
+                <img class="brand-logo" src="../Home/Images/Huex_logo.png" alt="Huex">
+            </a>
+
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="site-menu" id="site-menu" aria-label="全站导航">
+                <a href="#music">音乐</a>
+                <a href="#code">程序</a>
+                <a href="#fiction">小说</a>
+                <a href="#about">关于</a>
+                <a href="#archive">更多</a>
+            </nav>
+        </header>
+
+        <main id="top">
+            <section class="hero reveal">
+                <div class="hero-copy">
+                    <p class="eyebrow">FRANKHUEX DIGITAL SALON</p>
+                    <h1 class="hero-title">
+                        <span>音乐、程序、竹林，</span>
+                        <span>便是生活。</span>
+                    </h1>
+                    <div class="hero-intro">
+                        <img class="hero-portrait" src="../Home/Images/Huex.jpg" alt="Huex">
+                        <p class="hero-summary">
+                            Huex，一位风格随性的音乐制作人、程序员、游戏开发者、也是“竹林”小说接龙社团成员。
+                        </p>
+                    </div>
+                    <div class="hero-actions">
+                        <a class="button button-primary" href="#music">进入作品世界</a>
+                    </div>
+                    <ul class="hero-stats" aria-label="站点速览">
+                        <li>
+                            <strong>30+</strong>
+                            <span>音乐作品</span>
+                        </li>
+                        <li>
+                            <strong>20+</strong>
+                            <span>程序与游戏</span>
+                        </li>
+                        <li>
+                            <strong>20+</strong>
+                            <span>小说接龙参与</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="hero-visual" aria-hidden="true">
+                    <article class="featured-release">
+                        <p>Latest</p>
+                        <h2>Solace</h2>
+                        <span>Artcore</span>
+                        <a href="https://music.163.com/song?id=2708814604" target="_blank" rel="noopener noreferrer">立刻收听</a>
+                    </article>
+
+                    <div class="floating-covers">
+                        <figure class="cover-card cover-a">
+                            <img src="../Home/Images/Melee.jpg" alt="Melee 封面">
+                        </figure>
+                        <figure class="cover-card cover-b">
+                            <img src="../Home/Images/Navigating.jpg" alt="Navigating 封面">
+                        </figure>
+                        <figure class="cover-card cover-c">
+                            <img src="../Home/Images/E-Lunar.jpg" alt="E-Lunar 封面">
+                        </figure>
+                        <figure class="cover-card cover-d">
+                            <img src="../Home/Images/Think.jpg" alt="Think 封面">
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section reveal" id="music">
+                <div class="section-heading">
+                    <p class="section-index">01</p>
+                    <div>
+                        <h2>音乐作品</h2>
+                        <p>涵盖各类曲风：电子、摇滚、华语等。</p>
+                    </div>
+                </div>
+
+                <div class="music-highlight">
+                    <div class="highlight-media">
+                        <img src="../Home/Images/SolaceBG2.png" alt="Solace 视觉图">
+                        <div class="highlight-copy">
+                            <p class="chip">Featured</p>
+                            <h3>Solace</h3>
+                            <p class="highlight-meta">Artcore</p>
+                            <div class="link-row">
+                                <a class="button button-primary" href="https://music.163.com/song?id=2708814604" target="_blank" rel="noopener noreferrer">网易云收听</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-grid music-grid" id="music-grid" aria-live="polite"></div>
+            </section>
+
+            <section class="section reveal" id="code">
+                <div class="section-heading">
+                    <p class="section-index">02</p>
+                    <div>
+                        <h2>程序与游戏</h2>
+                        <p>在线项目、实验作品与小工具。</p>
+                    </div>
+                </div>
+
+                <div class="content-columns">
+                    <div class="stacked-panel">
+                        <div class="panel-head">
+                            <span class="chip">Online Games</span>
+                            <h3>在线体验</h3>
+                        </div>
+                        <div class="card-grid compact-grid" id="online-grid"></div>
+                    </div>
+
+                    <div class="stacked-panel">
+                        <div class="panel-head">
+                            <span class="chip">Downloads</span>
+                            <h3>下载资源</h3>
+                        </div>
+                        <div class="card-grid compact-grid" id="download-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section reveal" id="fiction">
+                <div class="section-heading">
+                    <p class="section-index">03</p>
+                    <div>
+                        <h2>小说</h2>
+                        <p>小说接龙、设定集、小工具等。</p>
+                    </div>
+                </div>
+
+                <div class="content-columns fiction-layout">
+                    <div class="story-panel">
+                        <p class="story-kicker">Bamboo</p>
+                        <h3>竹林</h3>
+                        <p>
+                            创立于2022年，至今仍在活动。主要以接龙形式创作小说，并衍生出音乐、游戏等项目。
+                        </p>
+                    </div>
+                    <div class="card-grid compact-grid" id="fiction-grid"></div>
+                </div>
+            </section>
+
+            <section class="section reveal" id="about">
+                <div class="section-heading">
+                    <p class="section-index">04</p>
+                    <div>
+                        <h2>关于</h2>
+                        <p>各大平台链接、友链等。</p>
+                    </div>
+                </div>
+
+                <div class="content-columns">
+                    <div class="stacked-panel">
+                        <div class="panel-head">
+                            <span class="chip">Links</span>
+                            <h3>我的链接</h3>
+                        </div>
+                        <div class="card-grid compact-grid" id="social-grid"></div>
+                    </div>
+
+                    <div class="stacked-panel">
+                        <div class="panel-head">
+                            <span class="chip">Friends</span>
+                            <h3>我的朋友</h3>
+                        </div>
+                        <div class="card-grid compact-grid" id="extra-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section reveal archive-section" id="archive">
+                <div class="section-heading">
+                    <p class="section-index">05</p>
+                    <div>
+                        <h2>更多</h2>
+                        <p>早期主页。</p>
+                    </div>
+                </div>
+
+                <div class="archive-grid" id="archive-grid"></div>
+            </section>
+        </main>
+
+        <footer class="site-footer reveal">
+            <div>
+                <p class="footer-title">Huex</p>
+                <p class="footer-copy">音乐、程序、竹林，便是生活。</p>
+                <p class="footer-meta">Copyright © 2026 Huex. All Rights Reserved.</p>
+            </div>
+            <div class="footer-actions">
+                <a href="#top">返回顶部</a>
+                <a href="../Home/oldhome.html" target="_blank" rel="noopener noreferrer">早期主页</a>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
