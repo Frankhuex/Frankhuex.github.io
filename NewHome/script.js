@@ -1,5 +1,32 @@
 const musicItems = [
     {
+        title: "Gray Efflorescence",
+        description: "Drum&Bass",
+        href: "https://music.163.com/song?id=3381153208",
+        tag: "Collab",
+        action: "立刻收听",
+        image: "../Home/Images/无只因生还.jpg",
+        external: true,
+    },
+    {
+        title: "Autotelic Drill",
+        description: "Speedcore；Rotaeno公募/Dynamix公募参赛曲",
+        href: "https://music.163.com/song?id=3380009316",
+        tag: "Single",
+        action: "立刻收听",
+        image: "../Home/Images/AutotelicDrill.jpg",
+        external: true,
+    },
+    {
+        title: "Solace",
+        description: "Artcore",
+        href: "https://music.163.com/song?id=2708814604",
+        tag: "Single",
+        action: "立刻收听",
+        image: "../Home/Images/Solace.jpg",
+        external: true,
+    },
+    {
         title: "Melee",
         description: "UK Hardcore x Metal",
         href: "https://music.163.com/song?id=2668756564",
