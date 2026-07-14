@@ -596,6 +596,17 @@ main,
 
 .music-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+}
+
+.music-grid .site-card,
+.music-grid .card-link {
+    min-height: 0;
+}
+
+.music-grid .card-media {
+    aspect-ratio: 1 / 1;
+    flex: 0 0 auto;
 }
 
 .compact-grid {
