@@ -111,6 +111,13 @@ const musicItems = [
 
 const onlineProjects = [
     {
+        title: "In Falsus 哈农",
+        description: "单手 6k 哈农练习",
+        href: "../InFalsusHanon/index.html",
+        tag: "Tool",
+        action: "游玩",
+    },
+    {
         title: "HJGAO 卡牌编辑器",
         description: "创建卡组导入 HJGAO 卡牌游戏",
         href: "../HJGAOCardEditor/index.html",
