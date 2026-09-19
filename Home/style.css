@@ -22,7 +22,7 @@ h1 {
     left:0px;
     top:0;
     line-height: 80px;
-    background-image:url(Images/Huex_logo.png);
+    background-image:url(../Images/Huex_logo.png);
     background-repeat:no-repeat;
     background-position:center;
     width:200px;
@@ -148,7 +148,7 @@ li {
     background-color: white;
     color:black;
     height:75vh;
-    background-image:url("Images/SolaceBG2.png");
+    background-image:url("../Images/SolaceBG2.png");
     background-repeat:no-repeat;
     background-size:cover;
     display:flex;

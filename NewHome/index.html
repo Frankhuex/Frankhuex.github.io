@@ -8,9 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260919">
 </head>
 <body>
+    <a class="skip-link" href="#top">跳至主要内容</a>
     <div class="site-shell">
         <div class="ambient ambient-a" aria-hidden="true"></div>
         <div class="ambient ambient-b" aria-hidden="true"></div>
@@ -18,10 +19,10 @@
 
         <header class="topbar">
             <a class="brand" href="#top" aria-label="返回页面顶部">
-                <img class="brand-logo" src="../Home/Images/Huex_logo.png" alt="Huex">
+                <img class="brand-logo" src="../Images/Huex_logo.png" alt="Huex">
             </a>
 
-            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="打开导航">
                 <span></span>
                 <span></span>
             </button>
@@ -31,7 +32,7 @@
                 <a href="#code">程序</a>
                 <a href="#fiction">小说</a>
                 <a href="#about">关于</a>
-                <a href="#archive">更多</a>
+                <a href="#archive">归档</a>
             </nav>
         </header>
 
@@ -44,13 +45,13 @@
                         <span>便是生活。</span>
                     </h1>
                     <div class="hero-intro">
-                        <img class="hero-portrait" src="../Home/Images/Huex.jpg" alt="Huex">
+
                         <p class="hero-summary">
                             Huex，一位风格随性的音乐制作人、程序员、游戏开发者、也是“竹林”小说接龙社团成员。
                         </p>
                     </div>
                     <div class="hero-actions">
-                        <a class="button button-primary" href="#music">进入作品世界</a>
+                        <a class="button button-primary" href="#music">探索作品 <span aria-hidden="true">↓</span></a>
                     </div>
                     <ul class="hero-stats" aria-label="站点速览">
                         <li>
@@ -71,16 +72,16 @@
                 <div class="hero-visual" aria-hidden="true">
                     <div class="floating-covers">
                         <figure class="cover-card cover-a">
-                            <img src="../Home/Images/Spring.jpg" alt="Spring 封面">
+                            <img src="../Images/Spring.jpg" alt="Spring 封面">
                         </figure>
                         <figure class="cover-card cover-b">
-                            <img src="../Home/Images/Navigating.jpg" alt="Navigating 封面">
+                            <img src="../Images/Navigating.jpg" alt="Navigating 封面">
                         </figure>
                         <figure class="cover-card cover-c">
-                            <img src="../Home/Images/AutotelicDrill.jpg" alt="AutotelicDrill 封面">
+                            <img src="../Images/AutotelicDrill.jpg" alt="AutotelicDrill 封面">
                         </figure>
                         <figure class="cover-card cover-d">
-                            <img src="../Home/Images/无只因生还.jpg" alt="无只因生还主题曲 封面">
+                            <img src="../Images/无只因生还.jpg" alt="无只因生还主题曲 封面">
                         </figure>
                     </div>
                 </div>
@@ -97,7 +98,7 @@
 
                 <div class="music-highlight">
                     <div class="highlight-media">
-                        <img src="../Home/Images/Spring.jpg" alt="最新歌曲封面">
+                        <img src="../Images/Spring.jpg" alt="最新歌曲封面">
                         <div class="highlight-copy">
                             <p class="chip">Featured</p>
                             <h3>Spring</h3>
@@ -121,6 +122,7 @@
                     </div>
                 </div>
 
+                <div class="project-showcase" id="project-showcase"></div>
                 <div class="content-columns">
                     <div class="stacked-panel">
                         <div class="panel-head">
@@ -157,7 +159,7 @@
                             创立于2022年，至今仍在活动。主要以接龙形式创作小说，并衍生出音乐、游戏等项目。
                         </p>
                     </div>
-                    <div class="card-grid compact-grid" id="fiction-grid"></div>
+                    <div class="card-grid compact-grid fiction-grid" id="fiction-grid"></div>
                 </div>
             </section>
 
@@ -170,13 +172,13 @@
                     </div>
                 </div>
 
-                <div class="content-columns">
+                <div class="content-columns links-layout">
                     <div class="stacked-panel">
                         <div class="panel-head">
                             <span class="chip">Links</span>
                             <h3>我的链接</h3>
                         </div>
-                        <div class="card-grid compact-grid" id="social-grid"></div>
+                        <div class="card-grid compact-grid link-list" id="social-grid"></div>
                     </div>
 
                     <div class="stacked-panel">
@@ -184,7 +186,7 @@
                             <span class="chip">Friends</span>
                             <h3>我的朋友</h3>
                         </div>
-                        <div class="card-grid compact-grid" id="extra-grid"></div>
+                        <div class="card-grid compact-grid link-list" id="extra-grid"></div>
                     </div>
                 </div>
             </section>
@@ -193,7 +195,7 @@
                 <div class="section-heading">
                     <p class="section-index">05</p>
                     <div>
-                        <h2>更多</h2>
+                        <h2>旧站归档</h2>
                         <p>早期主页。</p>
                     </div>
                 </div>
@@ -210,11 +212,10 @@
             </div>
             <div class="footer-actions">
                 <a href="#top">返回顶部</a>
-                <a href="../Home/oldhome.html" target="_blank" rel="noopener noreferrer">早期主页</a>
             </div>
         </footer>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script type="module" src="script.js?v=20260919"></script>
 </body>
 </html>

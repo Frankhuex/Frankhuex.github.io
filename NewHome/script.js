@@ -5,7 +5,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=3381153208",
         tag: "Collab",
         action: "立刻收听",
-        image: "../Home/Images/无只因生还.jpg",
+        image: "../Images/无只因生还.jpg",
         external: true,
     },
     {
@@ -14,7 +14,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=3380009316",
         tag: "Single",
         action: "立刻收听",
-        image: "../Home/Images/AutotelicDrill.jpg",
+        image: "../Images/AutotelicDrill.jpg",
         external: true,
     },
     {
@@ -23,7 +23,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=2708814604",
         tag: "Single",
         action: "立刻收听",
-        image: "../Home/Images/Solace.jpg",
+        image: "../Images/Solace.jpg",
         external: true,
     },
     {
@@ -32,7 +32,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=2668756564",
         tag: "Single",
         action: "立刻收听",
-        image: "../Home/Images/Melee.jpg",
+        image: "../Images/Melee.jpg",
         external: true,
     },
     {
@@ -41,7 +41,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=2647217865",
         tag: "Single",
         action: "立刻收听",
-        image: "../Home/Images/Navigating.jpg",
+        image: "../Images/Navigating.jpg",
         external: true,
     },
     {
@@ -50,7 +50,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=2609522789",
         tag: "Single",
         action: "立刻收听",
-        image: "../Home/Images/E-Lunar.jpg",
+        image: "../Images/E-Lunar.jpg",
         external: true,
     },
     {
@@ -59,7 +59,7 @@ const musicItems = [
         href: "https://music.163.com/#/song?id=2135768741",
         tag: "Single",
         action: "立刻收听",
-        image: "../Home/Images/OutofRange.jpg",
+        image: "../Images/OutofRange.jpg",
         external: true,
     },
     {
@@ -68,7 +68,7 @@ const musicItems = [
         href: "https://music.163.com/#/song?id=2066356757",
         tag: "Single",
         action: "立刻收听",
-        image: "../Home/Images/Departure.jpg",
+        image: "../Images/Departure.jpg",
         external: true,
     },
     {
@@ -77,7 +77,7 @@ const musicItems = [
         href: "https://music.163.com/#/song?id=2056998899",
         tag: "Single",
         action: "立刻收听",
-        image: "../Home/Images/STE.jpg",
+        image: "../Images/STE.jpg",
         external: true,
     },
     {
@@ -86,7 +86,7 @@ const musicItems = [
         href: "https://music.163.com/#/song?id=2017887550",
         tag: "Single",
         action: "立刻收听",
-        image: "../Home/Images/Think.jpg",
+        image: "../Images/Think.jpg",
         external: true,
     },
     {
@@ -95,7 +95,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=2145606947",
         tag: "Collab",
         action: "立刻收听",
-        image: "../Home/Images/天一生水.jpg",
+        image: "../Images/天一生水.jpg",
         external: true,
     },
     {
@@ -104,7 +104,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=1947150471",
         tag: "Collab",
         action: "立刻收听",
-        image: "../Home/Images/悖论方形.jpg",
+        image: "../Images/悖论方形.jpg",
         external: true,
     },
 ];
@@ -200,7 +200,7 @@ const downloads = [
     {
         title: "美国大选 3D 联机版（Mac）",
         description: "Unity 下载包",
-        href: "../Home/Games/US%20Election%20Online%20(Mac).app",
+        href: "../Games/US%20Election%20Online%20(Mac).app",
         tag: "Unity 3D",
         action: "下载",
         download: true,
@@ -208,7 +208,7 @@ const downloads = [
     {
         title: "美国大选 3D 联机版（Windows）",
         description: "Unity 下载包",
-        href: "../Home/Games/US%20Election%20Online%20(Windows).zip",
+        href: "../Games/US%20Election%20Online%20(Windows).zip",
         tag: "Unity 3D",
         action: "下载",
         download: true,
@@ -216,7 +216,7 @@ const downloads = [
     {
         title: "五子棋",
         description: "Pygame 游戏",
-        href: "../Home/Games/%E4%BA%94%E5%AD%90%E6%A3%8B5.0.zip",
+        href: "../Games/%E4%BA%94%E5%AD%90%E6%A3%8B5.0.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -224,7 +224,7 @@ const downloads = [
     {
         title: "D2303 模拟器",
         description: "Pygame 游戏",
-        href: "../Home/Games/D2303%201.3.zip",
+        href: "../Games/D2303%201.3.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -232,7 +232,7 @@ const downloads = [
     {
         title: "4K 音游",
         description: "Pygame 游戏",
-        href: "../Home/Games/%E9%9F%B3%E6%B8%B80.1%EF%BC%88%E5%9C%A8const.py%E4%BF%AE%E6%94%B9%E9%94%AE%E4%BD%8D%EF%BC%89.zip",
+        href: "../Games/%E9%9F%B3%E6%B8%B80.1%EF%BC%88%E5%9C%A8const.py%E4%BF%AE%E6%94%B9%E9%94%AE%E4%BD%8D%EF%BC%89.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -240,7 +240,7 @@ const downloads = [
     {
         title: "美国大选",
         description: "Python 游戏",
-        href: "../Home/Games/%E7%BE%8E%E5%9B%BD%E5%A4%A7%E9%80%89Frank_v2_1.py",
+        href: "../Games/%E7%BE%8E%E5%9B%BD%E5%A4%A7%E9%80%89Frank_v2_1.py",
         tag: "Python",
         action: "下载",
         download: true,
@@ -248,7 +248,7 @@ const downloads = [
     {
         title: "推双箱",
         description: "Pygame 游戏",
-        href: "../Home/Games/%E6%8E%A8%E7%AE%B1%E5%AD%901.1.zip",
+        href: "../Games/%E6%8E%A8%E7%AE%B1%E5%AD%901.1.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -256,7 +256,7 @@ const downloads = [
     {
         title: "华容道",
         description: "Pygame 游戏",
-        href: "../Home/Games/HuaRongDao.zip",
+        href: "../Games/HuaRongDao.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -264,7 +264,7 @@ const downloads = [
     {
         title: "风石",
         description: "基于 Pygame 的日记应用",
-        href: "../Home/Games/WindRock_v1_0.zip",
+        href: "../Games/WindRock_v1_0.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -305,7 +305,7 @@ const fictionItems = [
     },
     {
         title: "竹里馆",
-        description: "小说接龙平台（已停服）",
+        description: "小说接龙平台",
         href: "http://106.13.161.72:10001",
         tag: "Bamboohub",
         action: "前往",
@@ -405,6 +405,14 @@ const extraItems = [
         external: true,
     },
     {
+        title: "Caspian Lin",
+        description: "FinDashBoard",
+        href: "https://caspian-lin.github.io/FinDashboard/zh/",
+        tag: "Friend",
+        action: "访问",
+        external: true,
+    },
+    {
         title: "Plafle",
         description: "友链",
         href: "https://plafle.github.io",
@@ -466,9 +474,15 @@ const archiveItems = [
     },
 ];
 
+const featuredProjects = [
+    { ...onlineProjects[0], image: "images/hanon-preview.png", imageAlt: "In Falsus 哈农的六轨练习界面", tag: "音乐练习" },
+    { ...onlineProjects[1], image: "images/card-editor-preview.png", imageAlt: "HJGAO 卡牌编辑器的卡组编辑界面", tag: "创作工具" },
+];
+
 const targetMap = {
+    "project-showcase": featuredProjects,
     "music-grid": musicItems,
-    "online-grid": onlineProjects,
+    "online-grid": onlineProjects.slice(2),
     "download-grid": downloads,
     "legacy-tools-grid": legacyTools,
     "fiction-grid": fictionItems,
@@ -478,7 +492,7 @@ const targetMap = {
 
 function createCard(item) {
     const article = document.createElement("article");
-    article.className = "site-card";
+    article.className = `site-card${item.retired ? " is-retired" : ""}`;
 
     const link = document.createElement("a");
     link.className = "card-link";
@@ -499,7 +513,9 @@ function createCard(item) {
 
         const img = document.createElement("img");
         img.src = item.image;
-        img.alt = `${item.title} 封面`;
+        img.alt = item.imageAlt || `${item.title} 封面`;
+        img.loading = "lazy";
+        img.decoding = "async";
         media.appendChild(img);
         link.appendChild(media);
     }
@@ -514,21 +530,23 @@ function createCard(item) {
     tag.textContent = item.tag;
     topline.appendChild(tag);
 
-    if (item.external) {
-        const note = document.createElement("span");
-        note.textContent = "External";
-        topline.appendChild(note);
-    }
+
 
     const title = document.createElement("h4");
     title.textContent = item.title;
+    if (item.retired) {
+        const status = document.createElement("span");
+        status.className = "status";
+        status.textContent = "已停服";
+        title.appendChild(status);
+    }
 
     const desc = document.createElement("p");
-    desc.textContent = item.description;
+    desc.textContent = item.description.replace("（已停服）", "");
 
     const action = document.createElement("div");
     action.className = "card-action";
-    action.textContent = item.action;
+    action.textContent = item.external ? `${item.action} ↗` : item.action;
 
     copy.append(topline, title, desc, action);
     link.appendChild(copy);
@@ -563,7 +581,12 @@ function renderCards() {
         }
 
         items.forEach((item) => {
-            container.appendChild(createCard(item));
+            const card = createCard(item);
+            if (id === "social-grid" || id === "extra-grid") {
+                card.querySelector(".card-action").textContent = item.external ? "↗" : "→";
+                card.querySelector(".card-action").setAttribute("aria-hidden", "true");
+            }
+            container.appendChild(card);
         });
     });
 
@@ -579,67 +602,60 @@ function renderCards() {
 function setupMenu() {
     const button = document.querySelector(".menu-toggle");
     const menu = document.querySelector(".site-menu");
-
-    if (!button || !menu) {
-        return;
-    }
-
+    const closeMenu = () => {
+        button.setAttribute("aria-expanded", "false");
+        button.setAttribute("aria-label", "打开导航");
+        menu.classList.remove("is-open");
+    };
     button.addEventListener("click", () => {
-        const expanded = button.getAttribute("aria-expanded") === "true";
-        button.setAttribute("aria-expanded", String(!expanded));
-        menu.classList.toggle("is-open", !expanded);
+        const expanded = button.getAttribute("aria-expanded") !== "true";
+        button.setAttribute("aria-expanded", String(expanded));
+        button.setAttribute("aria-label", expanded ? "关闭导航" : "打开导航");
+        menu.classList.toggle("is-open", expanded);
     });
-
-    menu.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", () => {
-            button.setAttribute("aria-expanded", "false");
-            menu.classList.remove("is-open");
-        });
+    menu.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+        closeMenu();
+        const target = document.querySelector(link.getAttribute("href"));
+        target.setAttribute("tabindex", "-1");
+        target.focus({ preventScroll: true });
+    }));
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && button.getAttribute("aria-expanded") === "true") {
+            closeMenu();
+            button.focus();
+        }
     });
+    document.addEventListener("click", event => {
+        if (!event.target.closest(".topbar")) closeMenu();
+    });
+    matchMedia("(min-width: 681px)").addEventListener("change", closeMenu);
 }
 
-function setupReveal() {
-    const elements = document.querySelectorAll(".reveal");
-    const revealVisibleElements = () => {
-        const triggerLine = window.innerHeight * 0.92;
-
-        elements.forEach((element) => {
-            if (element.classList.contains("is-visible")) {
-                return;
-            }
-
-            const rect = element.getBoundingClientRect();
-
-            if (rect.top <= triggerLine) {
-                element.classList.add("is-visible");
-            }
+function setupNavigation() {
+    const links = [...document.querySelectorAll(".site-menu a")];
+    const sections = links.map(link => document.querySelector(link.getAttribute("href")));
+    let scheduled = false;
+    const update = () => {
+        let current = -1;
+        sections.forEach((section, index) => {
+            if (section.getBoundingClientRect().top <= 160) current = index;
         });
+        if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) {
+            current = sections.length - 1;
+        }
+        links.forEach((link, index) => {
+            if (index === current) link.setAttribute("aria-current", "location");
+            else link.removeAttribute("aria-current");
+        });
+        scheduled = false;
     };
-
-    if (!("IntersectionObserver" in window)) {
-        revealVisibleElements();
-        return;
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("is-visible");
-                observer.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: 0.02,
-        rootMargin: "0px 0px -8% 0px",
-    });
-
-    elements.forEach((element) => observer.observe(element));
-    revealVisibleElements();
-
-    window.addEventListener("scroll", revealVisibleElements, { passive: true });
-    window.addEventListener("resize", revealVisibleElements);
+    window.addEventListener("scroll", () => {
+        if (!scheduled) { scheduled = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener("resize", update);
+    update();
 }
 
 renderCards();
 setupMenu();
-setupReveal();
+setupNavigation();
