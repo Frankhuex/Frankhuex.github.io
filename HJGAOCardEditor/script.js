@@ -54,23 +54,26 @@ function getPromptBaseText() {
     "请严格遵守以下要求：",
     "1. 输出必须是合法 JSON。",
     "2. 不要输出 Markdown 代码块，不要输出解释，不要输出额外说明，只输出 JSON 本体。",
-    '3. JSON 顶层必须是一个对象，并且只包含一个字段：`ordered_card_templates`。',
-    "4. `ordered_card_templates` 必须是数组，数组中的每一项都必须是对象。",
-    "5. 每个卡牌对象必须且只能包含以下字段：",
+    '3. JSON 顶层必须是一个对象，并且只包含一个字段：`deck_template`。',
+    "4. `deck_template` 必须是对象，并且只包含一个字段：`ordered_card_templates`。",
+    "5. `ordered_card_templates` 必须是数组，数组中的每一项都必须是对象。",
+    "6. 每个卡牌对象必须且只能包含以下字段：",
     '   - `name`: 字符串，表示牌名。',
     '   - `count`: 整数，表示这张牌的数量，必须大于等于 0。',
     '   - `description`: 字符串，表示这张牌的描述。',
-    "6. 数组顺序就是卡牌的最终顺序，请按设计要求直接给出正确顺序。",
-    "7. 如果我提供了现有 JSON，则说明你需要在保留整体结构合法的前提下基于现有内容修改，而不是改成别的格式。",
-    "8. 返回结果示例格式如下：",
+    "7. 数组顺序就是卡牌的最终顺序，请按设计要求直接给出正确顺序。",
+    "8. 如果我提供了现有 JSON，则说明你需要在保留整体结构合法的前提下基于现有内容修改，不要改成别的格式。",
+    "9. 返回结果示例格式如下：",
     "{",
-    '  "ordered_card_templates": [',
-    "    {",
-    '      "name": "示例卡牌",',
-    '      "count": 1,',
-    '      "description": "示例描述"',
-    "    }",
-    "  ]",
+    '  "deck_template": {',
+    '    "ordered_card_templates": [',
+    "      {",
+    '        "name": "示例卡牌",',
+    '        "count": 1,',
+    '        "description": "示例描述"',
+    "      }",
+    "    ]",
+    "  }",
     "}",
   ].join("\n");
 }
@@ -129,7 +132,8 @@ function closePasteJsonModal() {
 }
 
 function parseCardsFromJson(json) {
-  const orderedCardTemplates = json?.ordered_card_templates;
+  const orderedCardTemplates =
+    json?.deck_template?.ordered_card_templates ?? json?.ordered_card_templates;
 
   if (!Array.isArray(orderedCardTemplates)) {
     throw new Error("缺少合法的 ordered_card_templates 数组。");
@@ -380,7 +384,9 @@ function buildDeckJson(cards) {
   return {
     validation,
     json: {
-      ordered_card_templates: orderedCardTemplates,
+      deck_template: {
+        ordered_card_templates: orderedCardTemplates,
+      },
     },
   };
 }
@@ -470,7 +476,9 @@ function renderPreview(json) {
 
   elements.jsonPreview.value = JSON.stringify(
     {
-      ordered_card_templates: [],
+      deck_template: {
+        ordered_card_templates: [],
+      },
     },
     null,
     2

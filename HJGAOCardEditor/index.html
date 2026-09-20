@@ -31,7 +31,7 @@
             id="paste-json-input"
             class="prompt-output paste-json-input"
             spellcheck="false"
-            placeholder='例如：{ "ordered_card_templates": [ ... ] }'
+            placeholder='例如：{ "deck_template": { "ordered_card_templates": [ ... ] } }'
           ></textarea>
         </label>
         <div id="paste-json-error" class="modal-error" role="alert" aria-live="polite"></div>
@@ -54,7 +54,7 @@
           <p class="eyebrow">Deck Template Studio</p>
           <h1>卡组编辑器</h1>
           <p class="hero-text">
-            创建、导入、调整顺序并导出仅包含 `ordered_card_templates` 的卡组模板。
+            创建、导入、调整顺序并导出包含 `deck_template` 的卡组模板。
           </p>
           <div class="hero-toolbar">
             <button id="new-deck-button" class="button button-primary" type="button">
@@ -124,7 +124,7 @@
             </div>
             <div class="preview-header-actions">
               <p class="panel-description">
-                下载前可在这里确认 `ordered_card_templates` 的最终结构。
+                下载前可在这里确认 `deck_template.ordered_card_templates` 的最终结构。
               </p>
               <label class="filename-field">
                 <span>文件名：</span>
