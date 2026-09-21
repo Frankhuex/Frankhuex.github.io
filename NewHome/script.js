@@ -445,6 +445,14 @@ const extraItems = [
         external: true,
     },
     {
+        title: "Rotor",
+        description: "友链",
+        href: "https://helicbamboo.github.io",
+        tag: "Friend",
+        action: "访问",
+        external: true,
+    },
+    {
         title: "效实 D2303",
         description: "高中记忆",
         href: "https://diligent-eagle-143h4l.mysxl.cn",
