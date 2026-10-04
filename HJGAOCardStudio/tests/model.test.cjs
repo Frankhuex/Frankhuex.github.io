@@ -1,0 +1,20 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const source=fs.readFileSync(require('node:path').join(__dirname,'../script.js'),'utf8');
+const ctx=vm.createContext({assert,crypto:require('node:crypto').webcrypto,console});
+vm.runInContext(source.slice(0,source.indexOf("$('dialog-form').onsubmit")),ctx);
+vm.runInContext(`
+deck=parseDeck({ordered_card_templates:[{name:'A1',type:' A ',count:1},{name:'B1',type:'B',count:2},{name:'A2',type:'A',count:0},{name:'U',count:1},{name:'Named',type:'未分类',count:1}]});
+assert.equal(deck.types.join('|'),'A|B||未分类');
+assert.equal(deck.cards.map(c=>c.name).join(','),'A1,A2,B1,U,Named');
+let out=exported().deck_template.ordered_card_templates;
+assert.equal(Object.hasOwn(out[3],'type'),false);
+assert.equal(out[4].type,'未分类');
+assert.equal(JSON.stringify(exported()),JSON.stringify({deck_template:{ordered_card_templates:out}}));
+deck.types.unshift('Empty');tidy(deck);assert.equal(exported().deck_template.ordered_card_templates.length,5);
+const roundtrip=parseDeck(exported());assert.equal(roundtrip.cards.map(c=>c.name).join(','),'A1,A2,B1,U,Named');
+deck.cards[0].count='1.5';assert.throws(()=>exported());deck.cards[0].count='';assert.throws(()=>exported());deck.cards[0].count=1;
+deck.cards[1].name='A1';assert.equal(errors().size,2);
+assert.throws(()=>parseDeck({ordered_card_templates:[{name:'x',count:1,type:3}]}));
+assert.equal(tidy({types:[],cards:[]}).types[0],'');
+console.log('PASS: stable grouping, optional type, named 未分类, empty groups, round trip, strict validation');
+`,ctx);
