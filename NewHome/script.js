@@ -120,7 +120,7 @@ const onlineProjects = [
     {
         title: "HJGAO 卡牌编辑器",
         description: "创建卡组导入 HJGAO 卡牌游戏",
-        href: "../HJGAOCardEditor/index.html",
+        href: "../HJGAOCardStudio/index.html",
         tag: "Tool",
         action: "进入",
     },
