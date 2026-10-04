@@ -102,13 +102,20 @@
           <div class="panel-header">
             <div>
               <p class="panel-kicker">卡牌列表</p>
-              <h2 id="editor-title">拖拽排序并编辑字段</h2>
+              <h2 id="editor-title">按类型整理卡牌</h2>
             </div>
             <p class="panel-description">
-              拖动左侧手柄可调整顺序。数组顺序就是最终的牌面顺序。
+              拖动类型标题手柄或卡牌手柄排序，也可使用上下箭头。勾选卡牌后可批量切换类型。
             </p>
           </div>
 
+          <p class="type-guidance"><strong>类型决定能否混合游玩：</strong>同类型卡牌可混合，不同类型不可混合。例如武将牌、游戏牌、血量牌、身份牌应分为不同类型；锦囊牌、基本牌、装备牌可混合，统一归为“游戏牌”。</p>
+          <div class="selection-toolbar">
+            <button id="create-type-button" class="button button-secondary" type="button">＋ 新建类型</button>
+            <label><input id="select-all" type="checkbox" /> 全选</label>
+            <span id="selection-count" aria-live="polite">已选 0 张卡牌</span>
+            <button id="change-type-button" class="button button-primary" type="button" disabled>切换类型</button>
+          </div>
           <div id="empty-state" class="empty-state">
             <p>当前没有卡牌，点击中间的加号开始插入第一张牌。</p>
           </div>
@@ -193,7 +200,9 @@
     </div>
 
     <template id="card-item-template">
-      <article class="card-row" draggable="true">
+      <article class="card-row">
+        <input class="card-select" type="checkbox" aria-label="选择卡牌" />
+        <div class="row-order"></div>
         <button class="drag-handle" type="button" aria-label="拖拽排序">☰</button>
         <span class="row-index"></span>
         <label class="field field-name">
@@ -220,6 +229,23 @@
       </div>
     </template>
 
+    <dialog id="type-dialog" class="type-dialog" aria-labelledby="type-dialog-title">
+      <form id="type-form">
+        <p class="panel-kicker">批量编辑</p>
+        <h2 id="type-dialog-title">切换卡牌类型</h2>
+        <p id="type-dialog-count" class="panel-description"></p>
+        <label class="prompt-field">目标类型
+          <input id="type-target" list="type-choices" placeholder="选择或输入类型名称" autocomplete="off" />
+        </label>
+        <datalist id="type-choices"></datalist>
+        <p id="type-dialog-hint" class="panel-description"></p>
+        <p id="type-dialog-error" class="modal-error" role="alert"></p>
+        <div class="modal-actions">
+          <button id="cancel-type" class="button button-secondary" type="button">取消</button>
+          <button class="button button-primary" type="submit">确认切换</button>
+        </div>
+      </form>
+    </dialog>
     <script src="./script.js"></script>
   </body>
 </html>

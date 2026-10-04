@@ -1,4 +1,6 @@
 const SAMPLE_JSON_PATH = "./poker.json";
+const UNCATEGORIZED = "";
+const typeLabel = type => type === UNCATEGORIZED ? "未分类" : type;
 const STORAGE_KEY = "hjgao-card-editor-session";
 const DEFAULT_DESIGN_REQUIREMENT =
   "请生成一套标准扑克牌卡组，共 54 张。普通牌牌名使用“♠️A”“♥️10”这种“花色 emoji + 点数”的格式；四种花色顺序固定为黑桃、红心、梅花、方块，并且同一点数排在一起，例如：♠️A♥️A♣️A♦️A、♠️2♥️2♣️2♦️2，依此类推。最后两张分别命名为“小王🃏”和“大王🤡”。";
@@ -6,6 +8,10 @@ const DEFAULT_DESIGN_REQUIREMENT =
 const state = {
   cards: [],
   dragIndex: null,
+  typeOrder: [],
+  selected: new Set(),
+  collapsed: new Set(),
+  dragType: null,
   statusKind: "neutral",
   statusMessage: "欢迎使用卡组编辑器。可以先从空白卡组开始，也可以导入已有 JSON。",
   includeCurrentJsonInPrompt: false,
@@ -57,13 +63,18 @@ function getPromptBaseText() {
     '3. JSON 顶层必须是一个对象，并且只包含一个字段：`deck_template`。',
     "4. `deck_template` 必须是对象，并且只包含一个字段：`ordered_card_templates`。",
     "5. `ordered_card_templates` 必须是数组，数组中的每一项都必须是对象。",
-    "6. 每个卡牌对象必须且只能包含以下字段：",
+    "6. 每个卡牌对象只能包含以下字段，其中 name、count、description 必填，type 可选：",
+    '   - `type`: 非空字符串，按卡牌在游玩时的可混合性划分；没有分类时直接省略 type 字段，不要输出空字符串；显式命名为“未分类”的类型属于普通类型，应保留该字符串。',
     '   - `name`: 字符串，表示牌名。',
     '   - `count`: 整数，表示这张牌的数量，必须大于等于 0。',
     '   - `description`: 字符串，表示这张牌的描述。',
-    "7. 数组顺序就是卡牌的最终顺序，请按设计要求直接给出正确顺序。",
-    "8. 如果我提供了现有 JSON，则说明你需要在保留整体结构合法的前提下基于现有内容修改，不要改成别的格式。",
-    "9. 返回结果示例格式如下：",
+    "7. `type` 决定卡牌在游玩时能否混合：相同 type 的卡牌可以混合使用，不同 type 的卡牌不可混合使用。请按游戏规则中实际的混合范围划分 type，例如哪些牌可以混在同一个牌堆中洗牌、抽取或发放。",
+    "   - 典型示例：武将牌、游戏牌、血量牌、身份牌在游玩时需要分别使用、不可混合，因此应分别填写 type：武将牌、游戏牌、血量牌、身份牌。",
+    "   - 游戏牌内部的锦囊牌、基本牌、装备牌可以混合使用，因此这些牌的 type 必须统一填写“游戏牌”，不能分别填写“锦囊牌”“基本牌”“装备牌”。这些功能子分类如需保留，可写入 description。",
+    "   - 不要仅因卡牌的功能、效果、名称、花色或其他属性不同就拆分 type。生成前检查：可以混合使用的牌是否使用了完全相同的 type 字符串；不可混合使用的牌是否已使用不同的 type。",
+    "8. 按类型分组排列，同类型卡牌连续出现；类型顺序和类内顺序就是最终顺序。",
+    "9. 如果我提供了现有 JSON，则说明你需要在保留整体结构合法的前提下基于现有内容修改，不要改成别的格式。",
+    "10. 返回结果示例格式如下：",
     "{",
     '  "deck_template": {',
     '    "ordered_card_templates": [',
@@ -155,12 +166,18 @@ function parseCardsFromJson(json) {
       throw new Error(`第 ${index + 1} 项的 count 必须是大于等于 0 的整数。`);
     }
 
-    return createCard(name, count, String(card.description ?? ""));
+    if (card.type != null && typeof card.type !== "string") {
+      throw new Error(`第 ${index + 1} 项的 type 必须是字符串。`);
+    }
+    return createCard(name, count, String(card.description ?? ""), card.type);
   });
 }
 
 function importCards(cards, sourceLabel) {
-  state.cards = cards;
+  state.cards = groupCards(cards);
+  state.typeOrder = [...new Set(state.cards.map(card => card.type))];
+  state.selected.clear();
+  state.collapsed.clear();
   setStatus("success", `已导入 ${sourceLabel}，共 ${cards.length} 种牌。`);
   render();
 }
@@ -218,12 +235,13 @@ async function copyText(text, successMessage) {
   }
 }
 
-function createCard(name = "", count = 1, description = "") {
+function createCard(name = "", count = 1, description = "", type = UNCATEGORIZED) {
   return {
     id: `card-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
     name,
     count,
     description,
+    type: normalizeType(type),
   };
 }
 
@@ -238,11 +256,14 @@ function normalizeDownloadFilename(value) {
 
 function persistEditorState() {
   const payload = {
+    version: 2,
+    typeOrder: state.typeOrder,
     cards: state.cards.map((card) => ({
       id: typeof card.id === "string" ? card.id : createCard().id,
       name: String(card.name ?? ""),
       count: card.count ?? 1,
       description: String(card.description ?? ""),
+      type: normalizeType(card.type),
     })),
     promptExtraInput: elements.promptExtraInput.value,
     includeCurrentJsonInPrompt: state.includeCurrentJsonInPrompt,
@@ -282,16 +303,23 @@ function restoreEditorState() {
     }
 
     const parsed = JSON.parse(raw);
+    const restoreType = value => parsed.version !== 2 && normalizeType(value) === "未分类" ? UNCATEGORIZED : normalizeType(value);
     const cards = Array.isArray(parsed?.cards)
       ? parsed.cards.map((card) => ({
           id: typeof card?.id === "string" ? card.id : createCard().id,
           name: String(card?.name ?? ""),
           count: card?.count ?? 1,
           description: String(card?.description ?? ""),
+          type: restoreType(card?.type),
         }))
       : [];
 
-    state.cards = cards;
+    state.cards = groupCards(cards);
+    state.typeOrder = [...new Set(state.cards.map(card => card.type))];
+    state.selected.clear();
+    state.collapsed.clear();
+    state.typeOrder = [...new Set([...(Array.isArray(parsed.typeOrder) ? parsed.typeOrder.map(restoreType) : []), ...state.typeOrder])];
+    syncTypeOrder();
     state.includeCurrentJsonInPrompt = Boolean(parsed?.includeCurrentJsonInPrompt);
     elements.includeCurrentJson.checked = state.includeCurrentJsonInPrompt;
     elements.promptExtraInput.value = String(parsed?.promptExtraInput ?? "");
@@ -308,6 +336,9 @@ function restoreEditorState() {
 
 function createEmptyDeck() {
   state.cards = [];
+  state.typeOrder = [];
+  state.selected.clear();
+  state.collapsed.clear();
   setStatus("neutral", "已新建空白卡组。点击中间的加号开始编辑。");
   render();
 }
@@ -375,7 +406,8 @@ function buildDeckJson(cards) {
     return { validation, json: null };
   }
 
-  const orderedCardTemplates = cards.map((card) => ({
+  const orderedCardTemplates = groupCards(cards).map((card) => ({
+    ...(normalizeType(card.type) === UNCATEGORIZED ? {} : { type: normalizeType(card.type) }),
     name: escapeJsonText(card.name),
     count: normalizeCount(card.count),
     description: String(card.description ?? ""),
@@ -517,111 +549,267 @@ function renderPrompt() {
   elements.promptOutput.value = buildPromptText();
 }
 
-function renderCards() {
-  elements.cardList.innerHTML = "";
-  elements.emptyState.classList.toggle("is-visible", state.cards.length === 0);
+function normalizeType(type) {
+  return typeof type === "string" && type.trim() ? type.trim() : UNCATEGORIZED;
+}
 
-  appendInsertSlot(0);
+// Map preserves first occurrence order, including special names such as __proto__.
+function groupCards(cards) {
+  const groups = new Map();
+  cards.forEach((card) => {
+    card.type = normalizeType(card.type);
+    if (!groups.has(card.type)) groups.set(card.type, []);
+    groups.get(card.type).push(card);
+  });
+  return [...groups.values()].flat();
+}
 
-  state.cards.forEach((card, index) => {
-    const fragment = elements.cardTemplate.content.cloneNode(true);
-    const cardRow = fragment.querySelector(".card-row");
-    const rowIndex = fragment.querySelector(".row-index");
-    const nameInput = fragment.querySelector(".name-input");
-    const countInput = fragment.querySelector(".count-input");
-    const descriptionInput = fragment.querySelector(".description-input");
-    const deleteButton = fragment.querySelector(".delete-button");
+function types() { return state.typeOrder; }
 
-    rowIndex.textContent = `#${String(index + 1).padStart(2, "0")}`;
-    nameInput.value = card.name;
-    countInput.value = String(card.count);
-    descriptionInput.value = card.description;
-    deleteButton.dataset.cardId = card.id;
-    cardRow.dataset.cardId = card.id;
-    cardRow.dataset.index = String(index);
+function syncTypeOrder() {
+  state.cards.forEach(card => {
+    card.type = normalizeType(card.type);
+    if (!state.typeOrder.includes(card.type)) state.typeOrder.push(card.type);
+  });
+  if (!state.typeOrder.includes(UNCATEGORIZED)) state.typeOrder.push(UNCATEGORIZED);
+  state.cards = state.typeOrder.flatMap(type => state.cards.filter(card => card.type === type));
+}
 
-    nameInput.addEventListener("input", (event) => {
-      state.cards[index].name = event.target.value;
-      renderDerivedState();
-    });
+function moveType(type, target) {
+  const order = [...types()];
+  const from = order.indexOf(type);
+  if (from < 0 || target < 0 || target >= order.length) return;
+  order.splice(from, 1);
+  order.splice(target, 0, type);
+  state.typeOrder = order;
+  state.cards = order.flatMap(name => state.cards.filter(card => card.type === name));
+  render();
+}
 
-    countInput.addEventListener("input", (event) => {
-      state.cards[index].count = event.target.value;
-      renderDerivedState();
-    });
+function moveCard(card, delta) {
+  const index = state.cards.indexOf(card);
+  const next = state.cards[index + delta];
+  if (!next || next.type !== card.type) return;
+  state.cards.splice(index, 1);
+  state.cards.splice(index + delta, 0, card);
+  render();
+}
 
-    descriptionInput.addEventListener("input", (event) => {
-      state.cards[index].description = event.target.value;
-      resizeDescriptionTextarea(event.target);
-      renderDerivedState();
-    });
-
-    deleteButton.addEventListener("click", () => {
-      state.cards = state.cards.filter((item) => item.id !== card.id);
-      setStatus("success", `已删除牌：${card.name || `第 ${index + 1} 项`}。`);
-      render();
-    });
-
-    cardRow.addEventListener("dragstart", (event) => {
-      state.dragIndex = index;
-      cardRow.classList.add("is-dragging");
-      event.dataTransfer.effectAllowed = "move";
-      event.dataTransfer.setData("text/plain", card.id);
-    });
-
-    cardRow.addEventListener("dragend", () => {
-      state.dragIndex = null;
-      cleanupDropTargets();
-      render();
-    });
-
-    cardRow.addEventListener("dragover", (event) => {
-      event.preventDefault();
-      if (state.dragIndex === null || state.dragIndex === index) {
-        return;
-      }
-
-      cleanupDropTargets();
-      cardRow.classList.add("is-drop-target");
-      event.dataTransfer.dropEffect = "move";
-    });
-
-    cardRow.addEventListener("dragleave", () => {
-      cardRow.classList.remove("is-drop-target");
-    });
-
-    cardRow.addEventListener("drop", (event) => {
-      event.preventDefault();
-
-      if (state.dragIndex === null || state.dragIndex === index) {
-        cleanupDropTargets();
-        return;
-      }
-
-      const nextCards = [...state.cards];
-      const [movedCard] = nextCards.splice(state.dragIndex, 1);
-      nextCards.splice(index, 0, movedCard);
-      state.cards = nextCards;
-      state.dragIndex = null;
-      setStatus("success", "已更新卡牌顺序。");
-      cleanupDropTargets();
-      render();
-    });
-
-    elements.cardList.appendChild(fragment);
-    resizeDescriptionTextarea(descriptionInput);
-    appendInsertSlot(index + 1);
+function updateSelection() {
+  const ids = new Set(state.cards.map(card => card.id));
+  state.selected.forEach(id => { if (!ids.has(id)) state.selected.delete(id); });
+  document.getElementById("selection-count").textContent = `已选 ${state.selected.size} 张卡牌`;
+  document.getElementById("change-type-button").disabled = !state.selected.size;
+  const all = document.getElementById("select-all");
+  all.checked = !!state.cards.length && state.selected.size === state.cards.length;
+  all.indeterminate = state.selected.size > 0 && !all.checked;
+  all.disabled = !state.cards.length;
+  elements.cardList.querySelectorAll(".card-row").forEach(row => {
+    const selected = state.selected.has(row.dataset.cardId);
+    row.classList.toggle("is-selected", selected);
+    row.querySelector(".card-select").checked = selected;
+  });
+  elements.cardList.querySelectorAll(".type-select").forEach(box => {
+    const cards = state.cards.filter(card => card.type === box.dataset.type);
+    const count = cards.filter(card => state.selected.has(card.id)).length;
+    box.checked = cards.length > 0 && count === cards.length;
+    box.disabled = cards.length === 0;
+    box.indeterminate = count > 0 && count < cards.length;
   });
 }
 
-function appendInsertSlot(index) {
-  const fragment = elements.insertTemplate.content.cloneNode(true);
-  const button = fragment.querySelector(".insert-button");
-  button.dataset.insertIndex = String(index);
-  button.addEventListener("click", () => {
-    addCardAt(index);
+function actionButton(text, label, action) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "group-action";
+  button.textContent = text;
+  button.setAttribute("aria-label", label);
+  button.title = label;
+  button.addEventListener("click", action);
+  return button;
+}
+
+function renderCards() {
+  elements.cardList.replaceChildren();
+  elements.emptyState.classList.toggle("is-visible", !state.typeOrder.length);
+  if (!state.typeOrder.length) appendInsertSlot(0, elements.cardList, UNCATEGORIZED);
+  types().forEach((type, typeIndex, order) => {
+    const label = typeLabel(type);
+    const accessibleLabel = type === UNCATEGORIZED ? "未分类（默认分组）" : type;
+    const cards = state.cards.filter(card => card.type === type);
+    const section = document.createElement("section");
+    section.className = "type-group";
+    const header = document.createElement("div");
+    header.className = "type-header";
+    const select = document.createElement("input");
+    select.type = "checkbox";
+    select.className = "type-select";
+    select.dataset.type = type;
+    select.setAttribute("aria-label", `选择 ${accessibleLabel} 的全部卡牌`);
+    select.addEventListener("change", () => {
+      cards.forEach(card => select.checked ? state.selected.add(card.id) : state.selected.delete(card.id));
+      updateSelection();
+    });
+    const body = document.createElement("div");
+    body.id = `type-body-${typeIndex}`;
+    body.hidden = state.collapsed.has(type);
+    const toggle = actionButton(`${body.hidden ? "▸" : "▾"} ${label}`, `展开或折叠 ${accessibleLabel}`, () => {
+      if (state.collapsed.has(type)) state.collapsed.delete(type); else state.collapsed.add(type);
+      body.hidden = state.collapsed.has(type);
+      toggle.textContent = `${body.hidden ? "▸" : "▾"} ${label}`;
+      toggle.setAttribute("aria-expanded", String(!body.hidden));
+      if (!body.hidden) body.querySelectorAll("textarea").forEach(resizeDescriptionTextarea);
+    });
+    toggle.classList.add("type-toggle");
+    toggle.classList.toggle("is-uncategorized", type === UNCATEGORIZED);
+    toggle.setAttribute("aria-expanded", String(!body.hidden));
+    toggle.setAttribute("aria-controls", body.id);
+    const badge = document.createElement("span");
+    badge.className = "type-count";
+    badge.textContent = `${cards.length} 种`;
+    const drag = actionButton("⠿", `拖动类型 ${accessibleLabel} 排序`, () => {});
+    drag.draggable = true;
+    drag.addEventListener("dragstart", event => {
+      state.dragType = type;
+      event.dataTransfer.setData("text/plain", type);
+      event.dataTransfer.effectAllowed = "move";
+    });
+    drag.addEventListener("dragend", () => { state.dragType = null; cleanupDropTargets(); });
+    header.addEventListener("dragover", event => {
+      if (state.dragType === null || state.dragType === type) return;
+      event.preventDefault(); cleanupDropTargets(); header.classList.add("is-drop-target");
+    });
+    header.addEventListener("drop", event => {
+      if (state.dragType === null) return;
+      event.preventDefault();
+      const source = state.dragType; state.dragType = null;
+      moveType(source, typeIndex);
+    });
+    const up = actionButton("↑", `上移类型 ${accessibleLabel}`, () => moveType(type, typeIndex - 1));
+    const down = actionButton("↓", `下移类型 ${accessibleLabel}`, () => moveType(type, typeIndex + 1));
+    up.disabled = typeIndex === 0; down.disabled = typeIndex === order.length - 1;
+    header.append(drag, select, toggle, badge);
+    if (type !== UNCATEGORIZED) {
+      header.append(actionButton("改名", `改名类型 ${type}`, () => openTypeDialog("rename", type)));
+    }
+    header.append(up, down);
+    section.append(header, body);
+    elements.cardList.append(section);
+    const startIndex = state.cards.filter(card => state.typeOrder.indexOf(card.type) < typeIndex).length;
+    appendInsertSlot(startIndex, body, type);
+    cards.forEach((card, localIndex) => {
+      const index = state.cards.indexOf(card);
+      const fragment = elements.cardTemplate.content.cloneNode(true);
+      const row = fragment.querySelector(".card-row");
+      row.dataset.cardId = card.id;
+      row.dataset.index = index;
+      fragment.querySelector(".row-index").textContent = `#${localIndex + 1}`;
+      const checkbox = fragment.querySelector(".card-select");
+      checkbox.setAttribute("aria-label", `选择卡牌 ${card.name || localIndex + 1}`);
+      checkbox.addEventListener("change", () => {
+        checkbox.checked ? state.selected.add(card.id) : state.selected.delete(card.id);
+        updateSelection();
+      });
+      ["name", "count", "description"].forEach(field => {
+        const input = fragment.querySelector(`.${field}-input`);
+        input.value = card[field];
+        input.addEventListener("input", () => {
+          card[field] = input.value;
+          if (field === "description") resizeDescriptionTextarea(input);
+          renderDerivedState();
+        });
+      });
+      fragment.querySelector(".delete-button").addEventListener("click", () => {
+        state.cards = state.cards.filter(item => item.id !== card.id); render();
+      });
+      const controls = fragment.querySelector(".row-order");
+      const up = actionButton("↑", "上移卡牌", () => moveCard(card, -1));
+      const down = actionButton("↓", "下移卡牌", () => moveCard(card, 1));
+      up.disabled = localIndex === 0; down.disabled = localIndex === cards.length - 1;
+      controls.append(up, down);
+      const handle = fragment.querySelector(".drag-handle");
+      handle.draggable = true;
+      handle.addEventListener("dragstart", event => {
+        state.dragIndex = index;
+        event.dataTransfer.setData("text/plain", card.id);
+        event.dataTransfer.effectAllowed = "move";
+        row.classList.add("is-dragging");
+      });
+      handle.addEventListener("dragend", () => {
+        state.dragIndex = null; row.classList.remove("is-dragging"); cleanupDropTargets();
+      });
+      row.addEventListener("dragover", event => {
+        if (state.dragIndex === null || state.cards[state.dragIndex]?.type !== type) return;
+        event.preventDefault(); cleanupDropTargets(); row.classList.add("is-drop-target");
+      });
+      row.addEventListener("drop", event => {
+        if (state.dragIndex === null || state.cards[state.dragIndex]?.type !== type) return;
+        event.preventDefault();
+        const [moved] = state.cards.splice(state.dragIndex, 1);
+        state.cards.splice(index, 0, moved);
+        state.dragIndex = null; render();
+      });
+      body.append(fragment);
+      resizeDescriptionTextarea(row.querySelector("textarea"));
+      appendInsertSlot(index + 1, body, type);
+    });
   });
-  elements.cardList.appendChild(fragment);
+  updateSelection();
+}
+
+function appendInsertSlot(index, parent, type) {
+  const fragment = elements.insertTemplate.content.cloneNode(true);
+  fragment.querySelector("button").addEventListener("click", () => addCardAt(index, type));
+  parent.append(fragment);
+}
+
+function switchSelectedType(type) {
+  type = normalizeType(type);
+  if (!state.typeOrder.includes(type)) state.typeOrder.push(type);
+  const moved = state.cards.filter(card => state.selected.has(card.id) && card.type !== type);
+  // Keep existing target cards in place; append incoming cards in visible order.
+  const remaining = state.cards.filter(card => !moved.includes(card));
+  moved.forEach(card => { card.type = type; });
+  state.cards = groupCards([...remaining, ...moved]);
+  state.selected.clear();
+  state.collapsed.delete(type);
+  setStatus("success", `已将 ${moved.length} 张卡牌移至“${typeLabel(type)}”。`);
+  render();
+}
+
+function renameType(source, name) {
+  const target = name.trim();
+  if (source === UNCATEGORIZED) throw new Error("默认未分类分组无法改名。");
+  if (!state.typeOrder.includes(source)) throw new Error("要改名的类型已不存在。");
+  if (!target) throw new Error("请输入类型名称。");
+  if (target !== source && state.typeOrder.includes(target)) throw new Error("该类型已存在，请使用其他名称；如需合并，请多选卡牌后切换类型。");
+  state.typeOrder = state.typeOrder.map(type => type === source ? target : type);
+  state.cards.forEach(card => { if (card.type === source) card.type = target; });
+  if (state.collapsed.delete(source)) state.collapsed.add(target);
+  setStatus("success", `类型“${source}”已改名为“${target}”。`);
+  render();
+}
+
+let typeDialogMode = "move";
+let typeRenameSource = null;
+
+function openTypeDialog(mode = "move", source = null) {
+  typeDialogMode = mode;
+  typeRenameSource = source;
+  document.getElementById("type-dialog-error").textContent = "";
+  const dialog = document.getElementById("type-dialog");
+  const choices = document.getElementById("type-choices");
+  choices.replaceChildren();
+  [...new Set([...types(), UNCATEGORIZED])].forEach(type => {
+    if (type === UNCATEGORIZED) return;
+    const option = document.createElement("option"); option.value = type; choices.append(option);
+  });
+  document.getElementById("type-target").value = mode === "rename" ? source : "";
+  document.getElementById("type-dialog-title").textContent = mode === "rename" ? "类型改名" : mode === "create" ? "新建类型" : "切换卡牌类型";
+  document.getElementById("type-dialog-count").textContent = mode === "rename" ? "修改类型名称，该类型内的所有卡牌将同步更新，顺序保持不变。" : mode === "create" ? "输入类型名称，创建后可在类型内添加卡牌。" : `为选中的 ${state.selected.size} 张卡牌选择已有类型，或输入新类型。`;
+  document.getElementById("type-dialog-hint").textContent = mode === "rename" ? "名称不能为空或与已有类型重名；可以使用“未分类”作为普通类型名。" : "留空归入灰色的默认未分类分组，导出时省略 type；输入“未分类”会使用同名普通类型。移入卡牌追加到目标类型末尾，新类型排在最后，空类型保留。";
+  dialog.showModal();
+  document.getElementById("type-target").focus();
 }
 
 function cleanupDropTargets() {
@@ -631,12 +819,13 @@ function cleanupDropTargets() {
 }
 
 function render() {
+  syncTypeOrder();
   renderCards();
   renderDerivedState();
 }
 
-function addCardAt(index) {
-  state.cards.splice(index, 0, createCard("", 1, ""));
+function addCardAt(index, type = UNCATEGORIZED) {
+  state.cards.splice(index, 0, createCard("", 1, "", type));
   setStatus("success", `已在第 ${index + 1} 个位置插入一张牌。`);
   render();
 }
@@ -713,6 +902,30 @@ function downloadJson() {
 }
 
 function bindEvents() {
+  document.getElementById("select-all").addEventListener("change", event => {
+    state.selected = event.target.checked ? new Set(state.cards.map(card => card.id)) : new Set();
+    updateSelection();
+  });
+  document.getElementById("change-type-button").addEventListener("click", () => openTypeDialog());
+  document.getElementById("create-type-button").addEventListener("click", () => openTypeDialog("create"));
+  document.getElementById("cancel-type").addEventListener("click", () => document.getElementById("type-dialog").close());
+  document.getElementById("type-form").addEventListener("submit", event => {
+    event.preventDefault();
+    const type = normalizeType(document.getElementById("type-target").value);
+    if (typeDialogMode === "rename") {
+      try {
+        renameType(typeRenameSource, document.getElementById("type-target").value);
+      } catch (error) {
+        document.getElementById("type-dialog-error").textContent = error.message;
+        return;
+      }
+    } else if (typeDialogMode === "create") {
+      if (!state.typeOrder.includes(type)) state.typeOrder.push(type);
+      state.collapsed.delete(type);
+      render();
+    } else switchSelectedType(type);
+    document.getElementById("type-dialog").close();
+  });
   elements.newDeckButton.addEventListener("click", createEmptyDeck);
   elements.importButton.addEventListener("click", () => elements.fileInput.click());
   elements.pasteJsonButton.addEventListener("click", openPasteJsonModal);

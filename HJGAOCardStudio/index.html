@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>卡牌工坊 · Card Studio</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="app-header"><a class="brand" href="./"><span class="brand-icon">▧</span> 卡牌工坊 <small>CARD STUDIO</small></a><div class="header-actions"><span id="save-state">本地自动保存</span><button id="undo" disabled>撤销 <kbd>⌘ Z</kbd></button><button id="export" class="primary">导出卡组 ↗</button></div></header>
+<main>
+<section class="intro"><div><div class="eyebrow">YOUR NEXT GREAT GAME</div><h1>把灵感，整理成牌。</h1><p>编辑卡牌，组织类型，为下一场游戏做好准备。</p></div><div class="metrics"><div><strong id="kinds">0</strong><span>种卡牌</span></div><div><strong id="total">0</strong><span>张总量</span></div><div><strong id="groups-count">0</strong><span>个类型</span></div></div></section>
+<div class="workspace">
+<aside><div class="sidebar-head"><h2>卡牌类型</h2><button id="new-type" class="icon" aria-label="新建类型" title="新建类型">＋</button></div><nav id="type-nav" aria-label="类型导航"></nav><details class="type-note"><summary>按可混合性分组 · 同类型可混合，不同类型分开使用</summary><p>同类型可混合游玩。武将、游戏、血量、身份牌应分开；锦囊、基本、装备统一归为游戏牌。</p></details><div class="sidebar-tools"><button id="import">↓ 导入 JSON</button><button id="ai">✧ AI 提示词</button><button id="new-deck">＋ 空白卡组</button></div></aside>
+<section class="editor"><div class="editor-toolbar"><div><h2>卡牌清单</h2><span id="summary">从第一张卡牌开始</span></div><div class="toolbar-actions"><button id="collapse">折叠全部</button><button id="add" class="primary">＋ 新增卡牌</button></div></div><div class="list-labels"><span>选择 / 排序</span><span>牌名与描述</span><span>数量</span><span></span></div><div id="groups"></div><div id="validation" role="status"></div></section>
+</div>
+</main>
+<div id="batch" class="batch" hidden><label><input id="select-all" type="checkbox">全选</label><strong id="selected-count"></strong><button id="move" class="primary">移动到类型</button><button id="clear-selection">取消选择</button></div>
+<div id="toast" role="status" hidden></div>
+<dialog id="dialog"><form id="dialog-form"><div class="dialog-head"><div><div class="eyebrow" id="dialog-kicker">CARD STUDIO</div><h2 id="dialog-title"></h2></div><button type="button" id="close-dialog" class="icon" aria-label="关闭弹窗">×</button></div><div id="dialog-body"></div><p id="dialog-error" role="alert"></p><div class="dialog-footer"><button type="button" id="cancel-dialog">取消</button><button id="confirm-dialog" class="primary">确认</button></div></form></dialog>
+<script src="script.js"></script>
+</body></html>
