@@ -18,3 +18,9 @@ html:has(.timeline-page){height:100%;overflow:hidden}.timeline-page{height:100vh
 #range-window::after{content:"";position:absolute;inset:-4px;cursor:inherit}
 
 .sticky-labels a{pointer-events:auto;text-decoration:none;cursor:pointer}.sticky-labels a:hover{text-decoration:underline;text-underline-offset:4px}.sticky-labels a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+
+.timeline-header{height:64px;border-bottom:0}.timeline-header::after{height:64px}#timeline>svg .adaptive-ruler{visibility:hidden}@media print{#timeline>svg .adaptive-ruler{visibility:visible}}
+
+.range-navigator{padding-left:16px;padding-right:16px}@media(max-width:700px){.range-navigator{padding-left:0;padding-right:0}}
+/* Only the overview uses symmetric margins; the detailed ruler stops at the name column. */
+.timeline-header::after{position:sticky;left:auto;right:0;top:auto;display:block;width:var(--name-width);height:64px;margin-left:auto;margin-top:-64px;background:#fff}

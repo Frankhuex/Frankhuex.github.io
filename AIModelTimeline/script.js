@@ -3,7 +3,7 @@ const escapeHTML = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;
 const preciseDates = {"GPT-4.5": "2025-02-27", "GPT-4.1": "2025-04-14", "GPT-5.1": "2025-11-12", "GPT-5.2": "2025-12-11", "GPT-5.3 Instant": "2026-03-03", "GPT-5.4": "2026-03-05", "GPT-5.5": "2026-04-24", "GPT-5.6": "2026-07-09", "GPT-6 Sol / Luna": "2026-09-22", "Claude 2.1": "2023-11-21", "Claude 3.5 Sonnet v2": "2024-10-22", "Claude Opus 4.1": "2025-08-05", "Claude Sonnet 4.5": "2025-09-29", "Claude Haiku 4.5": "2025-10-15", "Claude Opus 4.5": "2025-11-24", "Claude Sonnet 4.6": "2026-02-17", "Claude Opus 4.7": "2026-04-16", "Claude Opus 4.8": "2026-05-28", "Claude Fable / Mythos 5": "2026-06-09", "Claude Sonnet 5": "2026-06-30", "Claude Opus 5": "2026-07-24", "Claude Fable / Mythos 5.1": "2026-09-01", "Claude Opus 5.5": "2026-09-22", "Claude Sonnet 5.5": "2026-09-28", "Claude Haiku 5.5": "2026-10-07", "DeepSeek-V2.5": "2024-09-05", "DeepSeek-V3.1": "2025-08-21", "DeepSeek-V3.1-Terminus": "2025-09-22", "DeepSeek-V3.2-Exp": "2025-09-29", "GLM-4.1V-Thinking": "2025-07-01", "GLM-4.6": "2025-09-30", "GLM-4.7": "2025-12-22", "GLM-5.1": "2026-04-07", "GLM-5.2": "2026-06-16", "GLM-5.3": "2026-08-18", "豆包 1.8": "2025-12-18", "Gemini 3.5 Flash": "2026-05-19", "Gemini 3.6 Flash": "2026-07-21", "Gemini 3.7 Flash": "2026-08-13", "Gemini 3.8 Flash": "2026-09-02", "Gemini 4 Argon": "2026-10-13", "Qwen1.5": "2024-02-04", "Qwen3.6 Plus": "2026-04-02", "Qwen3.8 Max": "2026-08-03", "MiniMax M2.1": "2025-12-23", "MiniMax M2.5": "2026-02-12", "Grok 1.5": "2024-03-28", "Grok 1.5 Vision": "2024-04-12", "Grok 4.20": "2026-03-10", "Grok 4.5": "2026-07-08", "Grok 4.7": "2026-09-21", "GPT-1": "2018-06-11", "GPT-2": "2019-02-14", "GPT-3": "2020-05-28", "GPT-5": "2025-08-07", "GPT-6 Astra": "2026-09-03", "GPT-6.1 Sol": "2026-09-29", "Gemini 1.0 Ultra": "2024-02-08", "Gemini 1.5": "2024-02-15", "Claude Opus 4.6": "2026-02-05", "DeepSeek-V3.2": "2025-12-01", "GLM-4.5": "2025-07-28", "GLM-5.3-Flash": "2026-08-26", "Grok 4.6": "2026-08-12", "Claude 1.3": "2023-04-18", "Claude Instant 1.2": "2023-08-09", "GPT-5.3 Codex": "2026-02-05", "GLM": "2021-03-18", "DeepSeek-Coder": "2023-11-02", "DeepSeek LLM 67B": "2023-11-29", "Claude 早期测试": "2023-01-17", "Gemini 研发预告": "2023-05-10", "豆包 邀请测试": "2023-08-17"};
 const cutoff = Date.UTC(2026,9,16);
 const origin = Date.UTC(2018,0,1);
-const geometry = {width:4500,height:1450,left:16,right:130,top:40,row:120};
+const geometry = {width:4500,height:1450,left:16,right:130,top:64,row:120};
 const xAt = date => geometry.left+(date-origin)/(cutoff-origin)*(geometry.width-geometry.left-geometry.right);
 const release = e => Date.parse((e[5] || preciseDates[e[1]] || e[0].replace('.','-')+'-01')+'T00:00:00Z');
 const dateLabel = e => (e[5] || preciseDates[e[1]])?.replaceAll('-','.') || e[0];
@@ -24,11 +24,40 @@ const maxTimelineWidth=Math.ceil(Math.max(...series.flatMap(s=>s.events.map((e,i
  return (measure.measureText(e[1]).width+20)*(cutoff-origin)/(end-release(e));
 }))))+geometry.left+geometry.right;
 
-function buildTimeline(){
+function buildTimeRuler(){
+ const pixelsPerDay=(geometry.width-geometry.left-geometry.right)/((cutoff-origin)/86400000);
+ const mode=pixelsPerDay>=20?'day':pixelsPerDay*28>=80?'month':'year';
+ const marks=[`<g class="adaptive-ruler" data-scale="${mode}"><line x1="${geometry.left}" y1="64" x2="${geometry.width-geometry.right}" y2="64" stroke="#8a959d"/>`];
+ let lastLabel=-Infinity;
+ const mark=(date,label,major=false)=>{
+  const x=xAt(date);
+  marks.push(`<line x1="${x}" y1="${major?53:59}" x2="${x}" y2="64" stroke="${major?'#657580':'#c2cbd1'}"/>`);
+  if(label&&x-lastLabel>=76){
+   marks.push(`<text x="${x+4}" y="47" font-size="11" font-weight="${major?600:400}" fill="#657580">${escapeHTML(label)}</text>`);lastLabel=x;
+  }
+ };
+ for(let year=2018;year<=2026;year++){
+  for(let month=0;month<12;month++){
+   const start=Date.UTC(year,month,1);if(start>cutoff)break;
+   if(mode==='day'){
+    const days=new Date(Date.UTC(year,month+1,0)).getUTCDate();
+    for(let day=1;day<=days;day++){
+     const date=Date.UTC(year,month,day);if(date>cutoff)break;
+     mark(date,`${year}.${String(month+1).padStart(2,'0')}.${String(day).padStart(2,'0')}`,day===1);
+    }
+   }else if(mode==='month')mark(start,`${year}.${String(month+1).padStart(2,'0')}`,month===0);
+   else if(month===0)mark(start,String(year),true);
+   else if(pixelsPerDay*28>=8)mark(start,'');
+  }
+ }
+ marks.push('</g>');return {mode,svg:marks.join('')};
+}
+function buildTimeline({posterHeight=0}={}){
  shownSeries=series.filter(s=>selectedNames.has(s.name));
+ const ruler=buildTimeRuler();
  const rowHeight=64;
  const layouts=shownSeries.map((s,i)=>({y:geometry.top+i*rowHeight+rowHeight/2}));
- geometry.height=shownSeries.length?geometry.top+shownSeries.length*rowHeight+35:260;
+ geometry.height=Math.max(posterHeight,shownSeries.length?geometry.top+shownSeries.length*rowHeight+35:260);
  const {width,height,left,right,top,row}=geometry;
  const parts=[`<svg xmlns="${svgNS}" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="大模型发展史" style="font-family:${escapeHTML(font)};background:#fff"><desc id="chart-desc">横向连续时间数轴。每条轨道表示一个系列，每个区间从该版本发布延伸至下一版本发布；最后区间延伸到资料截止日。</desc><rect width="100%" height="100%" fill="#fff"/>`];
  const txt=(value,x,y,size=17,color='#333f49',anchor='middle',weight=400)=>`<text x="${x}" y="${y}" font-size="${size}" fill="${color}" text-anchor="${anchor}" font-weight="${weight}">${escapeHTML(value)}</text>`;
@@ -51,11 +80,12 @@ function buildTimeline(){
    parts.push('</a>');
   });
  });
- parts.push(`<g class="interaction-layer" pointer-events="none"><g id="date-cursor" visibility="hidden"><line id="cursor-line" y1="40" y2="${height-35}" stroke="#6c7780" stroke-width="1" stroke-dasharray="4 4"/><g id="cursor-badge"><rect x="-56" y="8" width="112" height="25" rx="4" fill="#28343e"/><text y="25" text-anchor="middle" fill="#fff" font-size="14" id="cursor-date"/></g></g><g id="endpoint-dates" visibility="hidden"/></g>`);
+ parts.push(ruler.svg);
+ parts.push(`<g class="interaction-layer" pointer-events="none"><g id="date-cursor" visibility="hidden"><line id="cursor-line" y1="64" y2="${height-35}" stroke="#6c7780" stroke-width="1" stroke-dasharray="4 4"/><g id="cursor-badge"><rect x="-56" y="8" width="112" height="25" rx="4" fill="#28343e"/><text y="25" text-anchor="middle" fill="#fff" font-size="14" id="cursor-date"/></g></g><g id="endpoint-dates" visibility="hidden"/></g>`);
  if(!shownSeries.length)parts.push(txt('请勾选要显示的模型系列',width/2,85,20,'#7c8388'));
  parts.push('</svg>');
  document.getElementById('timeline').style.width=`${width}px`;
- document.getElementById('timeline').innerHTML=`<div class="timeline-header" aria-hidden="true"><span id="header-date" hidden></span></div><div class="sticky-labels" style="height:${height}px">${shownSeries.map((s,i)=>`<div style="top:${layouts[i].y-16}px;color:${s.color}"><a href="${escapeHTML(s.website)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHTML(s.name)} 官网，新标签页打开">${escapeHTML(s.name)}</a></div>`).join('')}</div>`+parts.join('');
+ document.getElementById('timeline').innerHTML=`<div class="timeline-header" data-scale="${ruler.mode}" aria-hidden="true"><svg width="${width}" height="64" style="font-family:${escapeHTML(font)}"><rect width="100%" height="64" fill="#fff"/>${ruler.svg}</svg><span id="header-date" hidden></span></div><div class="sticky-labels" style="height:${height}px">${shownSeries.map((s,i)=>`<div style="top:${layouts[i].y-16}px;color:${s.color}"><a href="${escapeHTML(s.website)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHTML(s.name)} 官网，新标签页打开">${escapeHTML(s.name)}</a></div>`).join('')}</div>`+parts.join('');
 }
 let chart;
 const scrollArea=document.querySelector('.timeline-scroll');
@@ -202,14 +232,19 @@ document.getElementById('select-all').addEventListener('change',event=>{
 renderSelection();
 async function createPoster(scale=2){
  await document.fonts.ready;
+ const selected=series.filter(s=>selectedNames.has(s.name));
+ measure.font=`500 14px ${font}`;
+ const widestTrack=Math.max(0,...selected.map(s=>s.events.reduce((sum,e)=>sum+measure.measureText(e[1]).width+20,0)));
+ const posterHeight=Math.max(480,geometry.top+selected.length*64+35);
+ // The selected tracks determine the image size, independent of viewport and zoom.
+ const posterWidth=Math.round(Math.max(1200,Math.min(Math.max(1200,widestTrack+geometry.left+geometry.right),posterHeight*2.6)));
  const savedWidth=geometry.width,savedLeft=scrollArea.scrollLeft,savedTop=scrollArea.scrollTop;
- const posterWidth=Math.min(savedWidth,12000);
  let svg;
  try{
-  if(posterWidth!==savedWidth){geometry.width=posterWidth;renderSelection()}
+  geometry.width=posterWidth;buildTimeline({posterHeight});
   svg=document.querySelector('#timeline>svg').cloneNode(true);
  }finally{
-  if(posterWidth!==savedWidth){geometry.width=savedWidth;renderSelection();scrollArea.scrollLeft=savedLeft;scrollArea.scrollTop=savedTop}
+  geometry.width=savedWidth;renderSelection();scrollArea.scrollLeft=savedLeft;scrollArea.scrollTop=savedTop;keepLabelsVisible();
  }
 
  svg.querySelectorAll('a[data-start] text').forEach(text=>{
@@ -225,7 +260,7 @@ async function createPoster(scale=2){
  const url=URL.createObjectURL(blob);
  try{
   const img=new Image();img.src=url;await img.decode();
-  const canvas=document.createElement('canvas');canvas.width=posterWidth*scale;canvas.height=geometry.height*scale;
+  const canvas=document.createElement('canvas');canvas.width=posterWidth*scale;canvas.height=posterHeight*scale;
   const c=canvas.getContext('2d');if(!c)throw new Error('浏览器未能创建画布');
   c.drawImage(img,0,0,canvas.width,canvas.height);return canvas;
  }finally{URL.revokeObjectURL(url)}
