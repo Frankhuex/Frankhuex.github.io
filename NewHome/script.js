@@ -125,6 +125,13 @@ const onlineProjects = [
         action: "进入",
     },
     {
+        title: "大模型发展史",
+        description: "交互式 AI 模型发布时间轴，支持筛选、缩放与图片下载",
+        href: "../AIModelTimeline/index.html",
+        tag: "Tool",
+        action: "进入",
+    },
+    {
         title: "Dancing Line 采音器",
         description: "Dancing Line 采音辅助工具",
         href: "../DLChart/index.html",
