@@ -73,6 +73,62 @@ const series = [
    [
     "GPT-5.3 Codex 发布记录",
     "https://openai.com/index/introducing-gpt-5-3-codex/"
+   ],
+   [
+    "GPT-4o 官方发布页",
+    "https://openai.com/index/hello-gpt-4o/"
+   ],
+   [
+    "o1-preview 官方发布页",
+    "https://openai.com/index/introducing-openai-o1-preview/"
+   ],
+   [
+    "GPT-4.5 官方发布页",
+    "https://openai.com/index/introducing-gpt-4-5/"
+   ],
+   [
+    "o3 / o4-mini 官方发布页",
+    "https://openai.com/index/introducing-o3-and-o4-mini/"
+   ],
+   [
+    "GPT-4.1 官方发布页",
+    "https://openai.com/index/gpt-4-1/"
+   ],
+   [
+    "GPT-5.1 官方发布页",
+    "https://openai.com/index/gpt-5-1/"
+   ],
+   [
+    "GPT-5.2 官方发布页",
+    "https://openai.com/index/introducing-gpt-5-2/"
+   ],
+   [
+    "GPT-5.3 Instant 官方发布页",
+    "https://openai.com/index/gpt-5-3-instant/"
+   ],
+   [
+    "GPT-5.4 官方发布页",
+    "https://openai.com/index/introducing-gpt-5-4/"
+   ],
+   [
+    "GPT-5.5 官方发布页",
+    "https://openai.com/index/introducing-gpt-5-5/"
+   ],
+   [
+    "GPT-5.6 官方模型文档",
+    "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
+   ],
+   [
+    "GPT-6 Astra 官方发布页",
+    "https://openai.com/index/gpt-6-astra/"
+   ],
+   [
+    "GPT-6 Sol / Luna 官方发布页",
+    "https://openai.com/index/introducing-gpt-6-sol-and-luna/"
+   ],
+   [
+    "GPT-6.1 Sol 官方发布页",
+    "https://openai.com/index/introducing-gpt-6-1-sol/"
    ]
   ],
   "events": [
@@ -111,31 +167,31 @@ const series = [
     "2024.05",
     "GPT-4o",
     "文本、视觉、语音一体化",
-    0
+    17
    ],
    [
     "2024.09",
     "o1-preview",
     "推理模型路线开启",
-    0
+    18
    ],
    [
     "2025.02",
     "GPT-4.5",
     "官方发布的小版本更新",
-    7
+    19
    ],
    [
     "2025.04",
     "o3 / o4-mini",
     "推理与工具协作",
-    0
+    20
    ],
    [
     "2025.04",
     "GPT-4.1",
     "官方发布的小版本更新",
-    8
+    21
    ],
    [
     "2025.08",
@@ -147,13 +203,13 @@ const series = [
     "2025.11",
     "GPT-5.1",
     "官方发布的小版本更新",
-    9
+    22
    ],
    [
     "2025.12",
     "GPT-5.2",
     "官方发布的小版本更新",
-    10
+    23
    ],
    [
     "2026.02",
@@ -165,43 +221,43 @@ const series = [
     "2026.03",
     "GPT-5.3 Instant",
     "官方发布的小版本更新",
-    11
+    24
    ],
    [
     "2026.03",
     "GPT-5.4",
     "官方发布的小版本更新",
-    12
+    25
    ],
    [
     "2026.04",
     "GPT-5.5",
     "官方发布的小版本更新",
-    13
+    26
    ],
    [
     "2026.07",
     "GPT-5.6",
     "官方发布的小版本更新",
-    14
+    27
    ],
    [
     "2026.09",
     "GPT-6 Astra",
     "面向复杂任务的端到端执行",
-    0
+    28
    ],
    [
     "2026.09",
     "GPT-6 Sol / Luna",
     "官方发布的小版本更新",
-    15
+    29
    ],
    [
     "2026.09",
     "GPT-6.1 Sol",
     "API 发布：编程与专业工作",
-    0
+    30
    ]
   ],
   "website": "https://chatgpt.com/"
@@ -322,6 +378,14 @@ const series = [
    [
     "Claude 早期测试 原始记录",
     "https://scale.com/blog/chatgpt-vs-claude"
+   ],
+   [
+    "Claude Fable / Mythos 5 · 版本资料",
+    "https://www.anthropic.com/news/claude-fable-5-mythos-5"
+   ],
+   [
+    "Claude Opus 5 · 版本资料",
+    "https://www.anthropic.com/news/claude-opus-5"
    ]
   ],
   "events": [
@@ -443,7 +507,7 @@ const series = [
     "2026.06",
     "Claude Fable / Mythos 5",
     "官方发布的小版本更新",
-    17
+    28
    ],
    [
     "2026.06",
@@ -455,7 +519,7 @@ const series = [
     "2026.07",
     "Claude Opus 5",
     "官方发布的小版本更新",
-    19
+    29
    ],
    [
     "2026.09",
@@ -536,6 +600,30 @@ const series = [
    [
     "DeepSeek-Coder 原始记录",
     "https://github.com/deepseek-ai/DeepSeek-Coder"
+   ],
+   [
+    "DeepSeek-V2.5 · 版本资料",
+    "https://api-docs.deepseek.com/news/news0905"
+   ],
+   [
+    "DeepSeek-V3.1 · 版本资料",
+    "https://api-docs.deepseek.com/news/news250821"
+   ],
+   [
+    "DeepSeek-V3.1-Terminus · 版本资料",
+    "https://api-docs.deepseek.com/news/news250922"
+   ],
+   [
+    "DeepSeek-V3.2-Exp · 版本资料",
+    "https://api-docs.deepseek.com/news/news250929"
+   ],
+   [
+    "DeepSeek-V3.2 · 版本资料",
+    "https://api-docs.deepseek.com/news/news251201"
+   ],
+   [
+    "DeepSeek-V4.1-Flash · 版本资料",
+    "https://api-docs.deepseek.com/news/news260910"
    ]
   ],
   "events": [
@@ -561,7 +649,7 @@ const series = [
     "2024.09",
     "DeepSeek-V2.5",
     "官方发布的小版本更新",
-    7
+    12
    ],
    [
     "2024.12",
@@ -579,25 +667,25 @@ const series = [
     "2025.08",
     "DeepSeek-V3.1",
     "官方发布的小版本更新",
-    8
+    13
    ],
    [
     "2025.09",
     "DeepSeek-V3.1-Terminus",
     "官方发布的小版本更新",
-    9
+    14
    ],
    [
     "2025.09",
     "DeepSeek-V3.2-Exp",
     "官方发布的小版本更新",
-    10
+    15
    ],
    [
     "2025.12",
     "DeepSeek-V3.2",
     "推理与工具使用进一步结合",
-    5
+    16
    ],
    [
     "2026.04",
@@ -609,7 +697,7 @@ const series = [
     "2026.09",
     "DeepSeek-V4.1-Flash",
     "原生多模态视觉理解",
-    5
+    17
    ]
   ],
   "website": "https://www.deepseek.com/"
@@ -666,6 +754,38 @@ const series = [
    [
     "GLM 原始记录",
     "https://arxiv.org/abs/2103.10360"
+   ],
+   [
+    "GLM-4.1V-Thinking · 版本资料",
+    "https://huggingface.co/zai-org/GLM-4.1V-9B-Thinking"
+   ],
+   [
+    "GLM-4.6 · 版本资料",
+    "https://z.ai/blog/glm-4.6"
+   ],
+   [
+    "GLM-4.7 · 版本资料",
+    "https://z.ai/blog/glm-4.7"
+   ],
+   [
+    "GLM-5 · 版本资料",
+    "https://z.ai/blog/glm-5"
+   ],
+   [
+    "GLM-5.1 · 版本资料",
+    "https://z.ai/blog/glm-5.1"
+   ],
+   [
+    "GLM-5.2 · 版本资料",
+    "https://z.ai/blog/glm-5.2"
+   ],
+   [
+    "GLM-5.3 · 版本资料",
+    "https://z.ai/blog/glm-5.3"
+   ],
+   [
+    "GLM-5.3-Flash · 版本资料",
+    "https://z.ai/blog/glm-5.3-flash"
    ]
   ],
   "events": [
@@ -697,7 +817,7 @@ const series = [
     "2025.07",
     "GLM-4.1V-Thinking",
     "官方发布的小版本更新",
-    5
+    12
    ],
    [
     "2025.07",
@@ -709,43 +829,43 @@ const series = [
     "2025.09",
     "GLM-4.6",
     "官方发布的小版本更新",
-    6
+    13
    ],
    [
     "2025.12",
     "GLM-4.7",
     "官方发布的小版本更新",
-    7
+    14
    ],
    [
     "2026.02",
     "GLM-5",
     "复杂软件工程与 Agent",
-    4
+    15
    ],
    [
     "2026.04",
     "GLM-5.1",
     "官方发布的小版本更新",
-    8
+    16
    ],
    [
     "2026.06",
     "GLM-5.2",
     "官方发布的小版本更新",
-    9
+    17
    ],
    [
     "2026.08",
     "GLM-5.3",
     "官方发布的小版本更新",
-    10
+    18
    ],
    [
     "2026.08",
     "GLM-5.3-Flash",
     "原生多模态与成本优化",
-    4
+    19
    ]
   ],
   "website": "https://z.ai/"
@@ -786,6 +906,18 @@ const series = [
    [
     "豆包 邀请测试 原始记录",
     "https://www.eeo.com.cn/2023/0818/601827.shtml"
+   ],
+   [
+    "Doubao-pro-32k-240515 · 版本资料",
+    "https://docs.volcengine.com/docs/vector_database_vikingdb/Modeldeprecationandsunsetpolicy?lang=zh#:~:text=doubao-pro-32k-240515"
+   ],
+   [
+    "豆包 1.5 Pro · 版本资料",
+    "https://seed.bytedance.com/en/special/doubao_1_5_pro"
+   ],
+   [
+    "豆包 1.6 · 版本资料",
+    "https://seed.bytedance.com/en/blog/introduction-to-techniques-used-in-seed1-6"
    ]
   ],
   "events": [
@@ -799,19 +931,19 @@ const series = [
     "2024.05",
     "Doubao-pro-32k-240515",
     "经火山引擎向企业提供服务",
-    5
+    8
    ],
    [
     "2025.01",
     "豆包 1.5 Pro",
     "稀疏 MoE 基础模型",
-    2
+    9
    ],
    [
     "2025.06",
     "豆包 1.6",
     "深度思考与多模态能力升级",
-    2
+    10
    ],
    [
     "2025.12",
@@ -1017,6 +1149,10 @@ const series = [
    [
     "Qwen3.8 Max 官方记录",
     "https://qwen.ai/blog?id=qwen3.8"
+   ],
+   [
+    "Qwen-7B · 版本资料",
+    "https://huggingface.co/Qwen/Qwen-7B"
    ]
   ],
   "events": [
@@ -1030,7 +1166,7 @@ const series = [
     "2023.08",
     "Qwen-7B",
     "开放基础与对话模型",
-    1
+    11
    ],
    [
     "2024.02",
@@ -1125,6 +1261,10 @@ const series = [
    [
     "MiMo-V2.6 技术报告",
     "https://arxiv.org/abs/2610.11959"
+   ],
+   [
+    "MiMo-V2.6 系列 · 版本资料",
+    "https://mimo.xiaomi.com/mimo-v2-6"
    ]
   ],
   "events": [
@@ -1132,7 +1272,7 @@ const series = [
     "2025.04",
     "MiMo-7B",
     "开源推理模型；强化数学与代码",
-    1
+    0
    ],
    [
     "2025.06",
@@ -1162,7 +1302,7 @@ const series = [
     "2026.09",
     "MiMo-V2.6 系列",
     "强化学习扩展；Pro / Flash",
-    6
+    8
    ]
   ],
   "website": "https://mimo.xiaomi.com/"
@@ -1227,6 +1367,14 @@ const series = [
    [
     "abab 6 原始记录",
     "https://www.hkexnews.hk/listedco/listconews/sehk/2025/1231/2025123100026_c.pdf"
+   ],
+   [
+    "abab 1 · 版本资料",
+    "https://www.hkexnews.hk/listedco/listconews/sehk/2025/1231/2025123100026_c.pdf#page=211"
+   ],
+   [
+    "abab 5.5 · 版本资料",
+    "https://www.hkexnews.hk/listedco/listconews/sehk/2025/1231/2025123100026_c.pdf#page=212"
    ]
   ],
   "events": [
@@ -1234,31 +1382,31 @@ const series = [
     "2022.04",
     "abab 1",
     "2022 年 4 月推出，供自有产品内部使用；招股书第 201—202 页",
-    9
+    14
    ],
    [
     "2022.06",
     "abab 2",
     "2022 年 6 月完成独立研发与训练；招股书第 201 页",
-    10
+    14
    ],
    [
     "2022.10",
     "abab 3",
     "2022 年 10 月完成训练；招股书第 201 页",
-    11
+    14
    ],
    [
     "2023.05",
     "abab 5.5",
     "2023 年 5 月发布；招股书第 202 页",
-    12
+    15
    ],
    [
     "2024.01",
     "abab 6",
     "2024 年 1 月发布 MoE 文本模型；招股书第 202 页",
-    13
+    15
    ],
    [
     "2024.04",
@@ -1377,6 +1525,10 @@ const series = [
    [
     "Grok 4.20 官方模型文档",
     "https://docs.x.ai/developers/models/grok-4.20"
+   ],
+   [
+    "Grok 4.5 · 版本资料",
+    "https://x.ai/news/grok-4-5"
    ]
   ],
   "events": [
@@ -1445,7 +1597,7 @@ const series = [
     "2026.07",
     "Grok 4.5",
     "官方发布的小版本更新",
-    11
+    14
    ],
    [
     "2026.08",
@@ -1474,6 +1626,30 @@ const series = [
    [
     "Llama 2 发布记录",
     "https://github.com/meta-llama/llama-models"
+   ],
+   [
+    "Llama 2 · 版本资料",
+    "https://ai.meta.com/blog/llama-2/"
+   ],
+   [
+    "Llama 3 · 版本资料",
+    "https://ai.meta.com/blog/meta-llama-3/"
+   ],
+   [
+    "Llama 3.1 · 版本资料",
+    "https://ai.meta.com/blog/meta-llama-3-1/"
+   ],
+   [
+    "Llama 3.2 · 版本资料",
+    "https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/"
+   ],
+   [
+    "Llama 3.3 · 版本资料",
+    "https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct"
+   ],
+   [
+    "Llama 4 Scout / Maverick · 版本资料",
+    "https://ai.meta.com/blog/llama-4-multimodal-intelligence/"
    ]
   ],
   "events": [
@@ -1489,7 +1665,7 @@ const series = [
     "2023.07",
     "Llama 2",
     "基础及对话模型，扩展商用许可",
-    1,
+    2,
     "",
     "2023-07-18"
    ],
@@ -1497,7 +1673,7 @@ const series = [
     "2024.04",
     "Llama 3",
     "8B / 70B 基础及指令模型",
-    1,
+    3,
     "",
     "2024-04-18"
    ],
@@ -1505,7 +1681,7 @@ const series = [
     "2024.07",
     "Llama 3.1",
     "加入 405B，128K 上下文",
-    1,
+    4,
     "",
     "2024-07-23"
    ],
@@ -1513,7 +1689,7 @@ const series = [
     "2024.09",
     "Llama 3.2",
     "轻量文本与视觉语言模型",
-    1,
+    5,
     "",
     "2024-09-25"
    ],
@@ -1521,7 +1697,7 @@ const series = [
     "2024.12",
     "Llama 3.3",
     "70B 指令模型",
-    1,
+    6,
     "",
     "2024-12-04"
    ],
@@ -1529,7 +1705,7 @@ const series = [
     "2025.04",
     "Llama 4 Scout / Maverick",
     "原生多模态 MoE 模型",
-    1,
+    7,
     "",
     "2025-04-05"
    ]
@@ -1560,6 +1736,94 @@ const series = [
    [
     "Mistral 7B v0.3 发布记录",
     "https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3"
+   ],
+   [
+    "Mistral Large · 版本资料",
+    "https://mistral.ai/news/mistral-large/"
+   ],
+   [
+    "Mixtral 8×22B · 版本资料",
+    "https://mistral.ai/news/mixtral-8x22b/"
+   ],
+   [
+    "Codestral · 版本资料",
+    "https://mistral.ai/news/codestral/"
+   ],
+   [
+    "Mistral NeMo · 版本资料",
+    "https://mistral.ai/news/mistral-nemo/"
+   ],
+   [
+    "Mistral Large 2 · 版本资料",
+    "https://mistral.ai/news/mistral-large-2407/"
+   ],
+   [
+    "Pixtral 12B / Small 24.09 · 版本资料",
+    "https://mistral.ai/news/september-24-release/"
+   ],
+   [
+    "Mistral Large 2.1 / Pixtral Large · 版本资料",
+    "https://mistral.ai/news/pixtral-large/"
+   ],
+   [
+    "Mistral Small 3 · 版本资料",
+    "https://mistral.ai/news/mistral-small-3/"
+   ],
+   [
+    "Mistral Small 3.1 · 版本资料",
+    "https://mistral.ai/news/mistral-small-3-1/"
+   ],
+   [
+    "Mistral Medium 3 · 版本资料",
+    "https://mistral.ai/news/mistral-medium-3/"
+   ],
+   [
+    "Devstral Small · 版本资料",
+    "https://mistral.ai/news/devstral/"
+   ],
+   [
+    "Magistral Small / Medium · 版本资料",
+    "https://mistral.ai/news/magistral/"
+   ],
+   [
+    "Mistral Small 3.2 · 版本资料",
+    "https://docs.mistral.ai/models/mistral-small-3-2-25-06"
+   ],
+   [
+    "Devstral Small 1.1 / Medium · 版本资料",
+    "https://mistral.ai/news/devstral-2507/"
+   ],
+   [
+    "Magistral 1.1 · 版本资料",
+    "https://docs.mistral.ai/models/magistral-medium-1-1-25-07"
+   ],
+   [
+    "Mistral Medium 3.1 · 版本资料",
+    "https://docs.mistral.ai/models/mistral-medium-3-1-25-08"
+   ],
+   [
+    "Magistral 1.2 · 版本资料",
+    "https://docs.mistral.ai/models/magistral-medium-1-2-25-09"
+   ],
+   [
+    "Mistral Large 3 / Ministral 3 · 版本资料",
+    "https://mistral.ai/news/mistral-3/"
+   ],
+   [
+    "Devstral 2 / Small 2 · 版本资料",
+    "https://mistral.ai/news/devstral-2-vibe-cli/"
+   ],
+   [
+    "Mistral Small 4 · 版本资料",
+    "https://mistral.ai/news/mistral-small-4/"
+   ],
+   [
+    "Mistral Medium 3.5 · 版本资料",
+    "https://mistral.ai/news/vibe-remote-agents-mistral-medium-3-5/"
+   ],
+   [
+    "Mistral Large 4 Preview · 版本资料",
+    "https://mistral.ai/news/mistral-large-4/"
    ]
   ],
   "events": [
@@ -1583,7 +1847,7 @@ const series = [
     "2024.02",
     "Mistral Large",
     "通用旗舰模型与 API",
-    3,
+    5,
     "",
     "2024-02-26"
    ],
@@ -1591,7 +1855,7 @@ const series = [
     "2024.04",
     "Mixtral 8×22B",
     "更大规模的开放 MoE 模型",
-    3,
+    6,
     "",
     "2024-04-17"
    ],
@@ -1607,7 +1871,7 @@ const series = [
     "2024.05",
     "Codestral",
     "代码生成分支首发",
-    3,
+    7,
     "",
     "2024-05-29"
    ],
@@ -1615,7 +1879,7 @@ const series = [
     "2024.07",
     "Mistral NeMo",
     "12B 通用模型",
-    3,
+    8,
     "",
     "2024-07-18"
    ],
@@ -1623,7 +1887,7 @@ const series = [
     "2024.07",
     "Mistral Large 2",
     "旗舰模型第二代",
-    3,
+    9,
     "",
     "2024-07-24"
    ],
@@ -1631,7 +1895,7 @@ const series = [
     "2024.09",
     "Pixtral 12B / Small 24.09",
     "视觉语言与小型通用模型",
-    3,
+    10,
     "",
     "2024-09-17"
    ],
@@ -1639,7 +1903,7 @@ const series = [
     "2024.11",
     "Mistral Large 2.1 / Pixtral Large",
     "旗舰文本及视觉语言更新",
-    3,
+    11,
     "",
     "2024-11-18"
    ],
@@ -1647,7 +1911,7 @@ const series = [
     "2025.01",
     "Mistral Small 3",
     "小型通用模型第三代",
-    3,
+    12,
     "",
     "2025-01-30"
    ],
@@ -1655,7 +1919,7 @@ const series = [
     "2025.03",
     "Mistral Small 3.1",
     "多模态与长上下文",
-    3,
+    13,
     "",
     "2025-03-17"
    ],
@@ -1663,7 +1927,7 @@ const series = [
     "2025.05",
     "Mistral Medium 3",
     "中型多模态模型",
-    3,
+    14,
     "",
     "2025-05-07"
    ],
@@ -1671,7 +1935,7 @@ const series = [
     "2025.05",
     "Devstral Small",
     "软件工程 Agent 模型",
-    3,
+    15,
     "",
     "2025-05-21"
    ],
@@ -1679,7 +1943,7 @@ const series = [
     "2025.06",
     "Magistral Small / Medium",
     "推理模型分支",
-    3,
+    16,
     "",
     "2025-06-10"
    ],
@@ -1687,7 +1951,7 @@ const series = [
     "2025.06",
     "Mistral Small 3.2",
     "指令遵循与工具调用优化",
-    3,
+    17,
     "",
     "2025-06-20"
    ],
@@ -1695,7 +1959,7 @@ const series = [
     "2025.07",
     "Devstral Small 1.1 / Medium",
     "编程分支迭代",
-    3,
+    18,
     "",
     "2025-07-10"
    ],
@@ -1703,7 +1967,7 @@ const series = [
     "2025.07",
     "Magistral 1.1",
     "推理分支迭代",
-    3,
+    19,
     "",
     "2025-07-24"
    ],
@@ -1711,7 +1975,7 @@ const series = [
     "2025.08",
     "Mistral Medium 3.1",
     "中型模型小版本更新",
-    3,
+    20,
     "",
     "2025-08-12"
    ],
@@ -1719,7 +1983,7 @@ const series = [
     "2025.09",
     "Magistral 1.2",
     "推理分支小版本更新",
-    3,
+    21,
     "",
     "2025-09-17"
    ],
@@ -1727,7 +1991,7 @@ const series = [
     "2025.12",
     "Mistral Large 3 / Ministral 3",
     "大型 MoE 与轻量模型家族",
-    3,
+    22,
     "",
     "2025-12-02"
    ],
@@ -1735,7 +1999,7 @@ const series = [
     "2025.12",
     "Devstral 2 / Small 2",
     "软件工程模型第二代",
-    3,
+    23,
     "",
     "2025-12-09"
    ],
@@ -1743,7 +2007,7 @@ const series = [
     "2026.03",
     "Mistral Small 4",
     "统一指令、推理及编程",
-    3,
+    24,
     "",
     "2026-03-16"
    ],
@@ -1751,7 +2015,7 @@ const series = [
     "2026.04",
     "Mistral Medium 3.5",
     "多模态、Agent 与编程能力升级",
-    3,
+    25,
     "",
     "2026-04-28"
    ],
@@ -1759,7 +2023,7 @@ const series = [
     "2026.10",
     "Mistral Large 4 Preview",
     "旗舰多模态模型公开预览",
-    3,
+    26,
     "",
     "2026-10-06"
    ]
@@ -1810,6 +2074,18 @@ const series = [
    [
     "Kimi K3 发布记录",
     "https://www.kimi.ai/blog/kimi-k3"
+   ],
+   [
+    "Moonshot v1 / Kimi Chat · 版本资料",
+    "https://spap.jst.go.jp/investigation/downloads/2024_rr_06_en.pdf#page=56"
+   ],
+   [
+    "Kimi-VL · 版本资料",
+    "https://github.com/MoonshotAI/Kimi-VL"
+   ],
+   [
+    "Kimi-Dev · 版本资料",
+    "https://github.com/MoonshotAI/Kimi-Dev"
    ]
   ],
   "events": [
@@ -1817,7 +2093,7 @@ const series = [
     "2023.10",
     "Moonshot v1 / Kimi Chat",
     "早期 Kimi 产品及 Moonshot v1 模型；长上下文对话",
-    0
+    10
    ],
    [
     "2025.01",
@@ -1831,7 +2107,7 @@ const series = [
     "2025.04",
     "Kimi-VL",
     "视觉语言模型",
-    2,
+    11,
     "",
     "2025-04-10"
    ],
@@ -1839,7 +2115,7 @@ const series = [
     "2025.06",
     "Kimi-Dev",
     "软件工程模型",
-    3,
+    12,
     "",
     "2025-06-17"
    ],
@@ -1944,6 +2220,30 @@ const series = [
    [
     "2026 年 1 月 ERNIE 5.0 更新（百度官方公告）",
     "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0226/2026022600493.pdf"
+   ],
+   [
+    "ERNIE 1.0 · 版本资料",
+    "https://arxiv.org/abs/1904.09223"
+   ],
+   [
+    "ERNIE 3.5 · 版本资料",
+    "https://ai.baidu.com/ai-doc/WENXINWORKSHOP/jlil56u11"
+   ],
+   [
+    "ERNIE 4.0 · 版本资料",
+    "https://www.prnewswire.com/news-releases/baidu-launches-ernie-4-0-foundation-model-leading-a-new-wave-of-ai-native-applications-301958681.html"
+   ],
+   [
+    "ERNIE 4.5 / X1 · 版本资料",
+    "https://en.prnasia.com/releases/global/baidu-unveils-ernie-4-5-and-reasoning-model-ernie-x1-makes-ernie-bot-free-ahead-of-schedule-481782.shtml"
+   ],
+   [
+    "ERNIE 5.0 · 版本资料",
+    "https://ernie.baidu.com/blog/zh/posts/ernie5.0/"
+   ],
+   [
+    "ERNIE 5.1 Preview · 版本资料",
+    "https://ernie.baidu.com/blog/zh/posts/ernie-5.1-preview-0430-release-on-lmarena/"
    ]
   ],
   "events": [
@@ -1951,7 +2251,7 @@ const series = [
     "2019.03",
     "ERNIE 1.0",
     "早期 Transformer 预训练模型；知识增强与实体掩码",
-    0
+    12
    ],
    [
     "2019.07",
@@ -1989,13 +2289,13 @@ const series = [
     "2023.05",
     "ERNIE 3.5",
     "官方年报记载于 2023 年 5 月推出",
-    4
+    13
    ],
    [
     "2023.10",
     "ERNIE 4.0",
     "理解、生成、逻辑与记忆能力升级",
-    5,
+    14,
     "",
     "2023-10-17"
    ],
@@ -2003,7 +2303,7 @@ const series = [
     "2025.03",
     "ERNIE 4.5 / X1",
     "原生多模态旗舰与深度推理分支",
-    6,
+    15,
     "",
     "2025-03-16"
    ],
@@ -2027,13 +2327,13 @@ const series = [
     "2026.01",
     "ERNIE 5.0",
     "2026 年 1 月推出更新版原生全模态模型；官方公告按月记载",
-    11
+    16
    ],
    [
     "2026.04",
     "ERNIE 5.1 Preview",
     "官方公布 5.1 预览版的竞技场记录",
-    9,
+    17,
     "",
     "2026-04-30"
    ],
@@ -2088,6 +2388,42 @@ const series = [
    [
     "Hy4 Preview 发布记录",
     "https://www.tencent.com/tencent-releases-and-open-sources-tencent-hy4-preview/"
+   ],
+   [
+    "Hunyuan T1 Preview · 版本资料",
+    "https://github.com/Tencent/llm.hunyuan.T1#:~:text=T1-Preview"
+   ],
+   [
+    "Hunyuan TurboS · 版本资料",
+    "https://arxiv.org/abs/2505.15431"
+   ],
+   [
+    "Hunyuan T1 · 版本资料",
+    "https://github.com/Tencent/llm.hunyuan.T1"
+   ],
+   [
+    "Hunyuan TurboS Vision 1.1 · 版本资料",
+    "https://cloud.tencent.cn/document/product/1729/97765#ecb8371e-ae02-4c54-b536-6287351ca822:~:text=hunyuan-turbos-vision-v1.1"
+   ],
+   [
+    "Hunyuan A13B · 版本资料",
+    "https://github.com/Tencent-Hunyuan/Hunyuan-A13B"
+   ],
+   [
+    "HY 2.0 Think · 版本资料",
+    "https://cloud.tencent.cn/document/product/1729/97765#e3487708-0ef6-4f1a-8ffc-cc6f65b72563:~:text=Tencent%20HY%202.0%20Think"
+   ],
+   [
+    "HY 2.0 Instruct · 版本资料",
+    "https://cloud.tencent.cn/document/product/1729/97765#e3487708-0ef6-4f1a-8ffc-cc6f65b72563:~:text=Tencent%20HY%202.0%20Instruct"
+   ],
+   [
+    "HY Vision 1.5 Instruct · 版本资料",
+    "https://github.com/Tencent-Hunyuan/HunyuanVision"
+   ],
+   [
+    "Hy3 Preview · 版本资料",
+    "https://github.com/Tencent-Hunyuan/Hy3-preview"
    ]
   ],
   "events": [
@@ -2125,13 +2461,13 @@ const series = [
     "2025.02",
     "Hunyuan T1 Preview",
     "官方投资者报告记载的早期深度思考模型",
-    4
+    9
    ],
    [
     "2025.02",
     "Hunyuan TurboS",
     "高效率通用快思考模型",
-    5,
+    10,
     "",
     "2025-02-27"
    ],
@@ -2139,7 +2475,7 @@ const series = [
     "2025.03",
     "Hunyuan T1",
     "深度思考模型正式版",
-    5,
+    11,
     "",
     "2025-03-21"
    ],
@@ -2147,7 +2483,7 @@ const series = [
     "2025.05",
     "Hunyuan TurboS Vision 1.1",
     "视觉语言分支 v1.1",
-    5,
+    12,
     "",
     "2025-05-23"
    ],
@@ -2155,7 +2491,7 @@ const series = [
     "2025.06",
     "Hunyuan A13B",
     "混合推理 MoE，支持快慢思考切换",
-    5,
+    13,
     "",
     "2025-06-25"
    ],
@@ -2163,7 +2499,7 @@ const series = [
     "2025.11",
     "HY 2.0 Think",
     "混元 2.0 推理分支",
-    5,
+    14,
     "",
     "2025-11-09"
    ],
@@ -2171,7 +2507,7 @@ const series = [
     "2025.11",
     "HY 2.0 Instruct",
     "混元 2.0 指令分支",
-    5,
+    15,
     "",
     "2025-11-11"
    ],
@@ -2179,7 +2515,7 @@ const series = [
     "2025.12",
     "HY Vision 1.5 Instruct",
     "视觉语言分支 1.5",
-    5,
+    16,
     "",
     "2025-12-17"
    ],
@@ -2187,7 +2523,7 @@ const series = [
     "2026.04",
     "Hy3 Preview",
     "面向实际 Agent 任务的开放预览模型",
-    6,
+    17,
     "",
     "2026-04-24"
    ],
@@ -2238,6 +2574,14 @@ const series = [
    [
     "2024 全球开发者先锋大会发布现场记录",
     "https://www.qbitai.com/2024/03/130184.html"
+   ],
+   [
+    "Step-1 / Step-1V · 版本资料",
+    "https://pdf.dfcfw.com/pdf/H3_AP202410071640177318_1.pdf#page=22"
+   ],
+   [
+    "Step 3.5 Flash · 版本资料",
+    "https://static.stepfun.com/blog/step-3.5-flash/"
    ]
   ],
   "events": [
@@ -2245,7 +2589,7 @@ const series = [
     "2024.03",
     "Step-1 / Step-1V",
     "通用语言与视觉语言首发；同场公布 Step-2 预览版",
-    0,
+    6,
     "",
     "2024-03-23"
    ],
@@ -2253,7 +2597,7 @@ const series = [
     "2024.07",
     "Step-2 / Step-1.5V",
     "Step-2 正式版与视觉语言分支 1.5V 同期发布",
-    0,
+    6,
     "",
     "2024-07-04"
    ],
@@ -2269,7 +2613,7 @@ const series = [
     "2026.02",
     "Step 3.5 Flash",
     "面向 Agent 的开放权重推理模型",
-    2,
+    7,
     "",
     "2026-02-02"
    ],
@@ -2293,4 +2637,3 @@ const series = [
   "website": "https://www.stepfun.com/"
  }
 ];
-
