@@ -624,6 +624,14 @@ const series = [
    [
     "DeepSeek-V4.1-Flash · 版本资料",
     "https://api-docs.deepseek.com/news/news260910"
+   ],
+   [
+    "DeepSeek-V4.1-Flash-1017 官方模型卡",
+    "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017"
+   ],
+   [
+    "2026.10.17 官方更新公告",
+    "https://api-docs.deepseek.com/updates/#date-2026-10-17"
    ]
   ],
   "events": [
@@ -698,6 +706,14 @@ const series = [
     "DeepSeek-V4.1-Flash",
     "原生多模态视觉理解",
     17
+   ],
+   [
+    "2026.10",
+    "DeepSeek-V4.1-Flash-1017",
+    "提升推理、编程、智能体及视觉能力，减少任务耗时与输出长度",
+    18,
+    "",
+    "2026-10-17"
    ]
   ],
   "website": "https://www.deepseek.com/"

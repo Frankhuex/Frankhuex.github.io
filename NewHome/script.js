@@ -126,7 +126,7 @@ const onlineProjects = [
     },
     {
         title: "大模型发展史",
-        description: "交互式 AI 模型发布时间轴，支持筛选、缩放与图片下载",
+        description: "各家大模型发布时间轴",
         href: "../AIModelTimeline/index.html",
         tag: "Tool",
         action: "进入",
