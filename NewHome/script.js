@@ -111,6 +111,13 @@ const musicItems = [
 
 const onlineProjects = [
     {
+        title: "Q 弹工坊",
+        description: "制作Q弹动图",
+        href: "../QSpring/index.html",
+        tag: "Tool",
+        action: "进入",
+    },
+    {
         title: "In Falsus 哈农",
         description: "单手 6k 哈农练习",
         href: "../InFalsusHanon/index.html",
@@ -490,8 +497,8 @@ const archiveItems = [
 ];
 
 const featuredProjects = [
-    { ...onlineProjects[0], image: "images/hanon-preview.png", imageAlt: "In Falsus 哈农的六轨练习界面", tag: "音乐练习" },
-    { ...onlineProjects[1], image: "images/card-editor-preview.png", imageAlt: "HJGAO 卡牌编辑器的卡组编辑界面", tag: "创作工具" },
+    { ...onlineProjects[0], image: "images/qspring-preview.png", imageAlt: "Q 弹工坊的图片伸缩预览与参数界面", tag: "动图工具" },
+    { ...onlineProjects[1], image: "images/hanon-preview.png", imageAlt: "In Falsus 哈农的六轨练习界面", tag: "音乐练习" },
 ];
 
 const targetMap = {
