@@ -129,6 +129,14 @@ const series = [
    [
     "GPT-6.1 Sol 官方发布页",
     "https://openai.com/index/introducing-gpt-6-1-sol/"
+   ],
+   [
+    "GPT-6.1 Terra 官方发布页",
+    "https://openai.com/index/introducing-gpt-6-1-terra/"
+   ],
+   [
+    "GPT-6.1 Terra 官方模型文档",
+    "https://developers.openai.com/api/docs/models/gpt-6.1-terra"
    ]
   ],
   "events": [
@@ -258,6 +266,14 @@ const series = [
     "GPT-6.1 Sol",
     "API 发布：编程与专业工作",
     30
+   ],
+   [
+    "2026.10",
+    "GPT-6.1 Terra",
+    "面向视觉推理、精确计算机操作及自然写作的高效模型",
+    31,
+    "",
+    "2026-10-26"
    ]
   ],
   "website": "https://chatgpt.com/"
@@ -1391,6 +1407,10 @@ const series = [
    [
     "abab 5.5 · 版本资料",
     "https://www.hkexnews.hk/listedco/listconews/sehk/2025/1231/2025123100026_c.pdf#page=212"
+   ],
+   [
+    "MiniMax M3.1 Flash 官方发布",
+    "https://www.minimax.io/blog/minimax-m31f"
    ]
   ],
   "events": [
@@ -1477,6 +1497,14 @@ const series = [
     "MiniMax M3.1 Flash Preview",
     "官方发布的小版本更新",
     8
+   ],
+   [
+    "2026.10",
+    "MiniMax M3.1 Flash",
+    "正式版；提升智能体、编程、计算机操作与网络安全能力，推理速度和使用成本进一步优化",
+    16,
+    "",
+    "2026-10-19"
    ]
   ],
   "website": "https://www.minimax.io/"
@@ -2102,6 +2130,14 @@ const series = [
    [
     "Kimi-Dev · 版本资料",
     "https://github.com/MoonshotAI/Kimi-Dev"
+   ],
+   [
+    "Kimi K3.1 Pro / Highspeed 官方发布",
+    "https://www.kimi.ai/blog/kimi-k3-1-pro"
+   ],
+   [
+    "K3.1 Pro 系列上线日期与高速版说明",
+    "https://www.kimi.com/code/docs/kimi-code/whats-new.html"
    ]
   ],
   "events": [
@@ -2180,6 +2216,14 @@ const series = [
     9,
     "",
     "2026-07-16"
+   ],
+   [
+    "2026.10",
+    "Kimi K3.1 Pro / Highspeed",
+    "三万亿级参数、百万上下文；提升编程、3D 创作、金融研究与长程智能体能力；同日推出 Highspeed 高速版",
+    13,
+    "",
+    "2026-10-23"
    ]
   ],
   "website": "https://www.kimi.ai/"
