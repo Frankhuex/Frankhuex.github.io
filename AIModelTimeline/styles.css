@@ -24,3 +24,45 @@ html:has(.timeline-page){height:100%;overflow:hidden}.timeline-page{height:100vh
 .range-navigator{padding-left:16px;padding-right:16px}@media(max-width:700px){.range-navigator{padding-left:0;padding-right:0}}
 /* Only the overview uses symmetric margins; the detailed ruler stops at the name column. */
 .timeline-header::after{position:sticky;left:auto;right:0;top:auto;display:block;width:var(--name-width);height:64px;margin-left:auto;margin-top:-64px;background:#fff}
+
+/* Compact toolbar and independently scrollable model chooser. */
+.filter-menu{position:relative;margin-left:auto;flex-shrink:0;z-index:10}
+.filter-menu summary{cursor:pointer;font-size:13px;padding:10px 12px;border:1px solid #dce0e3;border-radius:6px;list-style:none;white-space:nowrap}
+.filter-menu summary::after{content:" ▾"}.filter-menu[open] summary::after{content:" ▴"}
+.filter-menu summary::-webkit-details-marker{display:none}
+.page-toolbar .filter-menu .model-filters{position:absolute;right:0;top:calc(100% + 6px);width:min(420px,calc(100vw - 24px));max-width:none;max-height:min(440px,60dvh);overflow:auto;overscroll-behavior:contain;background:white;border:1px solid #dce0e3;border-radius:8px;box-shadow:0 8px 30px #202a3520;padding:16px;justify-content:flex-start;gap:12px}
+.filter-menu #model-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:4px 12px;justify-content:start}
+.filter-menu #model-options label{min-height:36px}.filter-menu #selection-count{margin-left:auto}
+@media(max-width:900px){#timeline .sticky-labels>div{font-size:12px}.timeline-page .page-toolbar{gap:4px 10px;padding-top:8px}.timeline-page .page-toolbar h1{font-size:22px}.timeline-page .page-toolbar .data-cutoff{font-size:10px}.filter-menu summary{font-size:12px;padding:9px}.timeline-page .chart-actions{min-height:48px;padding:6px 0}.timeline-page .chart-actions button{padding:10px 12px}}
+
+/* Keep all actions in a compact top toolbar. */
+.timeline-page .page-toolbar{position:relative;gap:8px;padding:8px 0 2px}
+.timeline-page .page-toolbar h1{font-size:22px;letter-spacing:1px}
+.page-toolbar .filter-menu{position:static}
+.page-toolbar .filter-menu .model-filters{right:0;top:100%}
+.timeline-page .page-toolbar .chart-actions{border:0;min-height:0;padding:0;margin:0;gap:6px}
+.page-toolbar .chart-actions a,.page-toolbar .chart-actions button,.page-toolbar .filter-menu summary{font-size:12px;padding:9px 10px;border-radius:5px;white-space:nowrap}
+.page-toolbar .chart-actions a{border:1px solid #dce0e3}
+.timeline-page .page-toolbar .model-filters .data-cutoff{width:100%;margin:0;padding-top:8px;border-top:1px solid #eceef0;font-size:11px}
+.timeline-page .status{bottom:16px}
+@media(max-width:600px){.timeline-page .page-toolbar{gap:6px}.timeline-page .page-toolbar h1{font-size:18px;letter-spacing:0}.page-toolbar .chart-actions a,.page-toolbar .chart-actions button,.page-toolbar .filter-menu summary{padding:8px}.timeline-page .page-toolbar .chart-actions{gap:5px}}
+[hidden]{display:none!important}#orientation{padding:8px;font-size:12px;background:#f0f3f5;color:#27343e}.vertical-panel{display:flex;flex:1;min-height:0;gap:6px;padding:8px 0}.vertical-nav{width:28px;flex-shrink:0;position:relative;background:linear-gradient(#f3f5f6,#e2e8ed);border:1px solid #c6cfd5;border-radius:4px}.vertical-window{position:absolute;left:0;width:100%;min-height:3px;border:2px solid #617582;background:#61758225;touch-action:none;cursor:move}.vertical-scroll{overflow:auto;flex:1;min-width:0}.vertical-content{position:relative}.vertical-head{display:flex;height:44px;position:sticky;top:0;background:white;z-index:4;border-bottom:1px solid #ccd5dc;align-items:center}.vertical-head>span{width:80px;flex-shrink:0;font-size:11px}.vertical-head>a{width:120px;flex-shrink:0;text-align:center;font-size:12px;text-decoration:none;font-weight:600}.vertical-body{position:relative}.vertical-model{position:absolute;width:120px;border:1px solid var(--accent);text-decoration:none;font-size:12px;overflow:hidden;padding:3px 5px;color:#34414b}.vertical-model span{position:sticky;top:48px;display:block;overflow-wrap:anywhere}.vertical-model.active{background:color-mix(in srgb,var(--accent) 28%,white)}.vertical-tick{position:absolute;left:0;width:100%;border-top:1px solid #edf0f2;font-size:10px;color:#697681;pointer-events:none}.vertical-cross{position:absolute;left:0;width:100%;border-top:1px dashed #546674;pointer-events:none;color:#28343e;font-size:11px;z-index:3}.page-toolbar{flex-wrap:wrap}
+/* Bring the horizontal overview closer to its detailed time ruler. */
+.timeline-page .range-navigator{margin-top:4px;margin-bottom:2px}
+
+.vertical-model span{position:absolute;top:3px;left:5px;width:108px;line-height:16px;pointer-events:none}
+.vertical-dates{pointer-events:none;position:fixed;inset:0;z-index:20}.vertical-dates span{position:absolute;background:#edf2f5;color:#27343e;border:1px solid #c3ced6;border-radius:4px;font-size:10px;padding:3px 5px;white-space:nowrap}.vertical-dates .v-current{background:#28343e;color:white}.vertical-year{position:absolute;left:2px;font-size:8px;color:#647583;pointer-events:none}.vertical-window{z-index:1}.vertical-model:focus-visible{outline:2px solid #28343e;outline-offset:-2px}
+
+/* Compact series tracks in both orientations. */
+.vertical-head>a,.vertical-model{width:96px}.vertical-model span{width:84px}.vertical-head>a{font-size:11px}
+
+.vertical-head>a,.vertical-model{width:48px}.vertical-model span{width:36px}.vertical-head>a{font-size:10px;line-height:12px;padding:0 2px;overflow-wrap:anywhere}
+
+/* Center the vertical chart when its columns fit the viewport. */
+.vertical-content{margin-inline:auto}
+
+/* Center navigator and chart together as one group. */
+.vertical-panel{max-width:100%;align-self:center;flex-basis:0}.vertical-content{margin-inline:0}
+
+/* Keep vertical dates visible while columns scroll sideways. */
+.vertical-ruler{position:sticky;left:0;width:80px;height:100%;background:#fff;border-right:1px solid #dce1e4;z-index:3;pointer-events:none}.vertical-head>span{position:sticky;left:0;z-index:5;height:44px;display:flex;align-items:center;background:#fff;border-right:1px solid #dce1e4}.vertical-ruler .vertical-tick{padding-left:3px}

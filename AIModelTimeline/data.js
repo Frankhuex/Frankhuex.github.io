@@ -1054,6 +1054,10 @@ const series = [
    [
     "Gemini 研发预告 原始记录",
     "https://blog.google/innovation-and-ai/technology/ai/google-io-2023-keynote-sundar-pichai/"
+   ],
+   [
+    "Gemini 4 Carbon 官方发布",
+    "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/"
    ]
   ],
   "events": [
@@ -1129,6 +1133,14 @@ const series = [
     "Gemini 4 Argon",
     "官方发布的小版本更新",
     11
+   ],
+   [
+    "2026.10",
+    "Gemini 4 Carbon",
+    "公布前沿模型，强化编程、长程智能体与网络安全能力；通过 Fairwind 计划向部分防御者和可信伙伴分阶段开放",
+    13,
+    "",
+    "2026-10-28"
    ]
   ],
   "website": "https://gemini.google.com/"
@@ -1868,6 +1880,10 @@ const series = [
    [
     "Mistral Large 4 Preview · 版本资料",
     "https://mistral.ai/news/mistral-large-4/"
+   ],
+   [
+    "Mistral Large 4 官方发布",
+    "https://mistral.ai/news/mistral-large-4-oss/"
    ]
   ],
   "events": [
@@ -2070,6 +2086,14 @@ const series = [
     26,
     "",
     "2026-10-06"
+   ],
+   [
+    "2026.10",
+    "Mistral Large 4",
+    "发布改进后的开放权重版；提升编程、防御性网络安全与推理效率，支持三档推理模式",
+    27,
+    "",
+    "2026-10-29"
    ]
   ],
   "website": "https://mistral.ai/"

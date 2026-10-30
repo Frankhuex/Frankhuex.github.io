@@ -1,7 +1,7 @@
 'use strict';
 const escapeHTML = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const preciseDates = {"GPT-4.5": "2025-02-27", "GPT-4.1": "2025-04-14", "GPT-5.1": "2025-11-12", "GPT-5.2": "2025-12-11", "GPT-5.3 Instant": "2026-03-03", "GPT-5.4": "2026-03-05", "GPT-5.5": "2026-04-24", "GPT-5.6": "2026-07-09", "GPT-6 Sol / Luna": "2026-09-22", "Claude 2.1": "2023-11-21", "Claude 3.5 Sonnet v2": "2024-10-22", "Claude Opus 4.1": "2025-08-05", "Claude Sonnet 4.5": "2025-09-29", "Claude Haiku 4.5": "2025-10-15", "Claude Opus 4.5": "2025-11-24", "Claude Sonnet 4.6": "2026-02-17", "Claude Opus 4.7": "2026-04-16", "Claude Opus 4.8": "2026-05-28", "Claude Fable / Mythos 5": "2026-06-09", "Claude Sonnet 5": "2026-06-30", "Claude Opus 5": "2026-07-24", "Claude Fable / Mythos 5.1": "2026-09-01", "Claude Opus 5.5": "2026-09-22", "Claude Sonnet 5.5": "2026-09-28", "Claude Haiku 5.5": "2026-10-07", "DeepSeek-V2.5": "2024-09-05", "DeepSeek-V3.1": "2025-08-21", "DeepSeek-V3.1-Terminus": "2025-09-22", "DeepSeek-V3.2-Exp": "2025-09-29", "GLM-4.1V-Thinking": "2025-07-01", "GLM-4.6": "2025-09-30", "GLM-4.7": "2025-12-22", "GLM-5.1": "2026-04-07", "GLM-5.2": "2026-06-16", "GLM-5.3": "2026-08-18", "豆包 1.8": "2025-12-18", "Gemini 3.5 Flash": "2026-05-19", "Gemini 3.6 Flash": "2026-07-21", "Gemini 3.7 Flash": "2026-08-13", "Gemini 3.8 Flash": "2026-09-02", "Gemini 4 Argon": "2026-10-13", "Qwen1.5": "2024-02-04", "Qwen3.6 Plus": "2026-04-02", "Qwen3.8 Max": "2026-08-03", "MiniMax M2.1": "2025-12-23", "MiniMax M2.5": "2026-02-12", "Grok 1.5": "2024-03-28", "Grok 1.5 Vision": "2024-04-12", "Grok 4.20": "2026-03-10", "Grok 4.5": "2026-07-08", "Grok 4.7": "2026-09-21", "GPT-1": "2018-06-11", "GPT-2": "2019-02-14", "GPT-3": "2020-05-28", "GPT-5": "2025-08-07", "GPT-6 Astra": "2026-09-03", "GPT-6.1 Sol": "2026-09-29", "Gemini 1.0 Ultra": "2024-02-08", "Gemini 1.5": "2024-02-15", "Claude Opus 4.6": "2026-02-05", "DeepSeek-V3.2": "2025-12-01", "GLM-4.5": "2025-07-28", "GLM-5.3-Flash": "2026-08-26", "Grok 4.6": "2026-08-12", "Claude 1.3": "2023-04-18", "Claude Instant 1.2": "2023-08-09", "GPT-5.3 Codex": "2026-02-05", "GLM": "2021-03-18", "DeepSeek-Coder": "2023-11-02", "DeepSeek LLM 67B": "2023-11-29", "Claude 早期测试": "2023-01-17", "Gemini 研发预告": "2023-05-10", "豆包 邀请测试": "2023-08-17"};
-const cutoff = Date.UTC(2026,9,27);
+const cutoff = Date.UTC(2026,9,31);
 const origin = Date.UTC(2018,0,1);
 const geometry = {width:4500,height:1450,left:16,right:130,top:64,row:120};
 const xAt = date => geometry.left+(date-origin)/(cutoff-origin)*(geometry.width-geometry.left-geometry.right);
@@ -13,7 +13,7 @@ series.sort((a,b)=>release(a.events[0])-release(b.events[0]));
 const selectedNames=new Set(series.map(s=>s.name));
 let shownSeries=series;
 const font='-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif';
-measure.font=`650 18px ${font}`;
+measure.font=`650 ${matchMedia("(max-width:900px)").matches?12:18}px ${font}`;
 const nameWidth=Math.ceil(Math.max(...series.map(s=>measure.measureText(s.name).width)))+20;
 geometry.right=nameWidth;
 document.documentElement.style.setProperty('--name-width',`${nameWidth}px`);
@@ -55,7 +55,7 @@ function buildTimeRuler(){
 function buildTimeline({posterHeight=0}={}){
  shownSeries=series.filter(s=>selectedNames.has(s.name));
  const ruler=buildTimeRuler();
- const rowHeight=64;
+ const rowHeight=48;
  const layouts=shownSeries.map((s,i)=>({y:geometry.top+i*rowHeight+rowHeight/2}));
  geometry.height=Math.max(posterHeight,shownSeries.length?geometry.top+shownSeries.length*rowHeight+35:260);
  const {width,height,left,right,top,row}=geometry;
@@ -235,7 +235,7 @@ async function createPoster(scale=2){
  const selected=series.filter(s=>selectedNames.has(s.name));
  measure.font=`500 14px ${font}`;
  const widestTrack=Math.max(0,...selected.map(s=>s.events.reduce((sum,e)=>sum+measure.measureText(e[1]).width+20,0)));
- const posterHeight=Math.max(480,geometry.top+selected.length*64+35);
+ const posterHeight=Math.max(480,geometry.top+selected.length*48+35);
  // The selected tracks determine the image size, independent of viewport and zoom.
  const posterWidth=Math.round(Math.max(1200,Math.min(Math.max(1200,widestTrack+geometry.left+geometry.right),posterHeight*2.6)));
  const savedWidth=geometry.width,savedLeft=scrollArea.scrollLeft,savedTop=scrollArea.scrollTop;
@@ -255,7 +255,7 @@ async function createPoster(scale=2){
  svg.querySelector('.interaction-layer')?.remove();
  svg.querySelectorAll('.model-box').forEach(box=>{box.setAttribute('fill','none');box.removeAttribute('fill-opacity')});
  const heading=document.createElementNS(svgNS,'text');heading.setAttribute('x','16');heading.setAttribute('y','26');heading.setAttribute('font-size','20');heading.setAttribute('font-weight','650');heading.setAttribute('fill','#202a35');heading.textContent='大模型发展史';svg.appendChild(heading);
- const caption=document.createElementNS(svgNS,'text');caption.setAttribute('x','250');caption.setAttribute('y','26');caption.setAttribute('font-size','12');caption.setAttribute('fill','#7c8388');caption.textContent='数据截至 2026.10.27';svg.appendChild(caption);
+ const caption=document.createElementNS(svgNS,'text');caption.setAttribute('x','250');caption.setAttribute('y','26');caption.setAttribute('font-size','12');caption.setAttribute('fill','#7c8388');caption.textContent='数据截至 2026.10.31';svg.appendChild(caption);
  const blob=new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml;charset=utf-8'});
  const url=URL.createObjectURL(blob);
  try{
@@ -269,3 +269,8 @@ const downloadButton=document.getElementById('download');
 let statusTimer;
 function announce(message){clearTimeout(statusTimer);document.getElementById('status').textContent=message;statusTimer=setTimeout(()=>{document.getElementById('status').textContent=''},6500)}
 downloadButton.addEventListener('click',async()=>{downloadButton.disabled=true;announce('正在生成数轴图片…');try{const canvas=await createPoster();const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('图片编码失败')),'image/png'));const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`AI-${shownSeries.length}系列区间时间轴-2026-10.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);announce(`高清 PNG 已生成（${canvas.width} × ${canvas.height}）`)}catch(error){announce('导出失败：'+error.message)}finally{downloadButton.disabled=false}});
+
+const filterMenu=document.querySelector('.filter-menu');
+document.addEventListener('pointerdown',event=>{if(!filterMenu.contains(event.target))filterMenu.open=false});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&filterMenu.open){filterMenu.open=false;filterMenu.querySelector('summary').focus()}});
+matchMedia('(max-width:900px)').addEventListener('change',()=>{measure.font=`650 ${matchMedia('(max-width:900px)').matches?12:18}px ${font}`;geometry.right=Math.ceil(Math.max(...series.map(s=>measure.measureText(s.name).width)))+20;document.documentElement.style.setProperty('--name-width',`${geometry.right}px`);measure.font=`500 14px ${font}`;buildTimeline();syncNavigator();keepLabelsVisible()});
