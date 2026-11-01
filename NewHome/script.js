@@ -367,7 +367,7 @@ const fictionItems = [
 
 const socialItems = [
     {
-        title: "Bilibili",
+        title: "bilibili",
         description: "视频投稿",
         href: "https://space.bilibili.com/453811839?spm_id_from=333.1007.0.0",
         tag: "Video",
@@ -399,7 +399,7 @@ const socialItems = [
         external: true,
     },
     {
-        title: "Github",
+        title: "GitHub",
         description: "代码仓库",
         href: "https://github.com/Frankhuex",
         tag: "Code",
