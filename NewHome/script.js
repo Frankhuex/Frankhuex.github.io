@@ -111,6 +111,13 @@ const musicItems = [
 
 const onlineProjects = [
     {
+        title: "SpectrumStudio",
+        description: "制作音频频谱可视化视频",
+        href: "../SpectrumStudio/index.html",
+        tag: "Tool",
+        action: "进入",
+    },
+    {
         title: "Q 弹工坊",
         description: "制作Q弹动图",
         href: "../QSpring/index.html",
@@ -214,7 +221,7 @@ const downloads = [
     {
         title: "美国大选 3D 联机版（Mac）",
         description: "Unity 下载包",
-        href: "../Games/US%20Election%20Online%20(Mac).app",
+        href: "../Games/US%20Election%20Online%20(Mac).zip",
         tag: "Unity 3D",
         action: "下载",
         download: true,
@@ -497,8 +504,8 @@ const archiveItems = [
 ];
 
 const featuredProjects = [
-    { ...onlineProjects[0], image: "images/qspring-preview.png", imageAlt: "Q 弹工坊的图片伸缩预览与参数界面", tag: "动图工具" },
-    { ...onlineProjects[1], image: "images/hanon-preview.png", imageAlt: "In Falsus 哈农的六轨练习界面", tag: "音乐练习" },
+    { ...onlineProjects[0], image: "images/SpectrumStudio.png", imageAlt: "SpectrumStudio 音频频谱视频编辑界面", tag: "频谱视频" },
+    { ...onlineProjects[1], image: "images/qspring-preview.png", imageAlt: "Q 弹工坊的图片伸缩预览与参数界面", tag: "动图工具" },
 ];
 
 const targetMap = {
@@ -518,7 +525,7 @@ function createCard(item) {
 
     const link = document.createElement("a");
     link.className = "card-link";
-    link.href = item.href;
+    link.href = new URL(item.href, import.meta.url).href;
 
     if (item.external || item.download || !item.href.startsWith("#")) {
         link.target = "_blank";
@@ -534,7 +541,7 @@ function createCard(item) {
         media.className = "card-media";
 
         const img = document.createElement("img");
-        img.src = item.image;
+        img.src = new URL(item.image, import.meta.url).href;
         img.alt = item.imageAlt || `${item.title} 封面`;
         img.loading = "lazy";
         img.decoding = "async";
@@ -580,7 +587,7 @@ function createCard(item) {
 function createArchiveCard(item) {
     const linkCard = document.createElement("a");
     linkCard.className = "archive-card";
-    linkCard.href = item.href;
+    linkCard.href = new URL(item.href, import.meta.url).href;
     linkCard.target = "_blank";
     linkCard.rel = "noopener noreferrer";
 
