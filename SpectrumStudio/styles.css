@@ -66,3 +66,13 @@ aside{padding-top:0}
 .settings-nav{top:0;margin-top:0;padding-top:0}
 .range-step{border:0;background:transparent;color:#fff;transition:color .15s}
 .range-step:hover{border:0;background:transparent;color:#b6f577}
+
+.canvas-text-editor{position:fixed;z-index:30;resize:none;margin:0;padding:0;border:1px solid #b6f577;outline:none;background:#101214dd;line-height:1.25;box-sizing:border-box;overflow:auto}
+/* Leave the preview canvas unframed. */
+.stage{border:0;border-radius:0;background:transparent;box-shadow:none;padding:0}
+
+.align-buttons{display:flex;gap:4px}.align-buttons button{padding:5px;width:34px;height:32px;color:#9ca7a1;background:transparent;border:1px solid transparent}.align-buttons svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}.align-buttons button:hover{color:#e9eceb}.align-buttons button[aria-pressed=true]{color:#b6f577;background:#b6f57715;border-color:#b6f57755}
+
+#textRow{align-items:flex-start}#textContent{width:145px;min-width:0;min-height:88px;resize:vertical;background:#242a2c;color:#e9eceb;border:1px solid #3c4445;border-radius:5px;padding:8px;font:inherit;line-height:1.5}#textContent:focus-visible{outline:2px solid #b6f577;outline-offset:3px}
+#textRow{flex-direction:column;align-items:stretch;gap:8px}
+#textContent{width:100%}

@@ -48,21 +48,131 @@ function paintBackground(w,h){
  }
  ctx.drawImage(background,0,0,w,h);
 }
-let placement={x:0,y:0},drag=null;
+let placement={x:0,y:0},spectrumGesture=null,spectrumSelected=true;
+window.selectSpectrum=()=>{spectrumSelected=true;};
+window.deselectSpectrum=()=>{spectrumSelected=false;};
+window.isSpectrumSelected=()=>spectrumSelected&&!window.getSelectedForeground?.();
+window.spectrumBounds=()=>{
+ const size=+v('size'),ratio=canvas.width/canvas.height;
+ if(v('style')==='circle'){
+  const r=Math.min(ratio,1)*.23*size+.175*size;
+  return {x:.5+placement.x-r/ratio,y:.5+placement.y-r,w:2*r/ratio,h:2*r};
+ }
+ const height=.35*size,mirror=v('style')==='mirror',base=v('style')==='line'?.6:.62;
+ return {x:.5-.425*size+placement.x,y:base-height+placement.y,w:.85*size,h:height*(mirror?2:1)+(mirror?4/canvas.height:0)};
+};
 canvas.style.touchAction='none';canvas.style.cursor='grab';
 function pointerPosition(e){
  const rect=canvas.getBoundingClientRect(),scale=Math.min(rect.width/canvas.width,rect.height/canvas.height);
  const width=canvas.width*scale,height=canvas.height*scale;
  return {x:(e.clientX-rect.left-(rect.width-width)/2)/width,y:(e.clientY-rect.top-(rect.height-height)/2)/height};
 }
-canvas.addEventListener('pointerdown',e=>{if(exporting||!buffer)return;const p=pointerPosition(e);if(p.x<0||p.x>1||p.y<0||p.y>1)return;drag={id:e.pointerId,x:p.x-placement.x,y:p.y-placement.y};canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing';});
-canvas.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId||exporting)return;const p=pointerPosition(e),previous={...placement};placement.x=Math.max(-.5,Math.min(.5,p.x-drag.x));placement.y=Math.max(-.5,Math.min(.38,p.y-drag.y));if(window.snapRectangle){const bounds=window.spectrumBounds(),snapped=window.snapRectangle(bounds,'spectrum');placement.x+=snapped.x-bounds.x;placement.y+=snapped.y-bounds.y;}if(window.spectrumPlacementValid&&!window.spectrumPlacementValid())placement=previous;});
-function endDrag(){drag=null;canvas.style.cursor='grab';}
-canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);canvas.addEventListener('lostpointercapture',endDrag);
+function isSpectrumHandleHit(p){
+ if(!buffer||!window.isSpectrumSelected())return false;
+ return window.resizeCorner(p,window.spectrumBounds());
+}
+window.isSpectrumHandleHit=isSpectrumHandleHit;
+canvas.addEventListener('pointerdown',e=>{
+ if(exporting||!buffer)return;
+ const p=pointerPosition(e);
+ if(p.x<0||p.x>1||p.y<0||p.y>1)return;
+ window.deselectForeground?.();
+ spectrumSelected=true;
+ if(isSpectrumHandleHit(p)){
+  spectrumGesture={id:e.pointerId,type:'resize',corner:isSpectrumHandleHit(p),p,initialSize:+v('size'),initialBounds:window.spectrumBounds()};
+  canvas.setPointerCapture(e.pointerId);
+  canvas.style.cursor=window.cornerCursor(spectrumGesture.corner);
+ }else{
+  spectrumGesture={id:e.pointerId,type:'move',p,initialPlacement:{...placement}};
+  canvas.setPointerCapture(e.pointerId);
+  canvas.style.cursor='grabbing';
+ }
+});
+canvas.addEventListener('pointermove',e=>{
+ if(exporting)return;
+ const p=pointerPosition(e);
+ if(spectrumGesture&&spectrumGesture.id===e.pointerId){
+  const g=spectrumGesture,dx=p.x-g.p.x,dy=p.y-g.p.y;
+  if(g.type==='resize'){
+   const b=g.initialBounds,previous={...placement},oldSize=v('size');
+   const target=window.resizeBox(b,g.p,p,g.corner,true,'spectrum');
+   $('size').value=Math.max(.2,Math.min(1,g.initialSize*target.w/b.w));
+   const resized=window.spectrumBounds(),west=g.corner.includes('w'),north=g.corner.includes('n');
+   placement.x+=(west?b.x+b.w-resized.w:b.x)-resized.x;
+   placement.y+=(north?b.y+b.h-resized.h:b.y)-resized.y;
+   const next=window.spectrumBounds();
+   if(next.x<0||next.y<0||next.x+next.w>1||next.y+next.h>1||(window.spectrumPlacementValid&&!window.spectrumPlacementValid())){placement=previous;$('size').value=oldSize;window.clearSnapLines();}
+
+  }else{
+   const previous={...placement};
+   placement.x=Math.max(-.5,Math.min(.5,g.initialPlacement.x+dx));
+   placement.y=Math.max(-.5,Math.min(.38,g.initialPlacement.y+dy));
+   if(window.snapRectangle){
+    const bounds=window.spectrumBounds(),snapped=window.snapRectangle(bounds,'spectrum');
+    placement.x+=snapped.x-bounds.x;
+    placement.y+=snapped.y-bounds.y;
+   }
+   if(window.spectrumPlacementValid&&!window.spectrumPlacementValid())placement=previous;
+  }
+  return;
+ }
+ if(!buffer)return;
+ if(window.isForegroundHandleHit&&window.isForegroundHandleHit(p)){
+  canvas.style.cursor=window.cornerCursor(window.isForegroundHandleHit(p));
+ }else if(isSpectrumHandleHit(p)){
+  canvas.style.cursor=window.cornerCursor(isSpectrumHandleHit(p));
+ }else if(window.findForegroundAt&&window.findForegroundAt(p)){
+  canvas.style.cursor='move';
+ }else{
+  const sb=window.spectrumBounds();
+  canvas.style.cursor=(p.x>=sb.x&&p.x<=sb.x+sb.w&&p.y>=sb.y&&p.y<=sb.y+sb.h)?'grab':'default';
+ }
+});
+function endSpectrumGesture(){
+ spectrumGesture=null;
+ window.clearSnapLines?.();
+ canvas.style.cursor='grab';
+}
+canvas.addEventListener('pointerup',endSpectrumGesture);
+canvas.addEventListener('pointercancel',endSpectrumGesture);
+canvas.addEventListener('lostpointercapture',endSpectrumGesture);
 const clock=t=>Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');
-function draw(){const w=canvas.width,h=canvas.height;paintBackground(w,h);if(analyser){ctx.save();ctx.translate(placement.x*w,placement.y*h);analyser.getByteFrequencyData(bins);const n=+v('bands'),size=+v('size'),color=v('color'),values=Array.from({length:n},(_,i)=>{const lo=Math.floor(Math.pow(800,i/n)),hi=Math.min(bins.length-1,Math.ceil(Math.pow(800,(i+1)/n)));let sum=0;for(let k=lo;k<=hi;k++)sum+=bins[k];return Math.min(1,sum/(hi-lo+1)/255*+v('gain'));});ctx.fillStyle=color;ctx.strokeStyle=color;ctx.lineWidth=Math.max(2,w/500);const span=w*.85*size,step=span/n;ctx.beginPath();values.forEach((a,i)=>{const x=(w-span)/2+i*step,amp=Math.max(2,a*h*.35*size);if(v('style')==='circle'){const angle=i/n*Math.PI*2,r=Math.min(w,h)*.23*size,cx=w/2,cy=h/2;ctx.moveTo(cx+Math.cos(angle)*r,cy+Math.sin(angle)*r);ctx.lineTo(cx+Math.cos(angle)*(r+amp*.5),cy+Math.sin(angle)*(r+amp*.5));}else if(v('style')==='line'){const y=h*.6-amp;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}else{ctx.fillRect(x,h*.62-amp,step*.65,amp);if(v('style')==='mirror'){ctx.globalAlpha=.4;ctx.fillRect(x,h*.62+4,step*.65,amp);ctx.globalAlpha=1;}}});ctx.stroke();ctx.restore();}if(window.drawForeground)window.drawForeground(ctx,w,h,exporting);if(buffer){const t=position();$('seek').value=t/buffer.duration;$('time').textContent=clock(t)+' / '+clock(buffer.duration);if(exporting)$('progress').value=t/buffer.duration;}requestAnimationFrame(draw);}
+function drawSpectrumIndicator(c,w,h){
+ if(exporting||!buffer||!window.isSpectrumSelected())return;
+ const b=window.spectrumBounds(),x=b.x*w,y=b.y*h,ew=b.w*w,eh=b.h*h;
+ c.save();
+ c.strokeStyle='#b6f577';
+ c.lineWidth=2;
+ c.strokeRect(x,y,ew,eh);
+ c.fillStyle='#b6f577';
+ window.cornerHandles(c,x,y,ew,eh);
+ c.restore();
+}
+function drawSnapGuides(c,w,h){
+ if(exporting||!window.activeSnapLines)return;
+ const {x,y}=window.activeSnapLines;
+ if(x===null&&y===null)return;
+ c.save();
+ c.strokeStyle='#b6f577';
+ c.lineWidth=1.5;
+ c.setLineDash([6,4]);
+ c.shadowColor='#b6f57780';
+ c.shadowBlur=4;
+ if(typeof x==='number'){
+  const px=Math.round(x*w)+.5;
+  c.beginPath();c.moveTo(px,0);c.lineTo(px,h);c.stroke();
+ }
+ if(typeof y==='number'){
+  const py=Math.round(y*h)+.5;
+  c.beginPath();c.moveTo(0,py);c.lineTo(w,py);c.stroke();
+ }
+ c.restore();
+}
+window.drawSpectrumIndicator=drawSpectrumIndicator;
+window.drawSnapGuides=drawSnapGuides;
+function draw(schedule=true){const w=canvas.width,h=canvas.height;paintBackground(w,h);if(analyser){ctx.save();ctx.translate(placement.x*w,placement.y*h);analyser.getByteFrequencyData(bins);const n=+v('bands'),size=+v('size'),color=v('color'),values=Array.from({length:n},(_,i)=>{const lo=Math.floor(Math.pow(800,i/n)),hi=Math.min(bins.length-1,Math.ceil(Math.pow(800,(i+1)/n)));let sum=0;for(let k=lo;k<=hi;k++)sum+=bins[k];return Math.min(1,sum/(hi-lo+1)/255*+v('gain'));});ctx.fillStyle=color;ctx.strokeStyle=color;ctx.lineWidth=Math.max(2,w/500);const span=w*.85*size,step=span/n;ctx.beginPath();values.forEach((a,i)=>{const x=(w-span)/2+i*step,amp=Math.max(2,a*h*.35*size);if(v('style')==='circle'){const angle=i/n*Math.PI*2,r=Math.min(w,h)*.23*size,cx=w/2,cy=h/2;ctx.moveTo(cx+Math.cos(angle)*r,cy+Math.sin(angle)*r);ctx.lineTo(cx+Math.cos(angle)*(r+amp*.5),cy+Math.sin(angle)*(r+amp*.5));}else if(v('style')==='line'){const y=h*.6-amp;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}else{ctx.fillRect(x,h*.62-amp,step*.65,amp);if(v('style')==='mirror'){ctx.globalAlpha=.4;ctx.fillRect(x,h*.62+4,step*.65,amp);ctx.globalAlpha=1;}}});ctx.stroke();ctx.restore();}if(window.drawForeground)window.drawForeground(ctx,w,h,exporting);drawSpectrumIndicator(ctx,w,h);drawSnapGuides(ctx,w,h);if(buffer){const t=position();$('seek').value=t/buffer.duration;$('time').textContent=clock(t)+' / '+clock(buffer.duration);if(exporting)$('progress').value=t/buffer.duration;}if(schedule)requestAnimationFrame(()=>draw());}
 function lock(on){document.querySelectorAll('aside input,aside select,aside button,#play,#seek,#export,.range-step').forEach(e=>e.disabled=on);}
-$('export').onclick=async()=>{if(!buffer){status('请先导入音频');return;}if(!window.MediaRecorder||!canvas.captureStream){status('当前浏览器不支持视频录制，请使用桌面 Chrome 或 Edge');return;}const mime=['video/mp4;codecs=avc1,mp4a.40.2','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(x=>MediaRecorder.isTypeSupported(x));if(!mime){status('未找到可用的视频编码格式');return;}stop();offset=0;cancelled=false;const stream=canvas.captureStream(30);dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));try{recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:8000000});const chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};recorder.onstop=()=>{exporting=false;stop();stream.getVideoTracks().forEach(t=>t.stop());lock(false);if(cancelled){status('已取消导出');$('progressBox').hidden=true;return;}if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(new Blob(chunks,{type:mime}));$('download').href=url;$('download').download='spectrum-studio.'+(mime.includes('mp4')?'mp4':'webm');$('download').hidden=false;$('cancel').hidden=true;status('视频已生成，点击下载');};recorder.onerror=()=>{cancelled=true;status('编码失败，请降低分辨率后重试');};exporting=true;lock(true);$('progressBox').hidden=false;$('download').hidden=true;$('cancel').hidden=false;recorder.start(1000);await play();status('正在实时导出，请保持页面前台');}catch(err){exporting=false;lock(false);stream.getVideoTracks().forEach(t=>t.stop());status('导出失败：'+err.message);}};
+$('export').onclick=async()=>{if(!buffer){status('请先导入音频');return;}if(!window.MediaRecorder||!canvas.captureStream){status('当前浏览器不支持视频录制，请使用桌面 Chrome 或 Edge');return;}const mime=['video/mp4;codecs=avc1,mp4a.40.2','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(x=>MediaRecorder.isTypeSupported(x));if(!mime){status('未找到可用的视频编码格式');return;}stop();offset=0;cancelled=false;exporting=true;lock(true);window.clearSnapLines?.();draw(false);const stream=canvas.captureStream(30);dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));try{recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:8000000});const chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};recorder.onstop=()=>{exporting=false;stop();stream.getVideoTracks().forEach(t=>t.stop());lock(false);if(cancelled){status('已取消导出');$('progressBox').hidden=true;return;}if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(new Blob(chunks,{type:mime}));$('download').href=url;$('download').download='spectrum-studio.'+(mime.includes('mp4')?'mp4':'webm');$('download').hidden=false;$('cancel').hidden=true;status('视频已生成，点击下载');};recorder.onerror=()=>{cancelled=true;status('编码失败，请降低分辨率后重试');};exporting=true;lock(true);$('progressBox').hidden=false;$('download').hidden=true;$('cancel').hidden=false;draw(false);recorder.start(1000);await play();status('正在实时导出，请保持页面前台');}catch(err){exporting=false;lock(false);stream.getVideoTracks().forEach(t=>t.stop());status('导出失败：'+err.message);}};
 $('cancel').onclick=()=>{cancelled=true;if(recorder?.state!=='inactive')recorder.stop();};
 window.addEventListener('beforeunload',e=>{if(exporting){e.preventDefault();e.returnValue='';}});dimensions();draw();
 
@@ -88,18 +198,10 @@ $('exportBottom').onclick=()=>$('export').click();
 
 document.querySelector('.stage').addEventListener('click',()=>{if(!buffer&&!exporting)$('audioFile').click();});
 
-window.spectrumBounds=()=>{
- const size=+v('size'),ratio=canvas.width/canvas.height;
- if(v('style')==='circle'){
-  const r=Math.min(ratio,1)*.23*size+.175*size;
-  return {x:.5+placement.x-r/ratio,y:.5+placement.y-r,w:2*r/ratio,h:2*r};
- }
- const height=.35*size,mirror=v('style')==='mirror',base=v('style')==='line'?.6:.62;
- return {x:.5-.425*size+placement.x,y:base-height+placement.y,w:.85*size,h:height*(mirror?2:1)+(mirror?4/canvas.height:0)};
-};
 document.querySelectorAll('.settings-nav button').forEach(button=>button.onclick=()=>{
  document.querySelectorAll('.settings-page').forEach(page=>page.hidden=page.dataset.page!==button.dataset.page);
  document.querySelectorAll('.settings-nav button').forEach(tab=>tab.setAttribute('aria-selected',String(tab===button)));
+ if(button.dataset.page==='0'){window.selectSpectrum();window.deselectForeground?.();}
 });
 for(const id of ['style','size','ratio','resolution']){
  let accepted=$(id).value;
