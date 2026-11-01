@@ -1,4 +1,15 @@
+import { stepCovers } from "./cover-physics.mjs?v=20261102-circles";
+
 const musicItems = [
+    {
+        title: "Spring",
+        description: "Trap/Jazz/Trance/Future Bass",
+        href: "https://music.163.com/song?id=3406688729",
+        tag: "Single",
+        action: "立刻收听",
+        image: "../Images/Spring.jpg",
+        external: true,
+    },
     {
         title: "Gray Efflorescence",
         description: "Drum&Bass",
@@ -628,6 +639,134 @@ function renderCards() {
     }
 }
 
+function setupFloatingCovers() {
+    const covers = [
+        { title: "BlearyDesire", image: "../Images/BlearyDesire.png" },
+        ...musicItems,
+    ].filter(item => item.image);
+    const field = document.querySelector(".floating-covers");
+    if (!field) return;
+    const cards = [...field.querySelectorAll(".cover-card")];
+    let currentImages = new Set();
+    const shuffle = () => {
+        // Prefer an entirely new set; each batch contains four different songs.
+        const pool = covers.filter(item => !currentImages.has(item.image));
+        for (let i = pool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [pool[i], pool[j]] = [pool[j], pool[i]];
+        }
+        currentImages = new Set(pool.slice(0, cards.length).map(item => item.image));
+        cards.forEach((card, i) => {
+            const item = pool[i];
+            const img = card.querySelector("img");
+            img.src = new URL(item.image, import.meta.url).href;
+            img.alt = `${item.title} 封面`;
+            img.draggable = false;
+            img.decoding = "async";
+        });
+    };
+    shuffle();
+    document.querySelector(".shuffle-covers").addEventListener("click", shuffle);
+    const bodies = cards.map((card, i) => ({
+        angle: Math.random() * Math.PI * 2,
+        spin: (i % 2 ? -1 : 1) * (.25 + Math.random() * .35),
+        x: i % 2 ? .59 : .09,
+        y: i < 2 ? .09 : .58,
+        vx: (i % 2 ? -1 : 1) * (.10 + Math.random() * .05),
+        vy: (i < 2 ? 1 : -1) * (.08 + Math.random() * .05),
+    }));
+    let width = field.clientWidth;
+    let height = field.clientHeight / width;
+    const draw = () => bodies.forEach((body, i) => {
+        cards[i].style.transform = `translate3d(${body.x * width}px, ${body.y * width}px, 0)`;
+        cards[i].querySelector("img").style.transform = `rotate(${body.angle}rad)`;
+    });
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    let previous = 0, time = 0, frame = 0;
+    let visible = true;
+    const tick = now => {
+        frame = 0;
+        if (document.hidden || !visible || reducedMotion.matches) { previous = 0; return; }
+        const elapsed = previous ? Math.min((now - previous) / 1000, .05) : 0;
+        previous = now;
+        const steps = Math.max(1, Math.ceil(elapsed / (1 / 120)));
+        for (let i = 0; i < steps; i++) {
+            time += elapsed / steps;
+            stepCovers(bodies, height, elapsed / steps, time);
+        }
+        draw();
+        frame = requestAnimationFrame(tick);
+    };
+    const resume = () => {
+        if (!frame && !document.hidden && visible && !reducedMotion.matches) frame = requestAnimationFrame(tick);
+    };
+    cards.forEach((card, i) => {
+        const body = bodies[i];
+        let drag = null;
+        card.addEventListener("pointerdown", event => {
+            if (!event.isPrimary || event.button !== 0 || bodies.some(b => b.held)) return;
+            event.preventDefault();
+            card.setPointerCapture(event.pointerId);
+            const bounds = field.getBoundingClientRect();
+            drag = { id:event.pointerId, offsetX:(event.clientX-bounds.left)/width-body.x,
+                offsetY:(event.clientY-bounds.top)/width-body.y, samples:[] };
+            body.held = true;
+            body.vx = body.vy = body.spin = 0;
+            card.classList.add("is-dragging");
+            drag.samples.push({x:body.x,y:body.y,t:event.timeStamp});
+        });
+        const move = event => {
+            if (!drag || drag.id !== event.pointerId) return;
+            const bounds = field.getBoundingClientRect();
+            body.x = Math.max(.025, Math.min(.655, (event.clientX-bounds.left)/width-drag.offsetX));
+            body.y = Math.max(.025, Math.min(height-.345, (event.clientY-bounds.top)/width-drag.offsetY));
+            drag.samples.push({x:body.x,y:body.y,t:event.timeStamp});
+            drag.samples = drag.samples.filter(s => event.timeStamp-s.t <= 100);
+            draw();
+        };
+        card.addEventListener("pointermove", move);
+        const release = event => {
+            if (!drag || drag.id !== event.pointerId) return;
+            if (event.type === "pointerup") move(event);
+            const first = drag.samples[0];
+            const seconds = first ? (event.timeStamp-first.t)/1000 : 0;
+            if (event.type === "pointerup" && seconds > .008 && seconds < .2 && !reducedMotion.matches) {
+                body.vx = Math.max(-2, Math.min(2, (body.x-first.x)/seconds));
+                body.vy = Math.max(-2, Math.min(2, (body.y-first.y)/seconds));
+                body.spin = Math.max(-8, Math.min(8, ((drag.offsetX-.16)*body.vy - (drag.offsetY-.16)*body.vx) * 50));
+            } else body.vx = body.vy = 0;
+            body.held = false;
+            drag = null;
+            card.classList.remove("is-dragging");
+            if (card.hasPointerCapture(event.pointerId)) card.releasePointerCapture(event.pointerId);
+            resume();
+        };
+        card.addEventListener("pointerup", release);
+        card.addEventListener("pointercancel", release);
+        card.addEventListener("lostpointercapture", release);
+    });
+    new ResizeObserver(() => {
+        width = field.clientWidth;
+        if (!width) return;
+        height = field.clientHeight / width;
+        stepCovers(bodies, height, 0, time);
+        draw();
+    }).observe(field);
+    new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        resume();
+    }).observe(field);
+    document.addEventListener("visibilitychange", resume);
+    reducedMotion.addEventListener("change", () => {
+        if (frame) cancelAnimationFrame(frame);
+        frame = 0;
+        previous = 0;
+        resume();
+    });
+    draw();
+    resume();
+}
+
 function setupMenu() {
     const button = document.querySelector(".menu-toggle");
     const menu = document.querySelector(".site-menu");
@@ -686,5 +825,6 @@ function setupNavigation() {
 }
 
 renderCards();
+setupFloatingCovers();
 setupMenu();
 setupNavigation();
