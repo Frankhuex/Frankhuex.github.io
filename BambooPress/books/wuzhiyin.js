@@ -2,15 +2,15 @@ export const novel = {
   "id": "wuzhiyin",
   "title": "无只因生还",
   "version": "2.0.5",
-  "authors": {
-    "Lh": "BCE",
-    "Wk": "Wkz",
-    "Cs": "真爱困",
-    "Lt": "Lth",
-    "Gh": "Small Pot",
-    "Hh": "Frank",
-    "Wt": "Wtc"
-  },
+  "authors": [
+    "BCE",
+    "Wkz",
+    "真爱困",
+    "Lth",
+    "SmallPot",
+    "Frank",
+    "Wtc"
+  ],
   "chapters": [
     {
       "id": "c0",
@@ -19,7 +19,7 @@ export const novel = {
       "parts": [
         {
           "id": "c0-s0",
-          "author": "Lh"
+          "author": "BCE"
         }
       ],
       "paragraphs": [
@@ -50,47 +50,47 @@ export const novel = {
       "parts": [
         {
           "id": "c1-s1",
-          "author": "Lh"
+          "author": "BCE"
         },
         {
           "id": "c1-s2",
-          "author": "Wk"
+          "author": "Wkz"
         },
         {
           "id": "c1-s3",
-          "author": "Cs"
+          "author": "真爱困"
         },
         {
           "id": "c1-s4",
-          "author": "Lt"
+          "author": "Lth"
         },
         {
           "id": "c1-s5",
-          "author": "Gh"
+          "author": "SmallPot"
         },
         {
           "id": "c1-s6",
-          "author": "Lh"
+          "author": "BCE"
         },
         {
           "id": "c1-s7",
-          "author": "Wk"
+          "author": "Wkz"
         },
         {
           "id": "c1-s8",
-          "author": "Lt"
+          "author": "Lth"
         },
         {
           "id": "c1-s9",
-          "author": "Cs"
+          "author": "真爱困"
         },
         {
           "id": "c1-s10",
-          "author": "Gh"
+          "author": "SmallPot"
         },
         {
           "id": "c1-s11",
-          "author": "Lh"
+          "author": "BCE"
         }
       ],
       "paragraphs": [
@@ -547,51 +547,51 @@ export const novel = {
       "parts": [
         {
           "id": "c2-s1",
-          "author": "Wk"
+          "author": "Wkz"
         },
         {
           "id": "c2-s2",
-          "author": "Cs"
+          "author": "真爱困"
         },
         {
           "id": "c2-s3",
-          "author": "Lt"
+          "author": "Lth"
         },
         {
           "id": "c2-s4",
-          "author": "Gh"
+          "author": "SmallPot"
         },
         {
           "id": "c2-s5",
-          "author": "Lh"
+          "author": "BCE"
         },
         {
           "id": "c2-s6",
-          "author": "Wk"
+          "author": "Wkz"
         },
         {
           "id": "c2-s7",
-          "author": "Cs"
+          "author": "真爱困"
         },
         {
           "id": "c2-s8",
-          "author": "Lt"
+          "author": "Lth"
         },
         {
           "id": "c2-s9",
-          "author": "Gh"
+          "author": "SmallPot"
         },
         {
           "id": "c2-s10",
-          "author": "Lh"
+          "author": "BCE"
         },
         {
           "id": "c2-s11",
-          "author": "Wk"
+          "author": "Wkz"
         },
         {
           "id": "c2-s12",
-          "author": "Hh"
+          "author": "Frank"
         }
       ],
       "paragraphs": [
@@ -1174,27 +1174,27 @@ export const novel = {
       "parts": [
         {
           "id": "c3-s1",
-          "author": "Cs"
+          "author": "真爱困"
         },
         {
           "id": "c3-s2",
-          "author": "Lt"
+          "author": "Lth"
         },
         {
           "id": "c3-s3",
-          "author": "Gh"
+          "author": "SmallPot"
         },
         {
           "id": "c3-s4",
-          "author": "Lh"
+          "author": "BCE"
         },
         {
           "id": "c3-s5",
-          "author": "Wk"
+          "author": "Wkz"
         },
         {
           "id": "c3-s6",
-          "author": "Hh"
+          "author": "Frank"
         }
       ],
       "paragraphs": [
@@ -1621,19 +1621,19 @@ export const novel = {
       "parts": [
         {
           "id": "c4-continued",
-          "author": "Hh"
+          "author": "Frank"
         },
         {
           "id": "c4-s1",
-          "author": "Cs"
+          "author": "真爱困"
         },
         {
           "id": "c4-s2",
-          "author": "Lt"
+          "author": "Lth"
         },
         {
           "id": "c4-s3",
-          "author": "Gh"
+          "author": "SmallPot"
         }
       ],
       "paragraphs": [
@@ -1892,23 +1892,23 @@ export const novel = {
       "parts": [
         {
           "id": "c5-s1",
-          "author": "Lh"
+          "author": "BCE"
         },
         {
           "id": "c5-s2",
-          "author": "Wt"
+          "author": "Wtc"
         },
         {
           "id": "c5-s3",
-          "author": "Wk"
+          "author": "Wkz"
         },
         {
           "id": "c5-s4",
-          "author": "Hh"
+          "author": "Frank"
         },
         {
           "id": "c5-s5",
-          "author": "Cs"
+          "author": "真爱困"
         }
       ],
       "paragraphs": [
@@ -2395,19 +2395,19 @@ export const novel = {
       "parts": [
         {
           "id": "c6-s1",
-          "author": "Lt"
+          "author": "Lth"
         },
         {
           "id": "c6-s2",
-          "author": "Lh"
+          "author": "BCE"
         },
         {
           "id": "c6-s3",
-          "author": "Gh"
+          "author": "SmallPot"
         },
         {
           "id": "c6-s4",
-          "author": "Wt"
+          "author": "Wtc"
         }
       ],
       "paragraphs": [
@@ -2684,27 +2684,27 @@ export const novel = {
       "parts": [
         {
           "id": "c7-continued",
-          "author": "Wt"
+          "author": "Wtc"
         },
         {
           "id": "c7-s1",
-          "author": "Wk"
+          "author": "Wkz"
         },
         {
           "id": "c7-s2",
-          "author": "Hh"
+          "author": "Frank"
         },
         {
           "id": "c7-s3",
-          "author": "Cs"
+          "author": "真爱困"
         },
         {
           "id": "c7-s4",
-          "author": "Lt"
+          "author": "Lth"
         },
         {
           "id": "c7-s5",
-          "author": "Gh"
+          "author": "SmallPot"
         }
       ],
       "paragraphs": [
@@ -2999,47 +2999,47 @@ export const novel = {
       "parts": [
         {
           "id": "c8-s1",
-          "author": "Lh"
+          "author": "BCE"
         },
         {
           "id": "c8-s2",
-          "author": "Wt"
+          "author": "Wtc"
         },
         {
           "id": "c8-s3",
-          "author": "Wk"
+          "author": "Wkz"
         },
         {
           "id": "c8-s4",
-          "author": "Lh"
+          "author": "BCE"
         },
         {
           "id": "c8-s5",
-          "author": "Gh"
+          "author": "SmallPot"
         },
         {
           "id": "c8-s6",
-          "author": "Wk"
+          "author": "Wkz"
         },
         {
           "id": "c8-s7",
-          "author": "Wt"
+          "author": "Wtc"
         },
         {
           "id": "c8-s8",
-          "author": "Hh"
+          "author": "Frank"
         },
         {
           "id": "c8-s9",
-          "author": "Cs"
+          "author": "真爱困"
         },
         {
           "id": "c8-s10",
-          "author": "Lt"
+          "author": "Lth"
         },
         {
           "id": "c8-s11",
-          "author": "Lh"
+          "author": "BCE"
         }
       ],
       "paragraphs": [
@@ -3296,31 +3296,31 @@ export const novel = {
       "parts": [
         {
           "id": "c9-s0",
-          "author": "Lh"
+          "author": "BCE"
         },
         {
           "id": "c9-s1",
-          "author": "Gh"
+          "author": "SmallPot"
         },
         {
           "id": "c9-s2",
-          "author": "Hh"
+          "author": "Frank"
         },
         {
           "id": "c9-s3",
-          "author": "Wk"
+          "author": "Wkz"
         },
         {
           "id": "c9-s4",
-          "author": "Lt"
+          "author": "Lth"
         },
         {
           "id": "c9-s5",
-          "author": "Cs"
+          "author": "真爱困"
         },
         {
           "id": "c9-s6",
-          "author": "Wt"
+          "author": "Wtc"
         }
       ],
       "paragraphs": [

@@ -1,7 +1,8 @@
-import {books} from './books.js';
+import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=authors2';
+import {books} from './books.js?v=authors2';
 import {read,setupSettings} from './settings.js?v=20261105-settings2';
-import {search,highlight} from './search.js';
-import {renderReader,route} from './reader.js?v=20261105-chapter-position3';
+import {search,highlight} from './search.js?v=authors2';
+import {renderReader,route} from './reader.js?v=authors2';
 history.scrollRestoration = 'manual';
 setupSettings();
 const app=document.querySelector('#app');
@@ -39,8 +40,15 @@ let cleanup=()=>{};
 let revision=0;
 const scrollPositions=new Map();
 let previous=location.hash;
-function cover() {return '<div class="cover"><strong>无只因生还</strong></div>';}
-function resume() {return route({view:'read',...read('progress',{chapter:'c0'})});}
+function cover(book) {
+  const color = /^#[0-9a-f]{6}$/i.test(book.coverColor || '') ? book.coverColor : '#3b3b3b';
+  return `<div class="cover" style="--cover-color:${color}"><strong>${escapeHtml(book.title)}</strong></div>`;
+}
+function resume(book, novel) {
+  const progress = read(progressKey(book.id), null) ||
+    (book.legacyDefault ? read('progress', null) : null);
+  return route({view:'read', ...(progress || {chapter:novel.chapters[0].id}), book:book.id});
+}
 async function renderContent() {
   const currentRevision=++revision;
   scrollPositions.set(previous,scrollY);previous=location.hash;
@@ -52,28 +60,36 @@ async function renderContent() {
   }
   const params=new URLSearchParams(location.hash.slice(1));
   const view = location.pathname.endsWith('/search.html') ? 'search' : params.get('view');
-  const book=books[0];
-  document.body.classList.toggle('reading',view==='read');
+  const book = findBook(params.get('book'));
+  const missingBook = (view === 'book' || view === 'read') && !book;
+  document.body.classList.toggle('reading',view==='read' && !missingBook);
   const back = document.querySelector('#header-back');
   back.hidden = false;
   back.textContent = view === 'search' ? '返回' : !view ? '主站' : view === 'read' ? '返回目录' : '返回书架';
-  back.href = view === 'search' ? new URL('./', location.href).href : !view ? '/#fiction' : view === 'read' ? route({view:'book'}) : '#';
+  back.href = view === 'search' ? new URL('./', location.href).href : !view ? '/#fiction' : view === 'read' ? route({view:'book', book:book?.id}) : '#';
   back.onclick = view === 'search' ? event => {
     event.preventDefault();
     history.back();
   } : null;
   const brand = document.querySelector('.brand');
-  const inBook = view === 'book' || view === 'read';
+  const inBook = !missingBook && (view === 'book' || view === 'read');
   brand.textContent = view === 'search' ? '搜索' : inBook ? book.title : 'BambooPress';
   document.querySelector('footer').textContent = inBook ? `BambooPress · ${book.title}` : 'BambooPress';
   document.querySelector('#query').value=params.get('q')||'';
-  document.title=`${book.title} · BambooPress`;
+  document.title = inBook ? `${book.title} · BambooPress` : view === 'search' ? '搜索 · BambooPress' : 'BambooPress';
+  if (missingBook) {
+    back.textContent = '返回书架';
+    back.href = '#';
+    app.innerHTML = '<section class="detail"><h1>未找到作品</h1><a href="#">返回书架</a></section>';
+    scrollTo(0, 0);
+    return;
+  }
   if(!view) {
-    app.innerHTML = `<section class="shelf" aria-label="书架"><div class="bookshelf">${books.map((shelfBook, index) => `<a class="shelf-book" style="--book-index:${index}" href="${route({view:'book'})}">${cover()}<h2>${shelfBook.title}</h2></a>`).join('')}</div></section>`;
+    app.innerHTML = `<section class="shelf" aria-label="书架"><div class="bookshelf">${books.map((shelfBook, index) => `<a class="shelf-book" data-book="${escapeHtml(shelfBook.id)}" style="--book-index:${index}" href="${route({view:'book', book:shelfBook.id})}">${cover(shelfBook)}<h2>${escapeHtml(shelfBook.title)}</h2></a>`).join('')}</div></section>`;
   } else {
     app.innerHTML='<p class="loading">正在加载…</p>';
     try {
-      const {novel}=await book.load();
+      const novel = view === 'search' ? null : await loadBook(book);
       if(currentRevision!==revision)return;
       if(view==='read') {
         const chapter=novel.chapters.find(c=>c.id===params.get('chapter'))||novel.chapters[0];
@@ -81,18 +97,20 @@ async function renderContent() {
         cleanup=renderReader(app,novel,chapter,params);return;
       }
       if(view==='book') {
-        app.innerHTML=`<section class="detail book-enter book-pending"><div class="detail-top">${cover()}<div><h1>${book.title}</h1><p>${book.description}</p><p class="authors">${book.authors}</p><a class="primary" href="${resume()}">阅读 →</a></div></div><h2>目录</h2><div class="chapter-list"></div></section>`;
-        novel.chapters.forEach(c=>{const a=document.createElement('a');a.href=route({view:'read',chapter:c.id});a.textContent=c.excerpt ? `${c.title}　${c.excerpt}` : c.title;app.querySelector('.chapter-list').append(a);});
+        app.innerHTML=`<section class="detail book-enter book-pending"><div class="detail-top">${cover(book)}<div><h1>${escapeHtml(book.title)}</h1><p>${escapeHtml(book.description)}</p><p class="authors">${escapeHtml(book.authors)}</p><p class="authors book-date">${escapeHtml(book.date)}</p><a class="primary" href="${resume(book, novel)}">阅读 →</a></div></div><h2>目录</h2><div class="chapter-list"></div></section>`;
+        novel.chapters.forEach(c=>{const a=document.createElement('a');a.href=route({view:'read',book:book.id,chapter:c.id});a.textContent=c.excerpt ? `${c.title}　${c.excerpt}` : c.title;app.querySelector('.chapter-list').append(a);});
       } else if(view==='search') {
         const query=(params.get('q')||'').trim();
-        const results=query?search(novel,query):[];
+        const {results, failed} = await searchLibrary(query, search);
+        if (currentRevision !== revision) return;
         app.innerHTML='<section class="results"><p class="result-count"></p><div class="result-list"></div></section>';
         app.querySelector('.results').prepend(document.querySelector('#search-form'));
         app.querySelector('.result-count').textContent=query?`“${query}” · ${results.length} 处结果`:'';
         if(query&&!results.length)app.querySelector('.result-count').textContent+='，换一段文字再试试。';
+        if (failed.length) app.querySelector('.result-count').append(document.createTextNode(`（${failed.length} 本作品暂未加载成功）`));
         for(const result of results) {
-          const a=document.createElement('a');a.className='result';a.href=new URL('./', location.href).href+route({view:'read',chapter:result.chapter.id,paragraph:`p${result.index}`,q:query});
-          const label=document.createElement('small');label.textContent=`${novel.title} / ${result.chapter.title} / ${result.authors}`;a.append(label);
+          const a=document.createElement('a');a.className='result';a.href=new URL('./', location.href).href+route({view:'read',book:result.book.id,chapter:result.chapter.id,paragraph:`p${result.index}`,q:query});
+          const label=document.createElement('small');label.textContent=`${result.book.title} / ${result.chapter.title} / ${result.authors}`;a.append(label);
           const p=document.createElement('p');const start=Math.max(0,result.offset-35);highlight(p,(start?'…':'')+result.text.slice(start,start+150)+(result.text.length>start+150?'…':''),query);a.append(p);app.querySelector('.result-list').append(a);
         }
       } else {app.innerHTML='<section class="detail"><h1>请从书架选择作品</h1><a href="#">返回书架</a></section>';}
@@ -141,7 +159,13 @@ async function render() {
   if ((enteringBook || enteringReader) && document.startViewTransition &&
       !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     // Load before capturing either page so the cover stays in both snapshots.
-    await books[0].load();
+    const selectedBook = findBook(new URLSearchParams(location.hash.slice(1)).get('book'));
+    if (selectedBook) {
+      try { await loadBook(selectedBook); } catch { /* Render the normal loading error below. */ }
+    }
+    for (const element of app.querySelectorAll('.shelf-book')) {
+      element.classList.toggle('transition-book', element.dataset.book === selectedBook?.id);
+    }
     document.documentElement.classList.toggle('page-turn', enteringReader);
     const transition = document.startViewTransition(async () => {
       await renderContent();

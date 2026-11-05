@@ -1,1 +1,12 @@
-export const books = [{id:'wuzhiyin',title:'无只因生还',authors:'BCE / Wkz / 真爱困 / Lth / Small Pot / Frank / Wtc',description:'一本小说，如果每个人写一个片段，然后不断地接龙下去，最后会写出一部怎么样的小说呢？',load:()=>import('./books/wuzhiyin.js')}];
+export const books = [
+  {
+    id: 'wuzhiyin',
+    legacyDefault: true,
+    title: '无只因生还',
+    authors: '「竹林七贤」BCE / Wkz / 真爱困 / Lth / SmallPot / Frank / Wtc',
+    description: '灰色中分已然绽放。',
+    date: '2026.08.19',
+    coverColor: '#3b3b3b',
+    load: () => import('./books/wuzhiyin.js?v=authors2')
+  }
+];

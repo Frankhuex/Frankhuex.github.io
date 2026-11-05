@@ -1,8 +1,10 @@
-import {highlight} from './search.js';
+import {progressKey, escapeHtml} from './library.js?v=authors2';
+import {highlight} from './search.js?v=authors2';
 import {read, save} from './settings.js?v=20261105-settings2';
 export function route(values={}) { return '#'+new URLSearchParams(values).toString(); }
 export function renderReader(app, novel, chapter, params) {
-  app.innerHTML = `<button class="toc-toggle" aria-controls="toc" aria-label="展开目录" title="展开目录"><span aria-hidden="true">☰</span></button><aside id="toc"><div class="toc-book-title">${novel.title}</div><div id="toc-items"></div></aside><article class="reader"><div class="chapter-heading">${chapter.excerpt ? `<small>${chapter.excerpt}</small>` : ''}<h1>${chapter.title}</h1></div><div id="prose"></div><nav class="chapter-nav"></nav></article>`;
+  const bookRoute = values => route({...values, book:novel.id});
+  app.innerHTML = `<button class="toc-toggle" aria-controls="toc" aria-label="展开目录" title="展开目录"><span aria-hidden="true">☰</span></button><aside id="toc"><div class="toc-book-title">${escapeHtml(novel.title)}</div><div id="toc-items"></div></aside><article class="reader"><div class="chapter-heading">${chapter.excerpt ? `<small>${escapeHtml(chapter.excerpt)}</small>` : ''}<h1>${escapeHtml(chapter.title)}</h1></div><div id="prose"></div><nav class="chapter-nav"></nav></article>`;
   const toc = app.querySelector('#toc');
   const toggle = app.querySelector('.toc-toggle');
   const desktop = matchMedia('(min-width: 960px)');
@@ -85,16 +87,16 @@ export function renderReader(app, novel, chapter, params) {
     };
     updateToggle();
     const chapterLink = document.createElement('a');
-    chapterLink.href = route({view:'read', chapter:item.id});
+    chapterLink.href = bookRoute({view:'read', chapter:item.id});
     const chapterLabel = item.excerpt ? `${item.title}　${item.excerpt}` : item.title;
     chapterLink.textContent = chapterLabel;
     chapterLink.title = chapterLabel;
     heading.append(toggle, chapterLink);
     item.parts.forEach((part, index) => {
       const link = document.createElement('a');
-      link.href = route({view:'read', chapter:item.id, part:part.id});
+      link.href = bookRoute({view:'read', chapter:item.id, part:part.id});
       link.dataset.part = part.id;
-      link.textContent = `${index + 1} · ${novel.authors[part.author]}`;
+      link.textContent = `${index + 1} · ${part.author}`;
       list.append(link);
     });
     section.append(heading, list);
@@ -108,7 +110,7 @@ export function renderReader(app, novel, chapter, params) {
       const span = document.createElement('span');
       if (segment.part && !seen.has(segment.part)) {
         seen.add(segment.part);span.id=segment.part;
-        const name = document.createElement('small');name.className='signature';name.textContent=novel.authors[chapter.parts.find(part=>part.id===segment.part).author];span.append(name);
+        const name = document.createElement('small');name.className='signature';name.textContent=chapter.parts.find(part=>part.id===segment.part).author;span.append(name);
       }
       highlight(span, segment.text, params.get('q')||''); p.append(span);
     }
@@ -117,7 +119,7 @@ export function renderReader(app, novel, chapter, params) {
   const index = novel.chapters.indexOf(chapter);
   const nav=app.querySelector('.chapter-nav');
   for(const [label,target] of [['上一章',index-1],['下一章',index+1]]) {
-    if(novel.chapters[target]) {const a=document.createElement('a');a.href=route({view:'read',chapter:novel.chapters[target].id});a.textContent=`${label} · ${novel.chapters[target].title}`;nav.append(a);}
+    if(novel.chapters[target]) {const a=document.createElement('a');a.href=bookRoute({view:'read',chapter:novel.chapters[target].id});a.textContent=`${label} · ${novel.chapters[target].title}`;nav.append(a);}
   }
   if(index===novel.chapters.length-1) nav.innerHTML+='<span>已读完，<a href="#">返回书架</a></span>';
   const topNav = nav.cloneNode(true);
@@ -157,7 +159,7 @@ export function renderReader(app, novel, chapter, params) {
     const paragraph = target?.closest('p');
     if(paragraph) initialProgress.paragraph = paragraph.id;
   }
-  save('progress', initialProgress);
+  save(progressKey(novel.id), initialProgress);
   const onScroll=()=>{
     updateHeader();
     clearTimeout(timer);timer=setTimeout(()=>{
@@ -166,7 +168,7 @@ export function renderReader(app, novel, chapter, params) {
       const current=paragraphs.find(p=>p.getBoundingClientRect().bottom>readingTop)||paragraphs.at(-1);
       if(!current)return;
       const box=current.getBoundingClientRect();
-      save('progress',{chapter:chapter.id,paragraph:current.id,ratio:Math.max(0,(readingTop-box.top)/box.height)});
+      save(progressKey(novel.id),{chapter:chapter.id,paragraph:current.id,ratio:Math.max(0,(readingTop-box.top)/box.height)});
       const part=[...app.querySelectorAll('#prose span[id]')].filter(s=>s.getBoundingClientRect().top<180).at(-1);
       toc.querySelectorAll('[data-part]').forEach(a=>a.classList.toggle('active',a.dataset.part===part?.id));
     },120);

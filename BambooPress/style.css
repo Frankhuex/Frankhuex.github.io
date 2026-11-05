@@ -1479,3 +1479,21 @@ body:has(.results) .results #search-form.search-open .search-reveal {
     padding-top: 76px;
   }
 }
+
+.book-enter .detail-top .book-date {
+  --enter-delay: 200ms;
+}
+
+.shelf-book .cover {
+  view-transition-name: none;
+}
+.shelf-book.transition-book .cover {
+  view-transition-name: book-cover;
+}
+.shelf-book .cover,
+.detail-top > .cover {
+  background: var(--cover-color, #3b3b3b);
+}
+header .brand {
+  font-weight: 700;
+}

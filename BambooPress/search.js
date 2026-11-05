@@ -5,7 +5,7 @@ export function search(novel, query) {
     chapter.paragraphs.forEach((segments, index) => {
       const text = segments.map(s=>s.text).join('');
       const offset = text.toLocaleLowerCase().indexOf(term);
-      const authors = [...new Set(segments.map(s=>novel.authors[chapter.parts.find(p=>p.id===s.part)?.author]).filter(Boolean))].join(' / ');
+      const authors = [...new Set(segments.map(s=>chapter.parts.find(p=>p.id===s.part)?.author).filter(Boolean))].join(' / ');
       const metadata = `${novel.title} ${chapter.title} ${authors}`.toLocaleLowerCase().includes(term);
       if (offset >= 0 || metadata) results.push({chapter,index,text,authors,offset,rank:metadata?0:1});
     });
