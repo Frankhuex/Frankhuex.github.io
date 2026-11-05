@@ -10,6 +10,31 @@ const siteHeaderObserver = new ResizeObserver(() => {
   document.documentElement.style.setProperty('--header-height', `${siteHeader.offsetHeight}px`);
 });
 siteHeaderObserver.observe(siteHeader);
+const menuButton = document.createElement('button');
+menuButton.id = 'header-menu';
+menuButton.type = 'button';
+menuButton.textContent = '⋯';
+menuButton.setAttribute('aria-label', '打开菜单');
+menuButton.setAttribute('aria-expanded', 'false');
+siteHeader.append(menuButton);
+function closeHeaderMenu() {
+  siteHeader.classList.remove('menu-open');
+  menuButton.setAttribute('aria-expanded', 'false');
+}
+menuButton.onclick = () => {
+  const open = siteHeader.classList.toggle('menu-open');
+  menuButton.setAttribute('aria-expanded', String(open));
+};
+document.addEventListener('click', event => {
+  if (!siteHeader.contains(event.target) || event.target.closest('#settings-open')) closeHeaderMenu();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && siteHeader.classList.contains('menu-open')) {
+    closeHeaderMenu();
+    menuButton.focus();
+  }
+});
+
 let cleanup=()=>{};
 let revision=0;
 const scrollPositions=new Map();
@@ -20,18 +45,27 @@ async function renderContent() {
   const currentRevision=++revision;
   scrollPositions.set(previous,scrollY);previous=location.hash;
   cleanup();cleanup=()=>{};
+  closeHeaderMenu();
+  const existingSearch = document.querySelector('#search-form');
+  if (existingSearch && app.contains(existingSearch)) {
+    document.querySelector('header').append(existingSearch);
+  }
   const params=new URLSearchParams(location.hash.slice(1));
-  const view=params.get('view');
+  const view = location.pathname.endsWith('/search.html') ? 'search' : params.get('view');
   const book=books[0];
   document.body.classList.toggle('reading',view==='read');
   const back = document.querySelector('#header-back');
-  back.hidden = Boolean(view) && view !== 'book' && view !== 'read';
-  back.textContent = !view ? '主站' : view === 'read' ? '返回目录' : '返回书架';
-  back.href = !view ? '/#fiction' : view === 'read' ? route({view:'book'}) : '#';
+  back.hidden = false;
+  back.textContent = view === 'search' ? '返回' : !view ? '主站' : view === 'read' ? '返回目录' : '返回书架';
+  back.href = view === 'search' ? new URL('./', location.href).href : !view ? '/#fiction' : view === 'read' ? route({view:'book'}) : '#';
+  back.onclick = view === 'search' ? event => {
+    event.preventDefault();
+    history.back();
+  } : null;
   const brand = document.querySelector('.brand');
   const inBook = view === 'book' || view === 'read';
-  brand.textContent = inBook ? `BambooPress · ${book.title}` : 'BambooPress';
-  document.querySelector('footer').textContent = brand.textContent;
+  brand.textContent = view === 'search' ? '搜索' : inBook ? book.title : 'BambooPress';
+  document.querySelector('footer').textContent = inBook ? `BambooPress · ${book.title}` : 'BambooPress';
   document.querySelector('#query').value=params.get('q')||'';
   document.title=`${book.title} · BambooPress`;
   if(!view) {
@@ -52,11 +86,12 @@ async function renderContent() {
       } else if(view==='search') {
         const query=(params.get('q')||'').trim();
         const results=query?search(novel,query):[];
-        app.innerHTML='<section class="results"><a href="#">← 书架</a><h1>搜索结果</h1><p class="result-count"></p><div class="result-list"></div></section>';
-        app.querySelector('.result-count').textContent=query?`“${query}” · ${results.length} 处结果`:'输入书名、作者或记得的文字。';
+        app.innerHTML='<section class="results"><p class="result-count"></p><div class="result-list"></div></section>';
+        app.querySelector('.results').prepend(document.querySelector('#search-form'));
+        app.querySelector('.result-count').textContent=query?`“${query}” · ${results.length} 处结果`:'';
         if(query&&!results.length)app.querySelector('.result-count').textContent+='，换一段文字再试试。';
         for(const result of results) {
-          const a=document.createElement('a');a.className='result';a.href=route({view:'read',chapter:result.chapter.id,paragraph:`p${result.index}`,q:query});
+          const a=document.createElement('a');a.className='result';a.href=new URL('./', location.href).href+route({view:'read',chapter:result.chapter.id,paragraph:`p${result.index}`,q:query});
           const label=document.createElement('small');label.textContent=`${novel.title} / ${result.chapter.title} / ${result.authors}`;a.append(label);
           const p=document.createElement('p');const start=Math.max(0,result.offset-35);highlight(p,(start?'…':'')+result.text.slice(start,start+150)+(result.text.length>start+150?'…':''),query);a.append(p);app.querySelector('.result-list').append(a);
         }
@@ -78,18 +113,23 @@ function setSearchOpen(open) {
 }
 searchForm.onsubmit = event => {
   event.preventDefault();
-  if (!searchForm.classList.contains('search-open')) {
-    setSearchOpen(true);
+  if (!location.pathname.endsWith('/search.html')) {
+    location.href = new URL('search.html', location.href).href;
     return;
   }
   const query = searchInput.value.trim();
   if (query) location.hash = route({view:'search', q:query});
 };
-document.querySelector('#search-cancel').onclick = () => setSearchOpen(false);
+document.querySelector('#search-cancel').onclick = () => {
+  if (location.pathname.endsWith('/search.html')) location.href = new URL('./', location.href).href;
+  else setSearchOpen(false);
+};
+if (location.pathname.endsWith('/search.html')) setSearchOpen(true);
 searchForm.addEventListener('keydown', event => {
   if (event.key === 'Escape') {
     event.preventDefault();
-    setSearchOpen(false);
+    if (location.pathname.endsWith('/search.html')) searchInput.blur();
+    else setSearchOpen(false);
   }
 });
 let renderedView = new URLSearchParams(location.hash.slice(1)).get('view');
