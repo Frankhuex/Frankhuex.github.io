@@ -329,6 +329,13 @@ const legacyTools = [
 
 const fictionItems = [
     {
+        title: "BambooPress",
+        description: "竹林小说阅读站",
+        href: "../BambooPress/public/index.html",
+        tag: "Fiction",
+        action: "阅读",
+    },
+    {
         title: "N-Gram 文艺复兴",
         description: "基于 N-Gram 算法的文本生成",
         href: "../ngram_renaissance.html",
