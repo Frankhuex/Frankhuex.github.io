@@ -1514,3 +1514,7 @@ header .brand {
   height: 100%;
   object-fit: cover;
 }
+.results #search-form {
+  margin-left: auto;
+  margin-right: auto;
+}
