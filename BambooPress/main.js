@@ -42,6 +42,10 @@ const scrollPositions=new Map();
 let previous=location.hash;
 function cover(book) {
   const color = /^#[0-9a-f]{6}$/i.test(book.coverColor || '') ? book.coverColor : '#3b3b3b';
+  if (book.coverImage) {
+    const imageUrl = new URL(book.coverImage, import.meta.url).href;
+    return `<div class="cover cover-image"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)}封面" decoding="async"></div>`;
+  }
   return `<div class="cover" style="--cover-color:${color}"><strong>${escapeHtml(book.title)}</strong></div>`;
 }
 function resume(book, novel) {

@@ -7,6 +7,7 @@ export const books = [
     description: '灰色中分已然绽放。',
     date: '2026.08.19',
     coverColor: '#3b3b3b',
+    coverImage: 'images/wuzhiyin.jpeg',
     load: () => import('./books/wuzhiyin.js?v=authors2')
   }
 ];
