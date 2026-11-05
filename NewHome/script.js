@@ -121,7 +121,6 @@ const musicItems = [
 ];
 
 const onlineProjects = [
-    { title: "BambooPress", description: "多人共笔小说阅读", href: "../BambooPress/index.html", tag: "阅读", action: "阅读" },
     {
         title: "SpectrumStudio",
         description: "制作音频频谱可视化视频",
@@ -523,8 +522,8 @@ const archiveItems = [
 ];
 
 const featuredProjects = [
-    { ...onlineProjects[0], image: "../BambooPress/preview.svg", imageAlt: "BambooPress 小说阅读", tag: "小说阅读" },
-    { ...onlineProjects[1], image: "images/SpectrumStudio.png", imageAlt: "SpectrumStudio 音频频谱视频编辑界面", tag: "频谱视频" },
+    { ...onlineProjects[0], image: "images/SpectrumStudio.png", imageAlt: "SpectrumStudio 音频频谱视频编辑界面", tag: "频谱视频" },
+    { ...onlineProjects[1], image: "images/qspring-preview.png", imageAlt: "Q 弹工坊的图片伸缩预览与参数界面", tag: "动图工具" },
 ];
 
 const targetMap = {

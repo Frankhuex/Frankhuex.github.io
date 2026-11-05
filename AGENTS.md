@@ -7,6 +7,11 @@
 - 新增程序、游戏或工具时，将新项目放到程序区的 featured（`project-showcase`）位置，原有推荐项目依次后移，挤出的最后一项移到对应的普通列表首位，保留原有信息和访问入口。
 - 同步检查根目录 `index.html`、`NewHome/index.html` 和共用的 `NewHome/script.js`，确保两个首页入口一致；图片路径应适配各自目录。
 
+## 首页项目归类
+
+- 按应用的实际用途选择首页分区。BambooPress 等小说阅读、作品展示应用归入“小说”（`fictionItems`），不得加入“程序与游戏”的 `onlineProjects` 或 `project-showcase` 推荐位。
+- 新增应用前先判断所属分区；程序推荐位的顺移规则仅适用于归入“程序与游戏”的项目。
+
 ## 新网站的 Cloudflare 埋点
 
 - 每次新增网站或独立页面，都要在 HTML 的 head 区域加入 Cloudflare Web Analytics 埋点，并检查每个页面仅加载一次。
