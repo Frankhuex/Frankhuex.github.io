@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {books} from '../books.js?v=authors2';
-import {findBook, loadBook, searchLibrary, progressKey, escapeHtml} from '../library.js?v=authors2';
-import {search} from '../search.js?v=authors2';
+import {books} from '../books.js?v=20261106-indent';
+import {findBook, loadBook, searchLibrary, progressKey, escapeHtml} from '../library.js?v=20261106-indent';
+import {search} from '../search.js?v=20261106-indent';
 
 const original = await loadBook(findBook());
 const second = {
@@ -12,6 +12,7 @@ const second = {
       paragraphs:[[{part:'s0',text:'第二本独有文字 灰色'}]]}]
   }})
 };
+const originalBookCount = books.length;
 books.push(second);
 try {
   assert.equal(findBook(second.id), second);
@@ -32,5 +33,5 @@ try {
   assert.equal(escapeHtml('<书 & "名">'), '&lt;书 &amp; &quot;名&quot;&gt;');
   console.log('PASS: two books, overlapping chapter IDs, legacy selection, isolated progress keys, cross-book search, partial load failure');
 } finally {
-  books.splice(1);
+  books.splice(originalBookCount);
 }

@@ -1,8 +1,8 @@
-import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=authors2';
-import {books} from './books.js?v=authors2';
-import {read,setupSettings} from './settings.js?v=20261105-settings2';
-import {search,highlight} from './search.js?v=authors2';
-import {renderReader,route} from './reader.js?v=authors2';
+import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261106-indent';
+import {books} from './books.js?v=20261106-indent';
+import {read,save,setupSettings} from './settings.js?v=20261105-settings2';
+import {search,highlight} from './search.js?v=20261106-indent';
+import {renderReader,route} from './reader.js?v=20261106-indent';
 history.scrollRestoration = 'manual';
 setupSettings();
 const app=document.querySelector('#app');
@@ -49,6 +49,8 @@ function cover(book) {
   return `<div class="cover" style="--cover-color:${color}"><strong>${escapeHtml(book.title)}</strong></div>`;
 }
 function resume(book, novel) {
+  const oldProgress = (book.previousIds || []).map(id => read(progressKey(id), null)).find(Boolean);
+  if (oldProgress && !read(progressKey(book.id), null)) save(progressKey(book.id), oldProgress);
   const progress = read(progressKey(book.id), null) ||
     (book.legacyDefault ? read('progress', null) : null);
   return route({view:'read', ...(progress || {chapter:novel.chapters[0].id}), book:book.id});
@@ -65,6 +67,10 @@ async function renderContent() {
   const params=new URLSearchParams(location.hash.slice(1));
   const view = location.pathname.endsWith('/search.html') ? 'search' : params.get('view');
   const book = findBook(params.get('book'));
+  if (book && params.has('book') && params.get('book') !== book.id) {
+    params.set('book', book.id);
+    history.replaceState(null, '', route(Object.fromEntries(params)));
+  }
   const missingBook = (view === 'book' || view === 'read') && !book;
   document.body.classList.toggle('reading',view==='read' && !missingBook);
   const back = document.querySelector('#header-back');
@@ -101,7 +107,7 @@ async function renderContent() {
         cleanup=renderReader(app,novel,chapter,params);return;
       }
       if(view==='book') {
-        app.innerHTML=`<section class="detail book-enter book-pending"><div class="detail-top">${cover(book)}<div><h1>${escapeHtml(book.title)}</h1><p>${escapeHtml(book.description)}</p><p class="authors">${escapeHtml(book.authors)}</p><p class="authors book-date">${escapeHtml(book.date)}</p><a class="primary" href="${resume(book, novel)}">阅读 →</a></div></div><h2>目录</h2><div class="chapter-list"></div></section>`;
+        app.innerHTML=`<section class="detail book-enter book-pending"><div class="detail-top">${cover(book)}<div><h1>${escapeHtml(book.title)}</h1><p>${escapeHtml(book.description)}</p><p class="authors">${escapeHtml(book.authors)}</p>${book.date ? `<p class="authors book-date">${escapeHtml(book.date)}</p>` : ''}<a class="primary" href="${resume(book, novel)}">阅读 →</a></div></div><h2>目录</h2><div class="chapter-list"></div></section>`;
         novel.chapters.forEach(c=>{const a=document.createElement('a');a.href=route({view:'read',book:book.id,chapter:c.id});a.textContent=c.excerpt ? `${c.title}　${c.excerpt}` : c.title;app.querySelector('.chapter-list').append(a);});
       } else if(view==='search') {
         const query=(params.get('q')||'').trim();

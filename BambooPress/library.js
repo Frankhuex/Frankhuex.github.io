@@ -1,7 +1,7 @@
-import {books} from './books.js?v=authors2';
+import {books} from './books.js?v=20261106-indent';
 
 export function findBook(id) {
-  return id ? books.find(book => book.id === id) : books.find(book => book.legacyDefault);
+  return id ? books.find(book => book.id === id || book.previousIds?.includes(id)) : books.find(book => book.legacyDefault);
 }
 
 export function progressKey(bookId) {

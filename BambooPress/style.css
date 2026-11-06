@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Bamboo Song';
-  src: url('./fonts/reading-serif.woff') format('woff');
+  src: url('./fonts/reading-serif.woff?v=20261106-indent') format('woff');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;
@@ -1517,4 +1517,18 @@ header .brand {
 .results #search-form {
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Indent text itself, independently of the flush-left author label. */
+#prose p {
+  text-indent: 0;
+  white-space: normal;
+}
+#prose .prose-line {
+  display: block;
+  text-indent: 2em;
+  white-space: pre-wrap;
+}
+#prose .signature {
+  text-indent: 0;
 }

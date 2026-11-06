@@ -1,10 +1,10 @@
-import {progressKey, escapeHtml} from './library.js?v=authors2';
-import {highlight} from './search.js?v=authors2';
+import {progressKey, escapeHtml} from './library.js?v=20261106-indent';
+import {highlight} from './search.js?v=20261106-indent';
 import {read, save} from './settings.js?v=20261105-settings2';
 export function route(values={}) { return '#'+new URLSearchParams(values).toString(); }
 export function renderReader(app, novel, chapter, params) {
   const bookRoute = values => route({...values, book:novel.id});
-  app.innerHTML = `<button class="toc-toggle" aria-controls="toc" aria-label="展开目录" title="展开目录"><span aria-hidden="true">☰</span></button><aside id="toc"><div class="toc-book-title">${escapeHtml(novel.title)}</div><div id="toc-items"></div></aside><article class="reader"><div class="chapter-heading">${chapter.excerpt ? `<small>${escapeHtml(chapter.excerpt)}</small>` : ''}<h1>${escapeHtml(chapter.title)}</h1></div><div id="prose"></div><nav class="chapter-nav"></nav></article>`;
+  app.innerHTML = `<button class="toc-toggle" aria-controls="toc" aria-label="展开目录" title="展开目录"><span aria-hidden="true">☰</span></button><aside id="toc"><div class="toc-book-title">${escapeHtml(novel.title)}</div><div id="toc-items"></div></aside><article class="reader"><div class="chapter-heading"><h1>${escapeHtml(chapter.title)}</h1>${chapter.excerpt ? `<small>${escapeHtml(chapter.excerpt)}</small>` : ''}</div><div id="prose"></div><nav class="chapter-nav"></nav></article>`;
   const toc = app.querySelector('#toc');
   const toggle = app.querySelector('.toc-toggle');
   const desktop = matchMedia('(min-width: 960px)');
@@ -112,7 +112,14 @@ export function renderReader(app, novel, chapter, params) {
         seen.add(segment.part);span.id=segment.part;
         const name = document.createElement('small');name.className='signature';name.textContent=chapter.parts.find(part=>part.id===segment.part).author;span.append(name);
       }
-      highlight(span, segment.text, params.get('q')||''); p.append(span);
+      for (const line of segment.text.split('\n')) {
+        if (!line.trim()) continue;
+        const textLine = document.createElement('span');
+        textLine.className = 'prose-line';
+        highlight(textLine, line, params.get('q') || '');
+        span.append(textLine);
+      }
+      p.append(span);
     }
     app.querySelector('#prose').append(p);
   });
