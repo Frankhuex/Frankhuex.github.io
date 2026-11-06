@@ -2,7 +2,7 @@ import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './libr
 import {books} from './books.js?v=20261106-indent';
 import {read,save,setupSettings} from './settings.js?v=20261105-settings2';
 import {search,highlight} from './search.js?v=20261106-indent';
-import {renderReader,route} from './reader.js?v=20261106-indent';
+import {renderReader,route} from './reader.js?v=20261107-toc-motion';
 history.scrollRestoration = 'manual';
 setupSettings();
 const app=document.querySelector('#app');
@@ -83,6 +83,11 @@ async function renderContent() {
   } : null;
   const brand = document.querySelector('.brand');
   const inBook = !missingBook && (view === 'book' || view === 'read');
+  for (const [field, property] of [['themeColor', '--book-accent'], ['themeColorNight', '--book-accent-night']]) {
+    const color = inBook ? book[field] : null;
+    if (/^#[0-9a-f]{6}$/i.test(color || '')) document.body.style.setProperty(property, color);
+    else document.body.style.removeProperty(property);
+  }
   brand.textContent = view === 'search' ? '搜索' : inBook ? book.title : 'BambooPress';
   document.querySelector('footer').textContent = inBook ? `BambooPress · ${book.title}` : 'BambooPress';
   document.querySelector('#query').value=params.get('q')||'';
@@ -97,7 +102,7 @@ async function renderContent() {
   if(!view) {
     app.innerHTML = `<section class="shelf" aria-label="书架"><div class="bookshelf">${books.map((shelfBook, index) => `<a class="shelf-book" data-book="${escapeHtml(shelfBook.id)}" style="--book-index:${index}" href="${route({view:'book', book:shelfBook.id})}">${cover(shelfBook)}<h2>${escapeHtml(shelfBook.title)}</h2></a>`).join('')}</div></section>`;
   } else {
-    app.innerHTML='<p class="loading">正在加载…</p>';
+    if (view !== 'read' || !app.querySelector('.reader')) app.innerHTML='<p class="loading">正在加载…</p>';
     try {
       const novel = view === 'search' ? null : await loadBook(book);
       if(currentRevision!==revision)return;

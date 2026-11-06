@@ -2,6 +2,7 @@ import {progressKey, escapeHtml} from './library.js?v=20261106-indent';
 import {highlight} from './search.js?v=20261106-indent';
 import {read, save} from './settings.js?v=20261105-settings2';
 export function route(values={}) { return '#'+new URLSearchParams(values).toString(); }
+let tocSelection;
 export function renderReader(app, novel, chapter, params) {
   const bookRoute = values => route({...values, book:novel.id});
   app.innerHTML = `<button class="toc-toggle" aria-controls="toc" aria-label="展开目录" title="展开目录"><span aria-hidden="true">☰</span></button><aside id="toc"><div class="toc-book-title">${escapeHtml(novel.title)}</div><div id="toc-items"></div></aside><article class="reader"><div class="chapter-heading"><h1>${escapeHtml(chapter.title)}</h1>${chapter.excerpt ? `<small>${escapeHtml(chapter.excerpt)}</small>` : ''}</div><div id="prose"></div><nav class="chapter-nav"></nav></article>`;
@@ -103,6 +104,45 @@ export function renderReader(app, novel, chapter, params) {
     toc.querySelector('#toc-items').append(section);
   }
 
+  const items = toc.querySelector('#toc-items');
+  const indicator = document.createElement('div');
+  indicator.className = 'toc-selection';
+  indicator.setAttribute('aria-hidden', 'true');
+  items.prepend(indicator);
+  let selectionAnimation;
+  let selectedPart = params.get('part') || chapter.paragraphs[0]?.[0]?.part;
+  if (tocSelection?.book === novel.id) toc.scrollTop = tocSelection.scrollTop;
+  function selectPart(partId, animate = true) {
+    const link = [...items.querySelectorAll('[data-part]')].find(a => a.dataset.part === partId);
+    items.querySelectorAll('[data-part]').forEach(a => {
+      const active = a === link;
+      a.classList.toggle('active', active);
+      if (active) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+    if (!link || !link.getClientRects().length) { indicator.hidden = true; return; }
+    selectedPart = partId;
+    const bounds = link.getBoundingClientRect();
+    const origin = items.getBoundingClientRect();
+    const next = {book:novel.id, top:bounds.top-origin.top, height:bounds.height, scrollTop:toc.scrollTop};
+    const previous = tocSelection?.book === novel.id ? tocSelection : null;
+    const currentTop = !indicator.hidden && indicator.style.top ? indicator.getBoundingClientRect().top - origin.top : previous?.top;
+    indicator.hidden = false;
+    indicator.style.top = `${next.top}px`;
+    indicator.style.height = `${next.height}px`;
+    if (animate && previous && previous.top !== next.top && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      selectionAnimation?.cancel();
+      selectionAnimation = indicator.animate([
+        {transform:`translateY(${(currentTop ?? previous.top) - next.top}px)`},
+        {transform:'translateY(0)'}
+      ], {duration:240, easing:'cubic-bezier(.2,.8,.2,1)'});
+    }
+    tocSelection = next;
+  }
+  selectPart(selectedPart);
+  const selectionSize = new ResizeObserver(() => selectPart(selectedPart, false));
+  selectionSize.observe(items);
+
   const seen = new Set();
   chapter.paragraphs.forEach((segments,index)=>{
     const p = document.createElement('p');p.id=`p${index}`;
@@ -142,6 +182,17 @@ export function renderReader(app, novel, chapter, params) {
     if (atChapterStart || !target) {
       scrollTo(0, 0);
     } else {
+      // Short chapters still need enough room to align their final fragments.
+      const readingTop = header.offsetHeight + 32;
+      target.style.scrollMarginTop = `${readingTop}px`;
+      const desiredScroll = scrollY + target.getBoundingClientRect().top - readingTop;
+      const availableScroll = document.documentElement.scrollHeight - innerHeight;
+      if (desiredScroll > availableScroll) {
+        const spacer = document.createElement('div');
+        spacer.setAttribute('aria-hidden', 'true');
+        spacer.style.height = `${Math.ceil(desiredScroll - availableScroll)}px`;
+        app.querySelector('.reader').append(spacer);
+      }
       target.scrollIntoView();
       if (params.has('q') && target.querySelector('mark')) {
         target.querySelector('mark').scrollIntoView({block:'center'});
@@ -177,9 +228,9 @@ export function renderReader(app, novel, chapter, params) {
       const box=current.getBoundingClientRect();
       save(progressKey(novel.id),{chapter:chapter.id,paragraph:current.id,ratio:Math.max(0,(readingTop-box.top)/box.height)});
       const part=[...app.querySelectorAll('#prose span[id]')].filter(s=>s.getBoundingClientRect().top<180).at(-1);
-      toc.querySelectorAll('[data-part]').forEach(a=>a.classList.toggle('active',a.dataset.part===part?.id));
+      selectPart(part?.id || chapter.paragraphs[0]?.[0]?.part);
     },120);
   };
   addEventListener('scroll',onScroll,{passive:true});
-  return ()=>{headerSize.disconnect();cancelAnimationFrame(headerFrame);clearTimeout(timer);removeEventListener('scroll',onScroll);document.removeEventListener('keydown',escape);desktop.removeEventListener('change',resize);header.removeEventListener('focusin',revealHeader);header.classList.remove('header-hidden');document.body.classList.remove('sidebar-collapsed');};
+  return ()=>{if(tocSelection?.book===novel.id){tocSelection.scrollTop=toc.scrollTop;if(!indicator.hidden)tocSelection.top=indicator.getBoundingClientRect().top-items.getBoundingClientRect().top;}selectionSize.disconnect();selectionAnimation?.cancel();headerSize.disconnect();cancelAnimationFrame(headerFrame);clearTimeout(timer);removeEventListener('scroll',onScroll);document.removeEventListener('keydown',escape);desktop.removeEventListener('change',resize);header.removeEventListener('focusin',revealHeader);header.classList.remove('header-hidden');document.body.classList.remove('sidebar-collapsed');};
 }
