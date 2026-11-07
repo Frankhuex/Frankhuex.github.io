@@ -18,6 +18,7 @@
                     <button id="resume" class="primary" hidden>返回棋局</button>
                     <button id="single-mode">人机</button>
                     <button id="double-mode">双人</button>
+                    <button id="watch-mode">观赏</button>
                     <button id="history-button">战绩</button>
                 </div>
             </div>
@@ -35,6 +36,23 @@
                         <label><input type="radio" name="side" value="2"><span><i class="stone white" aria-hidden="true"></i>白棋 · 后手</span></label>
                     </fieldset>
                     <label id="human-name-field" class="field">玩家名字<input id="human-name" maxlength="24" value="玩家"></label>
+                    <fieldset id="human-depth-field" class="side-picker">
+                        <legend>电脑搜索</legend>
+                        <label><input type="radio" name="human-depth" value="0" checked><span>不使用 Minimax</span></label>
+                        <label><input type="radio" name="human-depth" value="1"><span>使用 Minimax</span></label>
+                    </fieldset>
+                    <div id="watch-depth-fields" hidden>
+                        <fieldset class="side-picker">
+                            <legend><i class="stone black" aria-hidden="true"></i> 黑棋搜索</legend>
+                            <label><input type="radio" name="black-depth" value="0" checked><span>不使用 Minimax</span></label>
+                            <label><input type="radio" name="black-depth" value="1"><span>使用 Minimax</span></label>
+                        </fieldset>
+                        <fieldset class="side-picker">
+                            <legend><i class="stone white" aria-hidden="true"></i> 白棋搜索</legend>
+                            <label><input type="radio" name="white-depth" value="0" checked><span>不使用 Minimax</span></label>
+                            <label><input type="radio" name="white-depth" value="1"><span>使用 Minimax</span></label>
+                        </fieldset>
+                    </div>
                     <div id="names" hidden>
                         <label class="field"><span><i class="stone black"></i> 黑方</span><input id="black-name" maxlength="24" value="玩家一"></label>
                         <label class="field"><span><i class="stone white"></i> 白方</span><input id="white-name" maxlength="24" value="玩家二"></label>
@@ -59,6 +77,10 @@
                 <div class="match-info">
                     <p id="matchup"></p>
                     <p id="status" role="status"></p>
+                    <div id="thinking" hidden>
+                        <progress id="thinking-progress" max="100" value="0" aria-label="电脑思考进度"></progress>
+                        <span id="thinking-percent">0%</span>
+                    </div>
                 </div>
                 <div class="hud-actions">
                     <label class="move-numbers-toggle"><input id="move-numbers" type="checkbox">显示手数</label>
@@ -76,6 +98,16 @@
                     <button id="previous" type="button">上一手</button>
                     <button id="next" type="button">下一手</button>
                 </div>
+                <div id="watch-controls" class="button-row" hidden>
+                    <button id="watch-previous" type="button">上一手</button>
+                    <button id="watch-next" type="button">下一手</button>
+                    <button id="watch-auto" type="button" aria-pressed="false">自动播放</button>
+                    <label class="watch-speed"><span>速度</span><select id="watch-speed">
+                        <option value="0.5">0.5×</option><option value="1" selected>1×</option>
+                        <option value="2">2×</option><option value="4">4×</option>
+                    </select></label>
+                </div>
+                <button id="undo" type="button" hidden>悔棋</button>
                 <div id="result-actions" class="button-row" hidden>
                     <button id="rematch" class="primary" type="button">再来一局</button>
                     <button id="result-history" type="button">战绩</button>

@@ -1,4 +1,4 @@
-import { SIZE, Stone, Outcome, MoveError, newBoard, opponent, moveError, tryMove, chooseMove, openingMove } from './rules.mjs';
+import { SIZE, Stone, Outcome, MoveError, newBoard, opponent, moveError, tryMove, openingMove } from './rules.mjs';
 
 const { BLACK, WHITE } = Stone;
 const STORAGE_KEY = 'fivepiece.matches.v1';
@@ -30,6 +30,9 @@ let replay = null;
 let cursor = null;
 let message = '';
 let records = loadRecords();
+let watchTimer;
+let watchAuto = false;
+let search = null;
 
 function loadRecords() {
     try {
@@ -60,6 +63,7 @@ function storeResult(game) {
 function resultLabel(game) {
     const player = winner(game.outcome);
     if (player !== null) return `${game.names[player]}（${colorName(player)}）获胜`;
+    if (game.searchFailed) return '电脑搜索失败';
     return game.outcome === Outcome.DRAW ? '和棋' : '电脑无合法落点';
 }
 
@@ -170,15 +174,20 @@ function renderSetupRecords() {
 
 function syncSettings() {
     const single = mode() === 'single';
+    const watching = mode() === 'watch';
     if (single) whiteName.setCustomValidity('');
     else humanName.setCustomValidity('');
     byId('side-field').hidden = !single;
     byId('human-name-field').hidden = !single;
-    byId('names').hidden = single;
+    byId('names').hidden = single || watching;
+    byId('human-depth-field').hidden = !single;
+    byId('watch-depth-fields').hidden = !watching;
+    byId('setup').querySelector('.setup-records').hidden = watching;
     renderSetupRecords();
 }
 
 function showScreen(next) {
+    if (next !== 'arena' || replay) pauseWatch();
     screen = next;
     for (const id of ['menu', 'setup', 'arena', 'history']) byId(id).hidden = id !== screen;
     byId('resume').hidden = !match;
@@ -187,7 +196,7 @@ function showScreen(next) {
 
 function openSetup(kind) {
     byId('mode').value = kind;
-    byId('setup-title').textContent = kind === 'single' ? '人机对弈' : '双人对弈';
+    byId('setup-title').textContent = kind === 'single' ? '人机对弈' : kind === 'watch' ? '观赏模式' : '双人对弈';
     whiteName.setCustomValidity('');
     syncSettings();
     showScreen('setup');
@@ -205,6 +214,7 @@ byId('double-mode').onclick = () => openSetup('double');
 byId('history-button').onclick = () => showScreen('history');
 byId('result-history').onclick = () => showScreen('history');
 byId('rematch').onclick = () => openSetup(match.mode);
+byId('watch-mode').onclick = () => openSetup('watch');
 byId('resume').onclick = () => showScreen('arena');
 byId('leave-board').onclick = leaveBoard;
 document.querySelectorAll('[data-menu]').forEach(button => {
@@ -223,6 +233,7 @@ byId('swap').onclick = () => {
 
 form.addEventListener('submit', event => {
     event.preventDefault();
+    if (mode() === 'watch') { startWatch(); return; }
     const single = mode() === 'single';
     const human = single ? selectedSide() : null;
     const names = configuredNames(human);
@@ -232,9 +243,11 @@ form.addEventListener('submit', event => {
         field.reportValidity();
         return;
     }
-    if (match?.moves.length && match.outcome === Outcome.ONGOING && !match.stalled &&
+    if (match?.moves.length && match.mode !== 'watch' && match.outcome === Outcome.ONGOING && !match.stalled &&
         !window.confirm('结束当前未完成的对局，开始新局？')) return;
+    cancelSearch();
     match = {
+        depth: Number(form.elements['human-depth'].value),
         board: newBoard(), mode: single ? 'single' : 'double', human, names,
         player: BLACK, moves: [], outcome: Outcome.ONGOING, opening: true, busy: false, stalled: false,
     };
@@ -248,27 +261,156 @@ form.addEventListener('submit', event => {
     showScreen('arena');
 });
 
+function pauseWatch() {
+    clearTimeout(watchTimer);
+    watchAuto = false;
+    if (search?.game.mode === 'watch') cancelSearch();
+}
+
+function startWatch() {
+    if (match?.moves.length && match.mode !== 'watch' && match.outcome === Outcome.ONGOING &&
+        !match.stalled && !window.confirm('结束当前未完成的对局，开始观赏？')) return;
+    pauseWatch();
+    cancelSearch();
+    match = {
+        depths: { [BLACK]: Number(form.elements['black-depth'].value), [WHITE]: Number(form.elements['white-depth'].value) },
+        board: newBoard(), mode: 'watch', names: { [BLACK]: '电脑一', [WHITE]: '电脑二' },
+        player: BLACK, moves: [], outcome: Outcome.ONGOING, stalled: false,
+    };
+    replay = null;
+    cursor = null;
+    message = '';
+    showScreen('arena');
+}
+
+function canAdvanceWatch() {
+    return screen === 'arena' && !replay && match?.mode === 'watch' &&
+        match.outcome === Outcome.ONGOING && !match.stalled;
+}
+
+function scheduleWatch() {
+    clearTimeout(watchTimer);
+    if (watchAuto && canAdvanceWatch()) {
+        watchTimer = setTimeout(advanceWatch, 800 / Number(byId('watch-speed').value));
+    }
+}
+
+function advanceWatch() {
+    if (!canAdvanceWatch() || match.busy) return;
+    const game = match;
+    const point = game.moves.length === 0 ? [9, 9] :
+        game.moves.length === 1 ? openingMove(game.board, game.player) : null;
+    if (point !== null) finishWatchMove(game, point);
+    else searchMove(game, game.player, game.depths[game.player], result => finishWatchMove(game, result));
+}
+
+function finishWatchMove(game, point) {
+    game.stalled = point === null || play(game, point, game.player) !== null;
+    if (canAdvanceWatch()) game.player = opponent(game.player);
+    else pauseWatch();
+    render();
+    scheduleWatch();
+}
+
+function cancelSearch() {
+    if (!search) return;
+    search.worker.terminate();
+    search.game.busy = false;
+    search = null;
+}
+
+function searchMove(game, player, depth, finish) {
+    const worker = new Worker(new URL('./search-worker.mjs', import.meta.url), { type: 'module' });
+    search = { worker, game };
+    game.busy = true;
+    game.progress = 0;
+    worker.onmessage = ({ data }) => {
+        if (search?.worker !== worker) return;
+        if (data.progress !== undefined) {
+            game.progress = data.progress;
+            renderThinking(game);
+            return;
+        }
+        cancelSearch();
+        finish(data.point);
+    };
+    worker.onerror = () => {
+        if (search?.worker !== worker) return;
+        cancelSearch();
+        game.searchFailed = true;
+        finish(null);
+    };
+    worker.postMessage({ board: game.board, player, depth });
+    render();
+}
+
+function removeLastMove(game) {
+    const [row, col, player] = game.moves.pop();
+    game.board[row][col] = Stone.EMPTY;
+    game.player = player;
+    game.outcome = Outcome.ONGOING;
+    game.stalled = false;
+    game.searchFailed = false;
+    message = '';
+}
+
+function undoCount(game) {
+    if (!game || replay || game.mode === 'watch' || game.outcome !== Outcome.ONGOING ||
+        game.busy || game.stalled) return 0;
+    if (game.mode === 'double') return Math.min(game.moves.length, 1);
+    const opening = game.human === WHITE ? 1 : 0;
+    return game.moves.length >= opening + 2 ? 2 : 0;
+}
+
+byId('undo').onclick = () => {
+    const count = undoCount(match);
+    if (!count) return;
+    for (let i = 0; i < count; i++) removeLastMove(match);
+    if (match.mode === 'single') {
+        match.opening = match.moves.length === (match.human === WHITE ? 1 : 0);
+    }
+    render();
+};
+byId('watch-previous').onclick = () => {
+    if (replay || match?.mode !== 'watch' || !match.moves.length) return;
+    pauseWatch();
+    removeLastMove(match);
+    render();
+};
+byId('watch-next').onclick = advanceWatch;
+byId('watch-auto').onclick = () => {
+    if (watchAuto) pauseWatch();
+    else watchAuto = true;
+    scheduleWatch();
+    render();
+};
+byId('watch-speed').onchange = scheduleWatch;
+
 function play(game, point, player) {
     const { outcome, err } = tryMove(game.board, point, player);
     if (err !== null) return err;
     game.moves.push([...point, player]);
     game.outcome = outcome;
-    if (outcome !== Outcome.ONGOING) storeResult(game);
+    if (outcome !== Outcome.ONGOING && game.mode !== 'watch') storeResult(game);
     return null;
 }
 
 function computerReply(game) {
     const player = opponent(game.human);
-    const point = (game.opening ? openingMove(game.board, player) : null) ?? chooseMove(game.board, player);
+    const opening = game.opening ? openingMove(game.board, player) : null;
     game.opening = false;
-    game.stalled = point === null || play(game, point, player) !== null;
-    game.busy = false;
-    if (game.stalled) storeResult(game);
-    render();
+    const finish = point => {
+        game.stalled = point === null || play(game, point, player) !== null;
+        game.busy = false;
+        if (game.stalled && !game.searchFailed) storeResult(game);
+        render();
+    };
+    if (opening !== null) finish(opening);
+    else searchMove(game, player, game.depth, finish);
 }
 
 function canPlay() {
-    return screen === 'arena' && match && !replay && !match.busy && !match.stalled && match.outcome === Outcome.ONGOING;
+    return screen === 'arena' && match && match.mode !== 'watch' && !replay && !match.busy && !match.stalled && match.outcome === Outcome.ONGOING;
 }
 
 function place(point) {
@@ -361,13 +503,19 @@ function renderBoard(moves) {
 
 drawGrid();
 
+function renderThinking(game) {
+    if (screen !== 'arena' || replay || match !== game || !game.busy) return;
+    byId('thinking-progress').value = game.progress ?? 0;
+    byId('thinking-percent').textContent = `${game.progress ?? 0}%`;
+}
+
 function render() {
     if (screen !== 'arena') return;
     const game = replay?.record ?? match;
     const moves = replay ? game.moves.slice(0, replay.index) : game?.moves ?? [];
     renderBoard(moves);
     const activePlayer = !replay && game.outcome === Outcome.ONGOING && !game.stalled
-        ? (game.busy ? opponent(game.player) : game.player)
+        ? (game.busy && game.mode === 'single' ? opponent(game.player) : game.player)
         : null;
     const winningPlayer = replay ? null : winner(game.outcome);
     byId('matchup').replaceChildren(...[BLACK, WHITE].map(player => {
@@ -382,12 +530,27 @@ function render() {
     }));
     byId('move-count').textContent = `${moves.length} 手`;
     byId('replay').hidden = replay === null;
+    const watching = !replay && game.mode === 'watch';
+    const watchOngoing = canAdvanceWatch();
+    byId('watch-controls').hidden = !watching;
+    byId('watch-previous').disabled = game.moves.length === 0;
+    byId('watch-next').hidden = !watchOngoing;
+    byId('watch-auto').hidden = !watchOngoing;
+    byId('watch-speed').parentElement.hidden = !watchOngoing;
+    byId('undo').hidden = !!replay || watching || game.outcome !== Outcome.ONGOING || game.stalled;
+    byId('undo').disabled = undoCount(game) === 0;
+    byId('watch-next').disabled = watchAuto || !!game.busy;
+    byId('watch-auto').textContent = watchAuto ? '暂停' : '自动播放';
+    byId('watch-auto').setAttribute('aria-pressed', String(watchAuto));
     byId('leave-board').textContent = replay ? '← 战绩' : '← 主菜单';
     byId('result-actions').hidden = !!replay || !game || (game.outcome === Outcome.ONGOING && !game.stalled);
     byId('status').toggleAttribute('data-error', !!message && canPlay());
     byId('previous').disabled = !replay || replay.index === 0;
     byId('next').disabled = !replay || replay.index === game.moves.length;
     const status = byId('status');
+    byId('thinking').hidden = !!replay || !game.busy;
+    status.hidden = !replay && !!game.busy;
+    renderThinking(game);
     if (activePlayer !== null) status.setAttribute('aria-label', `轮到 ${game.names[activePlayer]}`);
     else if (winningPlayer !== null) status.setAttribute('aria-label', resultLabel(game));
     else status.removeAttribute('aria-label');
@@ -459,7 +622,7 @@ window.render_game_to_text = () => JSON.stringify({
     coordinates: 'zero-based row, column; origin top left',
     screen, mode: match?.mode ?? null, names: match?.names, player: match?.player, human: match?.human,
     outcome: match?.outcome, moves: match?.moves ?? [], replay: replay?.index ?? null,
-    status: byId('status').textContent, records: records.length,
+    status: byId('status').textContent, records: records.length, watchAuto, progress: match?.busy ? match.progress ?? 0 : null,
 });
 syncSettings();
 renderRecords();

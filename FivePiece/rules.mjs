@@ -1,4 +1,4 @@
-// Direct port of the repaired FivePiece.py. Axis order and AI ties are significant.
+// Move rules and the depth-0 evaluation follow the repaired FivePiece.py.
 export const SIZE = 19;
 export const Stone = Object.freeze({ EMPTY: 0, BLACK: 1, WHITE: 2 });
 export const Outcome = Object.freeze({ ONGOING: 'ongoing', BLACK_WIN: 'black', WHITE_WIN: 'white', DRAW: 'draw' });
@@ -173,32 +173,100 @@ function* legalPoints(board, player) {
     }
 }
 
-function minimax(board, point, player, depth) {
-    const score = basicScore(board, point, player);
-    if (depth <= 0 || score === WIN) return score;
+// Score each maximal run once. Check one-gap fours separately, since
+// contiguous runs alone miss threats such as XX.XX.
+const runWeights = [[0, 0], [1, 2], [6, 24], [40, 240], [100, 100]];
+const WIN_THREAT = 8_000;
+
+function evaluateBoard(board, root, turn) {
+    const scores = [0, 0, 0];
+    const winningPoints = [null, new Set(), new Set()];
+    for (const [r, row] of board.entries()) {
+        for (const [c, player] of row.entries()) {
+            if (player === EMPTY) continue;
+            for (const [dr, dc] of axes) {
+                const before = board[r - dr]?.[c - dc];
+                if (before === player) continue;
+                let length = 1;
+                while (board[r + length * dr]?.[c + length * dc] === player) length++;
+                const end = [r + length * dr, c + length * dc];
+                const after = at(board, end);
+                const open = Number(before === EMPTY) + Number(after === EMPTY);
+                if (open && length < 5) scores[player] += runWeights[length][open - 1];
+                if (length >= 4 && before === EMPTY) {
+                    const point = [r - dr, c - dc];
+                    if (wins(runLength(board, point, player, [dr, dc]), player)) {
+                        winningPoints[player].add(key(point));
+                    }
+                }
+                if (after === EMPTY && length <= 4) {
+                    const next = board[end[0] + dr]?.[end[1] + dc];
+                    if ((length === 4 || next === player) &&
+                        wins(runLength(board, end, player, [dr, dc]), player)) {
+                        winningPoints[player].add(key(end));
+                    }
+                }
+            }
+        }
+    }
+    for (const player of [BLACK, WHITE]) {
+        const threats = winningPoints[player].size;
+        if (threats) scores[player] += WIN_THREAT * (player === turn ? 3 : Math.min(threats, 2));
+    }
+    return scores[root] - scores[opponent(root)];
+}
+
+function minimax(board, point, player, root, depth, alpha, beta) {
     const [r, c] = point;
     board[r][c] = player;
     try {
-        if (outcomeAfterMove(board, point, player) === Outcome.DRAW) return 0;
-        const other = opponent(player);
-        let reply = -Infinity;
-        for (const candidate of legalPoints(board, other)) {
-            reply = Math.max(reply, minimax(board, candidate, other, depth - 1));
+        const outcome = outcomeAfterMove(board, point, player);
+        if (outcome === Outcome.DRAW) return 0;
+        if (outcome !== Outcome.ONGOING) return player === root ? WIN : -WIN;
+
+        const turn = opponent(player);
+        if (depth === 0) return evaluateBoard(board, root, turn);
+        const maximizing = turn === root;
+        let value = maximizing ? -Infinity : Infinity;
+        for (const candidate of legalPoints(board, turn)) {
+            const reply = minimax(board, candidate, turn, root, depth - 1, alpha, beta);
+            if (maximizing) {
+                value = Math.max(value, reply);
+                alpha = Math.max(alpha, value);
+            } else {
+                value = Math.min(value, reply);
+                beta = Math.min(beta, value);
+            }
+            if (alpha >= beta || value === (maximizing ? WIN : -WIN)) break;
         }
-        return reply === WIN ? -WIN : score - (reply === -Infinity ? 0 : reply);
+        // With no legal continuation, the UI stops the game without a winner.
+        return Number.isFinite(value) ? value : 0;
     } finally {
         board[r][c] = EMPTY;
     }
 }
 
-export function chooseMove(board, player, depth = 0) {
+export function chooseMove(board, player, depth = 0, onProgress) {
+    const candidates = [...legalPoints(board, player)].map(point => ({
+        point, heuristic: basicScore(board, point, player),
+    }));
+    // Try promising moves first so alpha-beta can reject weaker branches sooner.
+    if (depth > 0) candidates.sort((a, b) => b.heuristic - a.heuristic);
+    let completed = 0;
     let best = null;
     let bestScore = -Infinity;
-    for (const point of legalPoints(board, player)) {
-        const score = minimax(board, point, player, depth);
+    for (const { point, heuristic } of candidates) {
+        const score = depth > 0
+            ? minimax(board, point, player, player, depth, bestScore, Infinity)
+            : heuristic;
         if (score > bestScore) {
             best = point;
             bestScore = score;
+        }
+        onProgress?.(++completed, candidates.length);
+        if (score === WIN) {
+            if (completed < candidates.length) onProgress?.(candidates.length, candidates.length);
+            break;
         }
     }
     return best;
