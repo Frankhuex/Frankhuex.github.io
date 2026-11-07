@@ -122,6 +122,13 @@ const musicItems = [
 
 const onlineProjects = [
     {
+        title: "五子棋",
+        description: "十九路五子棋，支持黑棋禁手、人机对弈、双人积分与棋谱回放",
+        href: "../FivePiece/index.html",
+        tag: "棋类游戏",
+        action: "游玩",
+    },
+    {
         title: "SpectrumStudio",
         description: "制作音频频谱可视化视频",
         href: "../SpectrumStudio/index.html",
@@ -132,7 +139,9 @@ const onlineProjects = [
         title: "Q 弹工坊",
         description: "制作Q弹动图",
         href: "../QSpring/index.html",
-        tag: "Tool",
+        image: "images/qspring-preview.png",
+        imageAlt: "Q 弹工坊的图片伸缩预览与参数界面",
+        tag: "动图工具",
         action: "进入",
     },
     {
@@ -522,8 +531,8 @@ const archiveItems = [
 ];
 
 const featuredProjects = [
-    { ...onlineProjects[0], image: "images/SpectrumStudio.png", imageAlt: "SpectrumStudio 音频频谱视频编辑界面", tag: "频谱视频" },
-    { ...onlineProjects[1], image: "images/qspring-preview.png", imageAlt: "Q 弹工坊的图片伸缩预览与参数界面", tag: "动图工具" },
+    { ...onlineProjects[0], image: "images/fivepiece.svg?v=2", imageAlt: "五子棋棋盘", tag: "棋类游戏" },
+    { ...onlineProjects[1], image: "images/SpectrumStudio.png", imageAlt: "SpectrumStudio 音频频谱视频编辑界面", tag: "频谱视频" },
 ];
 
 const targetMap = {

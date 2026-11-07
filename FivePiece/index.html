@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="十九路五子棋，人机对弈、本地双人和棋谱回放。">
+    <title>五子棋</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"dc0311d6f7ef4c5092635a749c89f8df"}'></script>
+</head>
+<body>
+    <main>
+        <section id="menu" class="menu-screen" aria-label="开始菜单">
+            <a class="subtle main-site" href="../index.html">主站</a>
+            <div class="menu-card">
+                <h1>五子棋</h1>
+                <div class="menu-actions">
+                    <button id="resume" class="primary" hidden>返回棋局</button>
+                    <button id="single-mode">人机</button>
+                    <button id="double-mode">双人</button>
+                    <button id="history-button">战绩</button>
+                </div>
+            </div>
+            <div class="menu-board" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        </section>
+        <section id="setup" class="center-screen" hidden>
+            <div class="dialog-card">
+                <button class="back" data-menu type="button">← 主菜单</button>
+                <h2 id="setup-title">人机对弈</h2>
+                <form id="settings">
+                    <input id="mode" name="mode" type="hidden" value="single">
+                    <fieldset id="side-field" class="side-picker">
+                        <legend>玩家执棋</legend>
+                        <label><input type="radio" name="side" value="1" checked><span><i class="stone black" aria-hidden="true"></i>黑棋 · 先手</span></label>
+                        <label><input type="radio" name="side" value="2"><span><i class="stone white" aria-hidden="true"></i>白棋 · 后手</span></label>
+                    </fieldset>
+                    <label id="human-name-field" class="field">玩家名字<input id="human-name" maxlength="24" value="玩家"></label>
+                    <div id="names" hidden>
+                        <label class="field"><span><i class="stone black"></i> 黑方</span><input id="black-name" maxlength="24" value="玩家一"></label>
+                        <label class="field"><span><i class="stone white"></i> 白方</span><input id="white-name" maxlength="24" value="玩家二"></label>
+                        <button id="swap" type="button">⇄ 交换黑白</button>
+                    </div>
+                    <button class="primary" id="start" type="submit">开始对局</button>
+                </form>
+                <section class="setup-records" aria-label="当前对阵战绩">
+                    <h3>当前对阵战绩</h3>
+                    <p id="setup-empty">暂无战绩。</p>
+                    <table id="setup-score-table" hidden>
+                        <thead><tr><th>棋手</th><th>胜</th><th>和</th><th>负</th><th>积分</th></tr></thead>
+                        <tbody id="setup-score-body"></tbody>
+                    </table>
+                    <ul id="setup-recent" aria-label="近期结果"></ul>
+                </section>
+            </div>
+        </section>
+        <section id="arena" class="arena" aria-label="对局棋盘" hidden>
+            <header class="hud">
+                <button id="leave-board" class="back" type="button">← 主菜单</button>
+                <div class="match-info">
+                    <p id="matchup"></p>
+                    <p id="status" role="status"></p>
+                </div>
+                <div class="hud-actions">
+                    <label class="move-numbers-toggle"><input id="move-numbers" type="checkbox">显示手数</label>
+                    <span id="move-count">0 手</span>
+                    <button id="fullscreen" type="button" aria-label="切换全屏" title="全屏（F）">⛶</button>
+                </div>
+            </header>
+            <div class="board-stage">
+                <svg id="board" viewBox="0 0 760 760" tabindex="0" role="group" aria-label="十九路棋盘，可用方向键定位、回车落子">
+                    <g id="board-grid"></g><g id="board-stones"></g><g id="board-cursor"></g>
+                </svg>
+            </div>
+            <div class="arena-footer">
+                <div id="replay" class="button-row" hidden>
+                    <button id="previous" type="button">上一手</button>
+                    <button id="next" type="button">下一手</button>
+                </div>
+                <div id="result-actions" class="button-row" hidden>
+                    <button id="rematch" class="primary" type="button">再来一局</button>
+                    <button id="result-history" type="button">战绩</button>
+                </div>
+            </div>
+        </section>
+        <section id="history" class="history-screen" hidden>
+            <button class="back" data-menu type="button">← 主菜单</button>
+            <div class="history-title"><h2>战绩与棋谱</h2>
+                <label class="sr-only" for="filter">筛选记录</label>
+                <select id="filter"><option value="all">全部对局</option><option value="single">人机对弈</option><option value="double">双人对弈</option></select>
+            </div>
+            <div class="history-layout">
+                <section class="panel"><h3>对局记录</h3>
+                    <p id="storage-warning" role="status" hidden>当前浏览器无法保存记录。</p>
+                    <p id="history-empty">暂无对局记录。</p>
+                    <ul id="history-list"></ul>
+                </section>
+                <section class="panel">
+                    <h3>对局积分 <small>胜 3 · 和 1</small></h3>
+                    <label class="field">计分模式<select id="score-mode"><option value="double">双人对弈</option><option value="single">人机对弈</option></select></label>
+                    <label id="score-pair-field" class="field" hidden>对阵组合<select id="score-pair"></select></label>
+                    <p id="score-empty">暂无积分。</p>
+                    <table id="score-table" hidden>
+                        <thead><tr><th>棋手</th><th>胜</th><th>和</th><th>负</th><th>积分</th></tr></thead>
+                        <tbody id="score-body"></tbody>
+                    </table>
+                </section>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="game.js"></script>
+</body>
+</html>

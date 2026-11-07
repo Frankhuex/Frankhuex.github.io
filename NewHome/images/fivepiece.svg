@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+  <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#896b45" stroke-width="2"/></pattern><radialGradient id="b" cx=".35" cy=".25" r=".7"><stop stop-color="#555"/><stop offset="1" stop-color="#202020"/></radialGradient></defs>
+  <rect width="640" height="360" fill="#272727"/>
+  <g transform="translate(300 -33) rotate(12)">
+    <rect width="382" height="402" rx="18" fill="#deb779"/>
+    <rect x="20" y="20" width="342" height="362" fill="url(#grid)"/>
+    <g fill="url(#b)"><circle cx="120" cy="160" r="18"/><circle cx="160" cy="200" r="18"/><circle cx="200" cy="240" r="18"/><circle cx="240" cy="280" r="18"/></g>
+    <g fill="#fbf3de" stroke="#947957"><circle cx="160" cy="160" r="18"/><circle cx="200" cy="160" r="18"/><circle cx="200" cy="200" r="18"/><circle cx="240" cy="240" r="18"/></g>
+  </g>
+  <text x="42" y="195" fill="#fff5df" font-family="serif" font-size="42" font-weight="bold">五子棋</text>
+</svg>
