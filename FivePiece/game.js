@@ -24,6 +24,7 @@ const rejection = {
 };
 const spacing = 38;
 const margin = 38;
+
 let screen = 'menu';
 let match = null;
 let replay = null;
