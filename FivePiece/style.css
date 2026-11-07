@@ -65,6 +65,7 @@ h1 { font: 700 clamp(3rem, 8vw, 5rem)/1.18 Georgia, "Songti SC", serif; margin: 
 .match-player[data-turn]::after { content: attr(data-turn); position: absolute; top: 100%; left: 50%; transform: translateX(-50%); line-height: 1; white-space: nowrap; color: var(--muted); }
 .match-player { position: relative; display: flex; align-items: center; gap: .35em; min-width: 0; }
 .match-player .stone { flex-shrink: 0; }
+.minimax-badge { flex: none; align-self: flex-start; margin-left: -.2em; color: var(--muted); font-size: .68em; line-height: 1; }
 .match-player span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 #status, #move-count { color: var(--muted); }
 #status { min-height: 1lh; }

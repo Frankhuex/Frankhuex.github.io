@@ -526,6 +526,14 @@ function render() {
         icon.setAttribute('role', 'img');
         icon.setAttribute('aria-label', `${colorName(player)}棋`);
         name.append(icon, makeElement('span', game.names[player]));
+        const usesMinimax = game.mode === 'watch' ? game.depths?.[player] > 0 :
+            game.mode === 'single' && player !== game.human && game.depth > 0;
+        if (usesMinimax) {
+            const badge = makeElement('sup', 'M', 'minimax-badge');
+            badge.title = '使用 Minimax';
+            badge.setAttribute('aria-label', '使用 Minimax');
+            name.append(badge);
+        }
         return name;
     }));
     byId('move-count').textContent = `${moves.length} 手`;
