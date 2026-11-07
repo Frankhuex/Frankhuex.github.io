@@ -1,5 +1,5 @@
-import vx1 from './books/vx1.json?v=20261107-book-json' with {type: 'json'};
-import wuzhiyin from './books/wuzhiyin.json?v=20261107-book-json' with {type: 'json'};
+import vx1 from './books/vx1.json?v=20261107-scene-breaks' with {type: 'json'};
+import wuzhiyin from './books/wuzhiyin.json?v=20261107-scene-breaks' with {type: 'json'};
 
 function register(novel, compatibility) {
   return {

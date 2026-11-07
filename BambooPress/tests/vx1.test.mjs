@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {findBook, loadBook} from '../library.js?v=20261107-book-json';
+import {findBook, loadBook} from '../library.js?v=20261107-scene-breaks';
 const novel = await loadBook(findBook('vx1'));
-import {search} from '../search.js?v=20261107-book-json';
+import {search} from '../search.js?v=20261107-scene-breaks';
 
 assert.deepEqual(novel.chapters.map(chapter => chapter.title), ['序','第一章','第二章','第三章','第四章','第五章','尾声','番外一','番外二','番外三','番外四','番外五','番外六','番外七']);
 assert.deepEqual(novel.authors, ['真爱困','彼格丧','SmallPot','纯鹿人','梅川旁次','开着']);

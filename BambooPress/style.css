@@ -1549,3 +1549,17 @@ header .brand {
 #prose .signature {
   text-indent: 0;
 }
+#prose .scene-break {
+  display: grid;
+  place-items: center;
+  height: 1.75em;
+  margin-bottom: 1em;
+  color: var(--accent);
+}
+#prose .scene-break::before {
+  content: '';
+  width: 0.32em;
+  height: 0.32em;
+  background: currentColor;
+  transform: rotate(45deg);
+}

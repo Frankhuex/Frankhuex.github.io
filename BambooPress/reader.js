@@ -1,5 +1,5 @@
-import {progressKey, escapeHtml} from './library.js?v=20261107-book-json';
-import {highlight} from './search.js?v=20261107-book-json';
+import {progressKey, escapeHtml} from './library.js?v=20261107-scene-breaks';
+import {highlight} from './search.js?v=20261107-scene-breaks';
 import {read, save} from './settings.js?v=20261105-settings2';
 export function route(values={}) { return '#'+new URLSearchParams(values).toString(); }
 let tocSelection;
@@ -143,6 +143,8 @@ export function renderReader(app, novel, chapter, params) {
   const selectionSize = new ResizeObserver(() => selectPart(selectedPart, false));
   selectionSize.observe(items);
 
+  const prose = app.querySelector('#prose');
+  const sceneBreaks = new Set(chapter.sceneBreaks);
   const seen = new Set();
   chapter.paragraphs.forEach((segments,index)=>{
     const p = document.createElement('p');p.id=`p${index}`;
@@ -161,7 +163,14 @@ export function renderReader(app, novel, chapter, params) {
       }
       p.append(span);
     }
-    app.querySelector('#prose').append(p);
+    prose.append(p);
+    if (sceneBreaks.has(index)) {
+      const separator = document.createElement('div');
+      separator.className = 'scene-break';
+      separator.setAttribute('role', 'separator');
+      separator.setAttribute('aria-label', '剧情分隔');
+      prose.append(separator);
+    }
   });
   const index = novel.chapters.indexOf(chapter);
   const nav=app.querySelector('.chapter-nav');

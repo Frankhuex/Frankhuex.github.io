@@ -1,4 +1,4 @@
-import {books} from './books.js?v=20261107-book-json';
+import {books} from './books.js?v=20261107-scene-breaks';
 
 export function findBook(id) {
   return id ? books.find(book => book.id === id || book.previousIds?.includes(id)) : books.find(book => book.legacyDefault);
