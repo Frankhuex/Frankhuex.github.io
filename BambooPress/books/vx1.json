@@ -1,6 +1,7 @@
-export const novel = {
+{
   "id": "vx1",
-  "title": "薇茜",
+  "title": "薇 · 茜",
+  "date": "2022.11.21",
   "authors": [
     "真爱困",
     "彼格丧",
@@ -9,6 +10,12 @@ export const novel = {
     "梅川旁次",
     "开着"
   ],
+  "authorCredit": "彼格丧 / 纯鹿人 / 梅川旁次 / SmallPot / 真爱困 / *开着",
+  "description": "于新世纪的展台，离人终欢聚一堂。",
+  "coverColor": "#8b1525",
+  "themeColor": "#8b1525",
+  "themeColorNight": "#ef929e",
+  "coverImage": "images/vx1.png",
   "chapters": [
     {
       "id": "c0",
@@ -9279,4 +9286,4 @@ export const novel = {
       ]
     }
   ]
-};
+}

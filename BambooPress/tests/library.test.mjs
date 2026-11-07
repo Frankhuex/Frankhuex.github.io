@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {books} from '../books.js?v=20261106-indent';
-import {findBook, loadBook, searchLibrary, progressKey, escapeHtml} from '../library.js?v=20261106-indent';
-import {search} from '../search.js?v=20261106-indent';
+import {books} from '../books.js?v=20261107-book-json';
+import {findBook, loadBook, searchLibrary, progressKey, escapeHtml} from '../library.js?v=20261107-book-json';
+import {search} from '../search.js?v=20261107-book-json';
 
 const original = await loadBook(findBook());
 const second = {

@@ -1,12 +1,15 @@
 export function search(novel, query) {
   const term = query.toLocaleLowerCase();
+  const normalizeTitle = value => value.replace(/[\s·]/g, '');
+  const titleTerm = normalizeTitle(term);
+  const titleMatch = titleTerm && normalizeTitle(novel.title.toLocaleLowerCase()).includes(titleTerm);
   const results = [];
   for (const chapter of novel.chapters) {
     chapter.paragraphs.forEach((segments, index) => {
       const text = segments.map(s=>s.text).join('');
       const offset = text.toLocaleLowerCase().indexOf(term);
       const authors = [...new Set(segments.map(s=>chapter.parts.find(p=>p.id===s.part)?.author).filter(Boolean))].join(' / ');
-      const metadata = `${novel.title} ${chapter.title} ${authors}`.toLocaleLowerCase().includes(term);
+      const metadata = titleMatch || `${novel.title} ${chapter.title} ${authors}`.toLocaleLowerCase().includes(term);
       if (offset >= 0 || metadata) results.push({chapter,index,text,authors,offset,rank:metadata?0:1});
     });
   }

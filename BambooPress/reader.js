@@ -1,5 +1,5 @@
-import {progressKey, escapeHtml} from './library.js?v=20261106-indent';
-import {highlight} from './search.js?v=20261106-indent';
+import {progressKey, escapeHtml} from './library.js?v=20261107-book-json';
+import {highlight} from './search.js?v=20261107-book-json';
 import {read, save} from './settings.js?v=20261105-settings2';
 export function route(values={}) { return '#'+new URLSearchParams(values).toString(); }
 let tocSelection;
