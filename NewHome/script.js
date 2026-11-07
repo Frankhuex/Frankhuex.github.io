@@ -123,7 +123,7 @@ const musicItems = [
 const onlineProjects = [
     {
         title: "五子棋",
-        description: "十九路五子棋，支持黑棋禁手、人机对弈、双人积分与棋谱回放",
+        description: "五子棋在线人机/双人对战",
         href: "../FivePiece/index.html",
         tag: "棋类游戏",
         action: "游玩",
