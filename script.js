@@ -394,7 +394,7 @@ const socialItems = [
     {
         title: "bilibili",
         description: "视频投稿",
-        href: "https://space.bilibili.com/453811839?spm_id_from=333.1007.0.0",
+        href: "https://space.bilibili.com/453811839",
         tag: "Video",
         action: "前往",
         external: true,

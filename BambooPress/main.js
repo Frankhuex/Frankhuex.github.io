@@ -89,7 +89,7 @@ async function renderContent() {
     else document.body.style.removeProperty(property);
   }
   brand.textContent = view === 'search' ? '搜索' : inBook ? book.title : 'BambooPress';
-  document.querySelector('footer').textContent = inBook ? `BambooPress · ${book.title}` : 'BambooPress';
+  document.querySelector('#footer-brand').textContent = inBook ? `BambooPress · ${book.title}` : 'BambooPress';
   document.querySelector('#query').value=params.get('q')||'';
   document.title = inBook ? `${book.title} · BambooPress` : view === 'search' ? '搜索 · BambooPress' : 'BambooPress';
   if (missingBook) {
