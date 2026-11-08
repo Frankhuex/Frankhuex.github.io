@@ -1,4 +1,4 @@
-import {progressKey, escapeHtml} from './library.js?v=20261107-scene-breaks';
+import {progressKey, escapeHtml} from './library.js?v=20261108-wuli-cover';
 import {highlight} from './search.js?v=20261107-scene-breaks';
 import {read, save} from './settings.js?v=20261105-settings2';
 export function route(values={}) { return '#'+new URLSearchParams(values).toString(); }

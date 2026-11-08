@@ -1,8 +1,8 @@
-import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261107-scene-breaks';
-import {books} from './books.js?v=20261107-scene-breaks';
+import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261108-wuli-cover';
+import {books} from './books.js?v=20261108-wuli-cover';
 import {read,save,setupSettings} from './settings.js?v=20261105-settings2';
 import {search,highlight} from './search.js?v=20261107-scene-breaks';
-import {renderReader,route} from './reader.js?v=20261107-scene-breaks';
+import {renderReader,route} from './reader.js?v=20261108-wuli-cover';
 history.scrollRestoration = 'manual';
 setupSettings();
 const app=document.querySelector('#app');
