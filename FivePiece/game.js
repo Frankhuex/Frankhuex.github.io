@@ -1,10 +1,11 @@
-import { SIZE, Stone, Outcome, MoveError, newBoard, opponent, moveError, tryMove, openingMove } from './rules.mjs';
+import { SIZE, Stone, Outcome, MoveError, newBoard, boardCenter, opponent, moveError, tryMove, openingMove } from './rules.mjs';
 
 const { BLACK, WHITE } = Stone;
 const STORAGE_KEY = 'fivepiece.matches.v1';
 const byId = id => document.getElementById(id);
 const board = byId('board');
-const boardUnits = 760;
+let gridRows = 0;
+let gridCols = 0;
 const form = byId('settings');
 const selectedSide = () => Number(form.elements.side.value);
 const humanName = byId('human-name');
@@ -50,6 +51,7 @@ function loadRecords() {
 function storeResult(game) {
     records.unshift({
         mode: game.mode, names: game.names, human: game.human, outcome: game.outcome,
+        rows: game.board.length, cols: game.board[0].length,
         moves: game.moves.slice(), time: new Date().toISOString(),
     });
     try {
@@ -184,6 +186,7 @@ function syncSettings() {
     byId('human-depth-field').hidden = !single;
     byId('watch-depth-fields').hidden = !watching;
     byId('setup').querySelector('.setup-records').hidden = watching;
+    syncBoardSize();
     renderSetupRecords();
 }
 
@@ -221,6 +224,19 @@ byId('leave-board').onclick = leaveBoard;
 document.querySelectorAll('[data-menu]').forEach(button => {
     button.onclick = () => showScreen('menu');
 });
+function syncBoardSize() {
+    const custom = form.elements['board-size'].value === 'custom';
+    byId('custom-size').hidden = !custom;
+    byId('board-rows').disabled = !custom;
+    byId('board-cols').disabled = !custom;
+}
+
+function configuredBoard() {
+    if (form.elements['board-size'].value === 'standard') return newBoard();
+    return newBoard(byId('board-rows').valueAsNumber, byId('board-cols').valueAsNumber);
+}
+
+form.elements['board-size'].forEach(input => input.addEventListener('change', syncBoardSize));
 form.addEventListener('input', renderSetupRecords);
 humanName.addEventListener('input', () => humanName.setCustomValidity(''));
 for (const field of [blackName, whiteName]) {
@@ -249,14 +265,14 @@ form.addEventListener('submit', event => {
     cancelSearch();
     match = {
         depth: Number(form.elements['human-depth'].value),
-        board: newBoard(), mode: single ? 'single' : 'double', human, names,
+        board: configuredBoard(), mode: single ? 'single' : 'double', human, names,
         player: BLACK, moves: [], outcome: Outcome.ONGOING, opening: true, busy: false, stalled: false,
     };
     replay = null;
     cursor = null;
     message = '';
     if (human === WHITE) {
-        play(match, [9, 9], BLACK);
+        play(match, boardCenter(match.board.length, match.board[0].length), BLACK);
         match.player = WHITE;
     }
     showScreen('arena');
@@ -275,7 +291,7 @@ function startWatch() {
     cancelSearch();
     match = {
         depths: { [BLACK]: Number(form.elements['black-depth'].value), [WHITE]: Number(form.elements['white-depth'].value) },
-        board: newBoard(), mode: 'watch', names: { [BLACK]: '电脑一', [WHITE]: '电脑二' },
+        board: configuredBoard(), mode: 'watch', names: { [BLACK]: '电脑一', [WHITE]: '电脑二' },
         player: BLACK, moves: [], outcome: Outcome.ONGOING, stalled: false,
     };
     replay = null;
@@ -299,7 +315,7 @@ function scheduleWatch() {
 function advanceWatch() {
     if (!canAdvanceWatch() || match.busy) return;
     const game = match;
-    const point = game.moves.length === 0 ? [9, 9] :
+    const point = game.moves.length === 0 ? boardCenter(game.board.length, game.board[0].length) :
         game.moves.length === 1 ? openingMove(game.board, game.player) : null;
     if (point !== null) finishWatchMove(game, point);
     else searchMove(game, game.player, game.depths[game.player], result => finishWatchMove(game, result));
@@ -443,26 +459,51 @@ function marker(row, col, radius, fill, stroke = 'none', width = 1) {
     });
 }
 
-function drawGrid() {
+function starIndices(size, center) {
+    return Array.from({ length: size }, (_, index) => index)
+        .filter(index => (index - center) % 6 === 0);
+}
+
+function columnLabel(index) {
+    let label = '';
+    for (let number = index + 1; number > 0; number = Math.floor((number - 1) / 26)) {
+        label = String.fromCharCode(65 + (number - 1) % 26) + label;
+    }
+    return label;
+}
+
+function drawGrid(rows, cols) {
+    if (rows === gridRows && cols === gridCols) return;
+    gridRows = rows;
+    gridCols = cols;
+    const width = (cols - 1) * spacing + 2 * margin;
+    const height = (rows - 1) * spacing + 2 * margin;
+    board.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    board.style.setProperty('--board-ratio', width / height);
+    board.setAttribute('aria-label', `${cols}×${rows} 棋盘，可用方向键定位、回车落子`);
     const grid = byId('board-grid');
-    const end = margin + (SIZE - 1) * spacing;
     const lines = [];
     const labels = vector('g', {
         fill: '#664d30', 'font-family': 'system-ui, sans-serif', 'font-size': 14,
         'text-anchor': 'middle', 'dominant-baseline': 'central',
     });
-    for (let i = 0; i < SIZE; i++) {
-        const pos = margin + i * spacing;
-        lines.push(`M${margin} ${pos}H${end} M${pos} ${margin}V${end}`);
-        labels.append(vector('text', { x: pos, y: 18 }, String.fromCharCode(65 + i)),
-            vector('text', { x: 18, y: pos }, String(i + 1)));
+    for (let r = 0; r < rows; r++) {
+        const pos = margin + r * spacing;
+        lines.push(`M${margin} ${pos}H${width - margin}`);
+        labels.append(vector('text', { x: 18, y: pos }, String(r + 1)));
     }
-    grid.append(vector('path', {
+    for (let c = 0; c < cols; c++) {
+        const pos = margin + c * spacing;
+        lines.push(`M${pos} ${margin}V${height - margin}`);
+        labels.append(vector('text', { x: pos, y: 18 }, columnLabel(c)));
+    }
+    grid.replaceChildren(vector('path', {
         d: lines.join(' '), fill: 'none', stroke: '#92744c',
         'stroke-width': 1, 'vector-effect': 'non-scaling-stroke',
     }), labels);
-    for (const row of [3, 9, 15]) {
-        for (const col of [3, 9, 15]) grid.append(marker(row, col, 3.5, '#745638'));
+    const [centerRow, centerCol] = boardCenter(rows, cols);
+    for (const row of starIndices(rows, centerRow)) {
+        for (const col of starIndices(cols, centerCol)) grid.append(marker(row, col, 3.5, '#745638'));
     }
 }
 
@@ -502,8 +543,6 @@ function renderBoard(moves) {
     }
 }
 
-drawGrid();
-
 function renderThinking(game) {
     if (screen !== 'arena' || replay || match !== game || !game.busy) return;
     byId('thinking-progress').value = game.progress ?? 0;
@@ -514,6 +553,7 @@ function render() {
     if (screen !== 'arena') return;
     const game = replay?.record ?? match;
     const moves = replay ? game.moves.slice(0, replay.index) : game?.moves ?? [];
+    drawGrid(game.board?.length ?? game.rows ?? SIZE, game.board?.[0].length ?? game.cols ?? SIZE);
     renderBoard(moves);
     const activePlayer = !replay && game.outcome === Outcome.ONGOING && !game.stalled
         ? (game.busy && game.mode === 'single' ? opponent(game.player) : game.player)
@@ -572,12 +612,40 @@ function render() {
         : message;
 }
 
+const boardScroll = byId('board-scroll');
+const zoomInput = byId('board-zoom');
+
+function setBoardZoom(value, x, y) {
+    const zoom = Math.max(Number(zoomInput.min), Math.min(Number(zoomInput.max), value));
+    const viewport = boardScroll.getBoundingClientRect();
+    const anchorX = x ?? (viewport.left + viewport.width / 2);
+    const anchorY = y ?? (viewport.top + viewport.height / 2);
+    const before = board.getBoundingClientRect();
+    const fractionX = (anchorX - before.left) / before.width;
+    const fractionY = (anchorY - before.top) / before.height;
+    zoomInput.value = zoom;
+    board.style.setProperty('--board-zoom', Number(zoomInput.value) / 100);
+    byId('board-zoom-value').value = `${zoomInput.value}%`;
+    const after = board.getBoundingClientRect();
+    boardScroll.scrollLeft += after.left + fractionX * after.width - anchorX;
+    boardScroll.scrollTop += after.top + fractionY * after.height - anchorY;
+    cursor = null;
+    render();
+}
+
+zoomInput.addEventListener('input', () => setBoardZoom(Number(zoomInput.value)));
+boardScroll.addEventListener('wheel', event => {
+    if (!(event.ctrlKey || event.metaKey) || event.deltaY === 0) return;
+    event.preventDefault();
+    setBoardZoom(Number(zoomInput.value) - Math.sign(event.deltaY) * 5, event.clientX, event.clientY);
+}, { passive: false });
+
 function eventPoint(event) {
     const rect = board.getBoundingClientRect();
-    const toIndex = value => Math.max(0, Math.min(SIZE - 1, Math.round((value - margin) / spacing)));
+    const toIndex = (value, size) => Math.max(0, Math.min(size - 1, Math.round((value - margin) / spacing)));
     return [
-        toIndex((event.clientY - rect.top) * boardUnits / rect.height),
-        toIndex((event.clientX - rect.left) * boardUnits / rect.width),
+        toIndex((event.clientY - rect.top) * board.viewBox.baseVal.height / rect.height, gridRows),
+        toIndex((event.clientX - rect.left) * board.viewBox.baseVal.width / rect.width, gridCols),
     ];
 }
 
@@ -588,11 +656,11 @@ board.addEventListener('keydown', event => {
     const directions = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
     if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        place(cursor ?? [9, 9]);
+        place(cursor ?? boardCenter(gridRows, gridCols));
     } else if (directions[event.key]) {
         event.preventDefault();
-        const current = cursor ?? [9, 9];
-        cursor = directions[event.key].map((offset, axis) => Math.max(0, Math.min(SIZE - 1, current[axis] + offset)));
+        const current = cursor ?? boardCenter(gridRows, gridCols);
+        cursor = directions[event.key].map((offset, axis) => Math.max(0, Math.min((axis === 0 ? gridRows : gridCols) - 1, current[axis] + offset)));
         render();
     }
 });
@@ -630,7 +698,7 @@ window.addEventListener('storage', event => {
 window.render_game_to_text = () => JSON.stringify({
     coordinates: 'zero-based row, column; origin top left',
     screen, mode: match?.mode ?? null, names: match?.names, player: match?.player, human: match?.human,
-    outcome: match?.outcome, moves: match?.moves ?? [], replay: replay?.index ?? null,
+    rows: gridRows, cols: gridCols, outcome: match?.outcome, moves: match?.moves ?? [], replay: replay?.index ?? null,
     status: byId('status').textContent, records: records.length, watchAuto, progress: match?.busy ? match.progress ?? 0 : null,
 });
 syncSettings();

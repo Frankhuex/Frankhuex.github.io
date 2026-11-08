@@ -58,6 +58,15 @@
                         <label class="field"><span><i class="stone white"></i> 白方</span><input id="white-name" maxlength="24" value="玩家二"></label>
                         <button id="swap" type="button">⇄ 交换黑白</button>
                     </div>
+                    <fieldset class="side-picker">
+                        <legend>棋盘尺寸</legend>
+                        <label><input type="radio" name="board-size" value="standard" checked><span>标准 19×19</span></label>
+                        <label><input type="radio" name="board-size" value="custom"><span>自定义</span></label>
+                    </fieldset>
+                    <div id="custom-size" hidden>
+                        <label class="field">列数<input id="board-cols" type="number" min="5" max="101" step="1" value="19" required disabled></label>
+                        <label class="field">行数<input id="board-rows" type="number" min="5" max="101" step="1" value="19" required disabled></label>
+                    </div>
                     <button class="primary" id="start" type="submit">开始对局</button>
                 </form>
                 <section class="setup-records" aria-label="当前对阵战绩">
@@ -89,29 +98,38 @@
                 </div>
             </header>
             <div class="board-stage">
-                <svg id="board" viewBox="0 0 760 760" tabindex="0" role="group" aria-label="十九路棋盘，可用方向键定位、回车落子">
-                    <g id="board-grid"></g><g id="board-stones"></g><g id="board-cursor"></g>
-                </svg>
+                <div id="board-scroll" class="board-scroll">
+                    <svg id="board" viewBox="0 0 760 760" tabindex="0" role="group" aria-label="棋盘，可用方向键定位、回车落子">
+                        <g id="board-grid"></g><g id="board-stones"></g><g id="board-cursor"></g>
+                    </svg>
+                </div>
             </div>
             <div class="arena-footer">
-                <div id="replay" class="button-row" hidden>
-                    <button id="previous" type="button">上一手</button>
-                    <button id="next" type="button">下一手</button>
+                <div class="arena-actions">
+                    <div id="replay" class="button-row" hidden>
+                        <button id="previous" type="button">上一手</button>
+                        <button id="next" type="button">下一手</button>
+                    </div>
+                    <div id="watch-controls" class="button-row" hidden>
+                        <button id="watch-previous" type="button">上一手</button>
+                        <button id="watch-next" type="button">下一手</button>
+                        <button id="watch-auto" type="button" aria-pressed="false">自动播放</button>
+                        <label class="watch-speed"><span>速度</span><select id="watch-speed">
+                            <option value="0.5">0.5×</option><option value="1" selected>1×</option>
+                            <option value="2">2×</option><option value="4">4×</option>
+                        </select></label>
+                    </div>
+                    <button id="undo" type="button" hidden>悔棋</button>
+                    <div id="result-actions" class="button-row" hidden>
+                        <button id="rematch" class="primary" type="button">再来一局</button>
+                        <button id="result-history" type="button">战绩</button>
+                    </div>
                 </div>
-                <div id="watch-controls" class="button-row" hidden>
-                    <button id="watch-previous" type="button">上一手</button>
-                    <button id="watch-next" type="button">下一手</button>
-                    <button id="watch-auto" type="button" aria-pressed="false">自动播放</button>
-                    <label class="watch-speed"><span>速度</span><select id="watch-speed">
-                        <option value="0.5">0.5×</option><option value="1" selected>1×</option>
-                        <option value="2">2×</option><option value="4">4×</option>
-                    </select></label>
-                </div>
-                <button id="undo" type="button" hidden>悔棋</button>
-                <div id="result-actions" class="button-row" hidden>
-                    <button id="rematch" class="primary" type="button">再来一局</button>
-                    <button id="result-history" type="button">战绩</button>
-                </div>
+                <label class="board-zoom">
+                    <span>缩放</span>
+                    <input id="board-zoom" type="range" min="50" max="250" step="5" value="100" aria-label="棋盘缩放">
+                    <output id="board-zoom-value" for="board-zoom">100%</output>
+                </label>
             </div>
         </section>
         <section id="history" class="history-screen" hidden>

@@ -10,7 +10,9 @@ const { EMPTY, BLACK, WHITE } = Stone;
 const axes = [[0, 1], [-1, 1], [-1, 0], [-1, -1]];
 const WIN = 1000000;
 
-export const newBoard = () => Array.from({ length: SIZE }, () => Array(SIZE).fill(EMPTY));
+export const newBoard = (rows = SIZE, cols = SIZE) =>
+    Array.from({ length: rows }, () => Array(cols).fill(EMPTY));
+export const boardCenter = (rows, cols) => [Math.floor(rows / 2), Math.floor(cols / 2)];
 export function opponent(player) {
     if (player === EMPTY) throw new RangeError('An empty square has no opponent');
     return player === BLACK ? WHITE : BLACK;
@@ -138,7 +140,10 @@ function threatScore(board, point, player) {
     if (lengths.some(length => wins(length, player))) return WIN;
     const fours = fourGroups(board, point, player);
     const threes = liveThreeGroups(board, point, player);
-    if (fours.size >= 2 || [...fours.values()].some(ends => ends.size >= 2)) return 8000;
+    if (fours.size >= 2 || [...fours.values()].some(ends => ends.size >= 2)) {
+        // A strong four can coexist with a separate live-three threat.
+        return 8000 + 250 * threes.size;
+    }
     if (fours.size && threes.size) return 7000;
     return 500 * (fours.size + threes.size) +
         lengths.reduce((sum, length) => sum + 2 ** Math.min(length, 4), 0);
@@ -273,9 +278,9 @@ export function chooseMove(board, player, depth = 0, onProgress) {
 }
 
 export function openingMove(board, player) {
-    const center = Math.floor(board.length / 2);
-    for (const r of [center - 1, center + 1]) {
-        for (const c of [center - 1, center + 1]) {
+    const [row, col] = boardCenter(board.length, board[0].length);
+    for (const r of [row - 1, row + 1]) {
+        for (const c of [col - 1, col + 1]) {
             if (moveError(board, [r, c], player) === null) return [r, c];
         }
     }
