@@ -1,8 +1,8 @@
-import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261108-wuli-cover';
-import {books} from './books.js?v=20261108-wuli-cover';
+import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261108-hymn-align';
+import {books} from './books.js?v=20261108-hymn-align';
 import {read,save,setupSettings} from './settings.js?v=20261105-settings2';
 import {search,highlight} from './search.js?v=20261107-scene-breaks';
-import {renderReader,route} from './reader.js?v=20261108-wuli-cover';
+import {renderReader,route} from './reader.js?v=20261108-hymn-align';
 history.scrollRestoration = 'manual';
 setupSettings();
 const app=document.querySelector('#app');
@@ -112,7 +112,7 @@ async function renderContent() {
         cleanup=renderReader(app,novel,chapter,params);return;
       }
       if(view==='book') {
-        app.innerHTML=`<section class="detail book-enter book-pending"><div class="detail-top">${cover(book)}<div><h1>${escapeHtml(book.title)}</h1><p>${escapeHtml(book.description)}</p><p class="authors">${escapeHtml(book.authorCredit || book.authors.join(' / '))}</p>${novel.date ? `<p class="authors book-date">${escapeHtml(novel.date)}</p>` : ''}<a class="primary" href="${resume(book, novel)}">阅读 →</a></div></div><h2>目录</h2><div class="chapter-list"></div></section>`;
+        app.innerHTML=`<section class="detail book-enter book-pending"><div class="detail-top">${cover(book)}<div><h1>${escapeHtml(book.title)}</h1><p>${escapeHtml(book.description)}</p><p class="authors">${escapeHtml(book.authorCredit || book.authors.join(' / '))}</p>${novel.date ? `<p class="authors book-date">${escapeHtml(novel.date)}</p>` : ''}<a class="primary" href="${resume(book, novel)}">阅读 →</a><a class="secondary book-download" href="./books/${encodeURIComponent(book.id)}.json" download>下载</a></div></div><h2>目录</h2><div class="chapter-list"></div></section>`;
         novel.chapters.forEach(c=>{const a=document.createElement('a');a.href=route({view:'read',book:book.id,chapter:c.id});a.textContent=c.excerpt ? `${c.title}　${c.excerpt}` : c.title;app.querySelector('.chapter-list').append(a);});
       } else if(view==='search') {
         const query=(params.get('q')||'').trim();

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {findBook, loadBook} from '../library.js?v=20261108-wuli-cover';
+import {findBook, loadBook} from '../library.js?v=20261108-hymn-align';
 const novel = await loadBook(findBook('vx1'));
 import {search} from '../search.js?v=20261107-scene-breaks';
 
@@ -43,3 +43,16 @@ assert.deepEqual(novel.chapters.slice(7).map(chapter => chapter.parts[0].author)
 assert.equal(novel.chapters[8].excerpt, '一封信');
 assert(novel.chapters[2].paragraphs.some(p => p.map(s=>s.text).join('') === '番外'));
 console.log('PASS: fourteen chapters, 105 relays, six authors, three inline boundaries, guest author, seven attributed extras');
+
+const epilogue = novel.chapters.find(chapter => chapter.id === 'c6');
+assert.deepEqual(
+  Object.entries(epilogue.paragraphAlignments).filter(([, alignment]) => alignment === 'right').map(([index, alignment]) => [
+    epilogue.paragraphs[index].map(segment => segment.text).join(''),
+    alignment
+  ]),
+  [['你最爱的艾薇”', 'right'], ['柯析”', 'right']]
+);
+assert.deepEqual(
+  Object.keys(epilogue.paragraphAlignments).filter(index => epilogue.paragraphAlignments[index] === 'center').map(Number),
+  Array.from({length: 24}, (_, index) => index + 32)
+);

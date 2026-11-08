@@ -1,4 +1,4 @@
-import {progressKey, escapeHtml} from './library.js?v=20261108-wuli-cover';
+import {progressKey, escapeHtml} from './library.js?v=20261108-hymn-align';
 import {highlight} from './search.js?v=20261107-scene-breaks';
 import {read, save} from './settings.js?v=20261105-settings2';
 export function route(values={}) { return '#'+new URLSearchParams(values).toString(); }
@@ -148,6 +148,8 @@ export function renderReader(app, novel, chapter, params) {
   const seen = new Set();
   chapter.paragraphs.forEach((segments,index)=>{
     const p = document.createElement('p');p.id=`p${index}`;
+    const alignment = chapter.paragraphAlignments?.[index];
+    if (alignment === 'center' || alignment === 'right') p.dataset.align = alignment;
     for (const segment of segments) {
       const span = document.createElement('span');
       if (segment.part && !seen.has(segment.part)) {

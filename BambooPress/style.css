@@ -199,6 +199,10 @@ input[type=search] {
   margin-left:25px;
   font-size:13px
 }
+.book-download {
+  display: inline-block;
+  color: var(--accent);
+}
 .detail-top {
   display:grid;
   grid-template-columns:270px 1fr;
@@ -1196,7 +1200,7 @@ header #search-form {
 .book-enter .detail-top h1 { --enter-delay: 140ms; }
 .book-enter .detail-top p:not(.authors) { --enter-delay: 240ms; }
 .book-enter .detail-top .authors { --enter-delay: 320ms; }
-.book-enter .detail-top .primary { --enter-delay: 400ms; }
+.book-enter .detail-top :is(.primary, .book-download) { --enter-delay: 400ms; }
 .book-enter > h2 { --enter-delay: 440ms; }
 .book-enter .chapter-list > a { --enter-delay: 480ms; }
 .book-enter .chapter-list > a:nth-child(2n) { --enter-delay: 540ms; }
@@ -1226,7 +1230,7 @@ header #search-form {
 .book-enter .detail-top h1 { --enter-delay: 100ms; }
 .book-enter .detail-top p:not(.authors) { --enter-delay: 300ms; }
 .book-enter .detail-top .authors { --enter-delay: 500ms; }
-.book-enter .detail-top .primary { --enter-delay: 700ms; }
+.book-enter .detail-top :is(.primary, .book-download) { --enter-delay: 700ms; }
 .book-enter > h2 { --enter-delay: 900ms; }
 .book-enter .chapter-list > a:nth-child(1) { --enter-delay: 1000ms; }
 .book-enter .chapter-list > a:nth-child(2) { --enter-delay: 1100ms; }
@@ -1330,7 +1334,7 @@ header #search-form {
 .book-enter .detail-top h1 { --enter-delay: 0ms; }
 .book-enter .detail-top p:not(.authors) { --enter-delay: 80ms; }
 .book-enter .detail-top .authors { --enter-delay: 160ms; }
-.book-enter .detail-top .primary { --enter-delay: 240ms; }
+.book-enter .detail-top :is(.primary, .book-download) { --enter-delay: 240ms; }
 .book-enter > h2 { --enter-delay: 320ms; }
 .book-enter .chapter-list > a:nth-child(1) { --enter-delay: 360ms; }
 .book-enter .chapter-list > a:nth-child(2) { --enter-delay: 390ms; }
@@ -1538,6 +1542,7 @@ header .brand {
 
 /* Indent text itself, independently of the flush-left author label. */
 #prose p {
+  text-align: left;
   text-indent: 0;
   white-space: normal;
 }
@@ -1545,6 +1550,15 @@ header .brand {
   display: block;
   text-indent: 2em;
   white-space: pre-wrap;
+}
+#prose p[data-align="center"] {
+  text-align: center;
+}
+#prose p[data-align="right"] {
+  text-align: right;
+}
+#prose p[data-align] .prose-line {
+  text-indent: 0;
 }
 #prose .signature {
   text-indent: 0;
