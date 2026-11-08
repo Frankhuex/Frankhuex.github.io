@@ -76,6 +76,10 @@
 - BambooPress 在网站首页归入“小说”。需要调整主站入口时，遵守根目录规范，同步检查根目录 `index.html`、`NewHome/index.html` 和共用 `NewHome/script.js`。
 - 保留字体许可证；添加图片和字体时检查实际文件存在、路径大小写及相对路径解析。
 
+## 更新阅读字体
+
+新增或修改作品后，使用完整的 [Noto Serif SC 可变字体](https://github.com/google/fonts/blob/main/ofl/notoserifsc/NotoSerifSC%5Bwght%5D.ttf) 重新生成站内字体。Python 环境需安装 `fonttools`。在仓库根目录执行 `python3 BambooPress/tools/build_reading_font.py "/path/to/NotoSerifSC[wght].ttf"`。脚本读取书库全部 JSON，检查汉字覆盖，并生成 `fonts/reading-serif.woff`。更新后同步调整两份 HTML 的字体预加载和样式表版本，以及 CSS 中字体引用的版本。保留字体许可证，原始 TTF 可存放在仓库外。
+
 ## 新增作品与验证
 
 1. 整理并核对原始文档，生成一份 `books/<id>.json`。

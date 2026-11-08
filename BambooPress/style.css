@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Bamboo Song';
-  src: url('./fonts/reading-serif.woff?v=20261106-indent') format('woff');
+  src: url('./fonts/reading-serif.woff?v=20261108-wuli') format('woff');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;
@@ -780,6 +780,7 @@ header nav {
   visibility: visible;
 }
 #search-form #query {
+  font-family: system-ui, sans-serif;
   width: 210px;
   min-width: 0;
   flex: 1;
