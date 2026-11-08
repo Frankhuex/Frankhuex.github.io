@@ -138,7 +138,7 @@ input[type=search] {
 }
 .cover {
   width:240px;
-  height:330px;
+  aspect-ratio:8 / 11;
   background:#315348;
   color:#f2ead6;
   box-shadow:inset 8px 0 #203e34,inset 10px 0 #849180,10px 15px 30px #0002;
@@ -404,7 +404,6 @@ input[type=search] {
 }
 .cover {
   width:210px;
-  height:290px;
   margin:auto
 }
 .book-info h2 {
