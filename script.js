@@ -7,7 +7,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=3406688729",
         tag: "Single",
         action: "立刻收听",
-        image: "../Images/Spring.jpg",
+        image: "./Images/Spring.jpg",
         external: true,
     },
     {
@@ -16,7 +16,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=3381153208",
         tag: "Collab",
         action: "立刻收听",
-        image: "../Images/无只因生还.jpg",
+        image: "./Images/无只因生还.jpg",
         external: true,
     },
     {
@@ -25,7 +25,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=3380009316",
         tag: "Single",
         action: "立刻收听",
-        image: "../Images/AutotelicDrill.jpg",
+        image: "./Images/AutotelicDrill.jpg",
         external: true,
     },
     {
@@ -34,7 +34,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=2708814604",
         tag: "Single",
         action: "立刻收听",
-        image: "../Images/Solace.jpg",
+        image: "./Images/Solace.jpg",
         external: true,
     },
     {
@@ -43,7 +43,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=2668756564",
         tag: "Single",
         action: "立刻收听",
-        image: "../Images/Melee.jpg",
+        image: "./Images/Melee.jpg",
         external: true,
     },
     {
@@ -52,7 +52,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=2647217865",
         tag: "Single",
         action: "立刻收听",
-        image: "../Images/Navigating.jpg",
+        image: "./Images/Navigating.jpg",
         external: true,
     },
     {
@@ -61,7 +61,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=2609522789",
         tag: "Single",
         action: "立刻收听",
-        image: "../Images/E-Lunar.jpg",
+        image: "./Images/E-Lunar.jpg",
         external: true,
     },
     {
@@ -70,7 +70,7 @@ const musicItems = [
         href: "https://music.163.com/#/song?id=2135768741",
         tag: "Single",
         action: "立刻收听",
-        image: "../Images/OutofRange.jpg",
+        image: "./Images/OutofRange.jpg",
         external: true,
     },
     {
@@ -79,7 +79,7 @@ const musicItems = [
         href: "https://music.163.com/#/song?id=2066356757",
         tag: "Single",
         action: "立刻收听",
-        image: "../Images/Departure.jpg",
+        image: "./Images/Departure.jpg",
         external: true,
     },
     {
@@ -88,7 +88,7 @@ const musicItems = [
         href: "https://music.163.com/#/song?id=2056998899",
         tag: "Single",
         action: "立刻收听",
-        image: "../Images/STE.jpg",
+        image: "./Images/STE.jpg",
         external: true,
     },
     {
@@ -97,7 +97,7 @@ const musicItems = [
         href: "https://music.163.com/#/song?id=2017887550",
         tag: "Single",
         action: "立刻收听",
-        image: "../Images/Think.jpg",
+        image: "./Images/Think.jpg",
         external: true,
     },
     {
@@ -106,7 +106,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=2145606947",
         tag: "Collab",
         action: "立刻收听",
-        image: "../Images/天一生水.jpg",
+        image: "./Images/天一生水.jpg",
         external: true,
     },
     {
@@ -115,7 +115,7 @@ const musicItems = [
         href: "https://music.163.com/song?id=1947150471",
         tag: "Collab",
         action: "立刻收听",
-        image: "../Images/悖论方形.jpg",
+        image: "./Images/悖论方形.jpg",
         external: true,
     },
 ];
@@ -124,114 +124,112 @@ const onlineProjects = [
     {
         title: "五子棋",
         description: "五子棋在线人机/双人对战",
-        href: "../FivePiece/index.html",
+        href: "./FivePiece/index.html",
         tag: "棋类游戏",
         action: "游玩",
     },
     {
         title: "SpectrumStudio",
         description: "制作音频频谱可视化视频",
-        href: "../SpectrumStudio/index.html",
+        href: "./SpectrumStudio/index.html",
         tag: "Tool",
         action: "进入",
     },
     {
         title: "Q 弹工坊",
         description: "制作Q弹动图",
-        href: "../QSpring/index.html",
-        image: "images/qspring-preview.png",
-        imageAlt: "Q 弹工坊的图片伸缩预览与参数界面",
+        href: "./QSpring/index.html",
         tag: "动图工具",
         action: "进入",
     },
     {
         title: "In Falsus 哈农",
         description: "单手 6k 哈农练习",
-        href: "../InFalsusHanon/index.html",
+        href: "./InFalsusHanon/index.html",
         tag: "Tool",
         action: "游玩",
     },
     {
         title: "HJGAO 卡牌编辑器",
         description: "创建卡组导入 HJGAO 卡牌游戏",
-        href: "../HJGAOCardStudio/index.html",
+        href: "./HJGAOCardStudio/index.html",
         tag: "Tool",
         action: "进入",
     },
     {
         title: "大模型发展史",
         description: "各家大模型发布时间轴",
-        href: "../AIModelTimeline/index.html",
+        href: "./AIModelTimeline/index.html",
         tag: "Tool",
         action: "进入",
     },
     {
         title: "Dancing Line 采音器",
         description: "Dancing Line 采音辅助工具",
-        href: "../DLChart/index.html",
+        href: "./DLChart/index.html",
         tag: "Tool",
         action: "进入",
     },
     {
         title: "Dancing Line 铺路器体验平台",
         description: "Dancing Line 铺路器在线体验平台",
-        href: "../DLTemplate/index.html",
+        href: "./DLTemplate/index.html",
         tag: "Unity 3D",
         action: "游玩",
     },
     {
         title: "Dancing Line - Gray Efflorescence",
         description: "Dancing Line 饭制关卡《Gray Efflorescence》",
-        href: "../DancingLine/index.html",
+        href: "./DancingLine/index.html",
         tag: "Unity 3D",
         action: "游玩",
     },
     {
         title: "Pixel Paradox",
         description: "首个 Unity 游戏 Demo",
-        href: "../PixelAdventure/index.html",
+        href: "./PixelAdventure/index.html",
         tag: "Unity 2D",
         action: "游玩",
     },
     {
         title: "美国大选 3D",
         description: "美国大选嵌套井字棋 3D版 单机版",
-        href: "../USElection3D/index.html",
+        href: "./USElection3D/index.html",
         tag: "Unity 3D",
         action: "游玩",
     },
     {
         title: "薇茜",
         description: "基于接龙小说《薇茜》的横版2D游戏（WIP）",
-        href: "../Vyshee/index.html",
+        href: "./Vyshee/index.html",
         tag: "Unity 2D",
         action: "游玩",
     },
     {
         title: "东方竹里馆",
         description: "STG 射击游戏",
-        href: "../TouhouBambooHub/index.html",
+        href: "./TouhouBambooHub/index.html",
         tag: "2D Game",
         action: "游玩",
     },
     {
         title: "东方竹里馆 2",
         description: "STG 射击游戏",
-        href: "../TouhouBambooHubNew/index.html",
+        href: "./TouhouBambooHubNew/index.html",
         tag: "Unity 2D",
         action: "游玩",
     },
     {
         title: "东方竹里馆 3",
         description: "STG 射击游戏",
-        href: "../TouhouBambooHub3/index.html",
+        href: "./TouhouBambooHub3/index.html",
         tag: "Unity 2D",
         action: "游玩",
     },
     {
         title: "立瓶子",
         description: "立瓶子模拟器",
-        href: "../立瓶子Web/index.html",
+        href: "./立瓶子Web/index.html",
         tag: "Unity 3D",
         action: "游玩",
     },
@@ -241,7 +239,7 @@ const downloads = [
     {
         title: "美国大选 3D 联机版（Mac）",
         description: "Unity 下载包",
-        href: "../Games/US%20Election%20Online%20(Mac).zip",
+        href: "./Games/US%20Election%20Online%20(Mac).zip",
         tag: "Unity 3D",
         action: "下载",
         download: true,
@@ -249,7 +247,7 @@ const downloads = [
     {
         title: "美国大选 3D 联机版（Windows）",
         description: "Unity 下载包",
-        href: "../Games/US%20Election%20Online%20(Windows).zip",
+        href: "./Games/US%20Election%20Online%20(Windows).zip",
         tag: "Unity 3D",
         action: "下载",
         download: true,
@@ -257,7 +255,7 @@ const downloads = [
     {
         title: "五子棋",
         description: "Pygame 游戏",
-        href: "../Games/%E4%BA%94%E5%AD%90%E6%A3%8B5.0.zip",
+        href: "./Games/%E4%BA%94%E5%AD%90%E6%A3%8B5.0.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -265,7 +263,7 @@ const downloads = [
     {
         title: "D2303 模拟器",
         description: "Pygame 游戏",
-        href: "../Games/D2303%201.3.zip",
+        href: "./Games/D2303%201.3.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -273,7 +271,7 @@ const downloads = [
     {
         title: "4K 音游",
         description: "Pygame 游戏",
-        href: "../Games/%E9%9F%B3%E6%B8%B80.1%EF%BC%88%E5%9C%A8const.py%E4%BF%AE%E6%94%B9%E9%94%AE%E4%BD%8D%EF%BC%89.zip",
+        href: "./Games/%E9%9F%B3%E6%B8%B80.1%EF%BC%88%E5%9C%A8const.py%E4%BF%AE%E6%94%B9%E9%94%AE%E4%BD%8D%EF%BC%89.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -281,7 +279,7 @@ const downloads = [
     {
         title: "美国大选",
         description: "Python 游戏",
-        href: "../Games/%E7%BE%8E%E5%9B%BD%E5%A4%A7%E9%80%89Frank_v2_1.py",
+        href: "./Games/%E7%BE%8E%E5%9B%BD%E5%A4%A7%E9%80%89Frank_v2_1.py",
         tag: "Python",
         action: "下载",
         download: true,
@@ -289,7 +287,7 @@ const downloads = [
     {
         title: "推双箱",
         description: "Pygame 游戏",
-        href: "../Games/%E6%8E%A8%E7%AE%B1%E5%AD%901.1.zip",
+        href: "./Games/%E6%8E%A8%E7%AE%B1%E5%AD%901.1.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -297,7 +295,7 @@ const downloads = [
     {
         title: "华容道",
         description: "Pygame 游戏",
-        href: "../Games/HuaRongDao.zip",
+        href: "./Games/HuaRongDao.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -305,7 +303,7 @@ const downloads = [
     {
         title: "风石",
         description: "基于 Pygame 的日记应用",
-        href: "../Games/WindRock_v1_0.zip",
+        href: "./Games/WindRock_v1_0.zip",
         tag: "Pygame",
         action: "下载",
         download: true,
@@ -316,21 +314,21 @@ const legacyTools = [
     {
         title: "猜数字",
         description: "前端初学 Demo",
-        href: "../GuessNumbers/GuessNumbers.html",
+        href: "./GuessNumbers/GuessNumbers.html",
         tag: "Web",
         action: "打开项目",
     },
     {
         title: "三维向量叉乘计算器",
         description: "前端初学 Demo",
-        href: "../CrossPro/CrossPro.html",
+        href: "./CrossPro/CrossPro.html",
         tag: "Web",
         action: "打开项目",
     },
     {
         title: "方块旋转",
         description: "Unity Helloworld",
-        href: "../CubeRotation/index.html",
+        href: "./CubeRotation/index.html",
         tag: "Unity 3D",
         action: "打开项目",
     },
@@ -340,14 +338,14 @@ const fictionItems = [
     {
         title: "BambooPress",
         description: "竹林小说阅读站",
-        href: "../BambooPress/index.html",
+        href: "./BambooPress/index.html",
         tag: "Fiction",
         action: "阅读",
     },
     {
         title: "N-Gram 文艺复兴",
         description: "基于 N-Gram 算法的文本生成",
-        href: "../ngram_renaissance.html",
+        href: "./ngram_renaissance.html",
         tag: "Site",
         action: "进入",
     },
@@ -362,7 +360,7 @@ const fictionItems = [
     {
         title: "设定集",
         description: "一个庞大的世界观设定集",
-        href: "../SettingSet/SettingSet.html",
+        href: "./SettingSet/SettingSet.html",
         tag: "SettingSet",
         action: "阅读",
     },
@@ -511,7 +509,7 @@ const extraItems = [
     {
         title: "资源页",
         description: "隐藏资源站",
-        href: "../Home/links.html",
+        href: "./Home/links.html",
         tag: "Resource",
         action: "进入",
     },
@@ -521,18 +519,18 @@ const archiveItems = [
     {
         title: "旧版主页",
         description: "早期的主页版本。",
-        href: "../Home/home.html",
+        href: "./Home/home.html",
     },
     {
         title: "更旧版主页",
         description: "更早期的主页版本。",
-        href: "../Home/oldhome.html",
+        href: "./Home/oldhome.html",
     },
 ];
 
 const featuredProjects = [
-    { ...onlineProjects[0], image: "images/fivepiece.svg?v=2", imageAlt: "五子棋棋盘", tag: "棋类游戏" },
-    { ...onlineProjects[1], image: "images/SpectrumStudio.png", imageAlt: "SpectrumStudio 音频频谱视频编辑界面", tag: "频谱视频" },
+    { ...onlineProjects[0], image: "./Images/fivepiece.svg?v=2", imageAlt: "五子棋棋盘", tag: "" },
+    { ...onlineProjects[1], image: "./Images/SpectrumStudio.png", imageAlt: "SpectrumStudio 音频频谱视频编辑界面", tag: "" },
 ];
 
 const targetMap = {
@@ -546,7 +544,7 @@ const targetMap = {
     "extra-grid": extraItems,
 };
 
-function createCard(item) {
+function createCard(item, arrowOnly) {
     const article = document.createElement("article");
     article.className = `site-card${item.retired ? " is-retired" : ""}`;
 
@@ -579,14 +577,15 @@ function createCard(item) {
     const copy = document.createElement("div");
     copy.className = "card-copy";
 
-    const topline = document.createElement("div");
-    topline.className = "card-topline";
+    if (item.tag) {
+        const topline = document.createElement("div");
+        topline.className = "card-topline";
 
-    const tag = document.createElement("span");
-    tag.textContent = item.tag;
-    topline.appendChild(tag);
-
-
+        const tag = document.createElement("span");
+        tag.textContent = item.tag;
+        topline.appendChild(tag);
+        copy.appendChild(topline);
+    }
 
     const title = document.createElement("h4");
     title.textContent = item.title;
@@ -602,9 +601,15 @@ function createCard(item) {
 
     const action = document.createElement("div");
     action.className = "card-action";
-    action.textContent = item.external ? `${item.action} ↗` : item.action;
+    if (arrowOnly) {
+        copy.classList.add("has-card-arrow");
+        action.textContent = item.action === "下载" ? "↓" : item.external ? "↗" : "→";
+        action.setAttribute("aria-hidden", "true");
+    } else {
+        action.textContent = item.external ? `${item.action} ↗` : item.action;
+    }
 
-    copy.append(topline, title, desc, action);
+    copy.append(title, desc, action);
     link.appendChild(copy);
     article.appendChild(link);
 
@@ -637,12 +642,9 @@ function renderCards() {
         }
 
         items.forEach((item) => {
-            const card = createCard(item);
-            if (id === "social-grid" || id === "extra-grid") {
-                card.querySelector(".card-action").textContent = item.external ? "↗" : "→";
-                card.querySelector(".card-action").setAttribute("aria-hidden", "true");
-            }
-            container.appendChild(card);
+            const arrowOnly = id === "fiction-grid" || id === "social-grid" || id === "extra-grid"
+                || ["游玩", "进入", "下载"].includes(item.action);
+            container.appendChild(createCard(item, arrowOnly));
         });
     });
 
@@ -657,7 +659,7 @@ function renderCards() {
 
 function setupFloatingCovers() {
     const covers = [
-        { title: "BlearyDesire", image: "../Images/BlearyDesire.png" },
+        { title: "BlearyDesire", image: "./Images/BlearyDesire.png" },
         ...musicItems,
     ].filter(item => item.image);
     const field = document.querySelector(".floating-covers");

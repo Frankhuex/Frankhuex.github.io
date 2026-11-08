@@ -3,9 +3,9 @@
 ## 新增歌曲或程序
 
 - 新增歌曲时，将新曲放到音乐区的 featured 位置，原 featured 顺延到普通列表首位，保留其封面、链接和曲风等信息。
-- 更新 featured 歌曲时，还要同步更新 `NewHome/script.js` 中 `setupFloatingCovers()` 的 `covers` 数组内手动维护的 featured 项（歌曲名和封面路径），确保新曲进入首页封面弹球的随机候选池。普通歌曲通过 `...musicItems` 自动合并；旧 featured 移入 `musicItems` 后会继续保留在候选池中，无需重复添加。
-- 新增程序、游戏或工具时，将新项目放到程序区的 featured（`project-showcase`）位置，原有推荐项目依次后移，挤出的最后一项移到对应的普通列表首位，保留原有信息和访问入口。
-- 同步检查根目录 `index.html`、`NewHome/index.html` 和共用的 `NewHome/script.js`，确保两个首页入口一致；图片路径应适配各自目录。
+- 更新 featured 歌曲时，还要同步更新 `script.js` 中 `setupFloatingCovers()` 的 `covers` 数组内手动维护的 featured 项（歌曲名和封面路径），确保新曲进入首页封面弹球的随机候选池。普通歌曲通过 `...musicItems` 自动合并；旧 featured 移入 `musicItems` 后会继续保留在候选池中，无需重复添加。
+- 新增程序、游戏或工具时，将新项目放到程序区的 featured（`project-showcase`）位置，原有推荐项目依次后移，挤出的最后一项移到对应的普通列表首位，保留名称、说明、标签和访问入口。普通列表中的该项目不显示推荐封面，应从普通列表数据中移除 `image` 和 `imageAlt`，封面素材可保留。
+- 首页入口为根目录 `index.html`，样式与脚本位于根目录，图片位于 `Images/`。更新首页时同步检查 `index.html` 和 `script.js` 中涉及的内容及资源路径。
 
 ## 首页项目归类
 

@@ -223,10 +223,14 @@ main,.site-footer {
     list-style:none;
 }
 
-.hero-stats li {
+.hero-stats a {
     display:flex;
     align-items:baseline;
     gap:8px;
+}
+
+.hero-stats a:hover strong,.hero-stats a:focus-visible strong {
+    color:var(--accent);
 }
 
 .hero-stats strong {
@@ -431,6 +435,16 @@ main,.site-footer {
     gap:56px;
 }
 
+.project-lists {
+    grid-template-columns:1fr;
+}
+
+.project-lists .card-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));
+    column-gap:24px;
+}
+
 .panel-head {
     display:flex;
     align-items:baseline;
@@ -498,8 +512,8 @@ main,.site-footer {
     font-size:23px;
 }
 
-.project-showcase .card-action {
-    float:right;
+.project-showcase .has-card-arrow {
+    padding-right:24px;
 }
 
 .fiction-layout {
@@ -576,9 +590,12 @@ main,.site-footer {
     padding:17px 24px 17px 0;
 }
 
-.link-list .card-action {
-    font-size:17px;
+.has-card-arrow .card-action {
+    position:absolute;
+    right:0;
     top:15px;
+    margin:0;
+    font-size:17px;
 }
 
 .link-list .card-copy h4 {
@@ -681,7 +698,7 @@ main,.site-footer {
         gap:20px;
     }
 
-    .hero-stats li {
+    .hero-stats a {
         display:block;
     }
 
@@ -822,7 +839,7 @@ main,.site-footer {
         margin-top:26px;
     }
 
-    .hero-stats li {
+    .hero-stats a {
         display:flex;
         gap:6px;
     }
@@ -1040,7 +1057,7 @@ main,.site-footer {
 /* Keep compact statistics legible on narrow phones. */
 @media (max-width: 360px) {
     .hero-stats { justify-content: space-between; gap: 12px; }
-    .hero-stats li { display: block; }
+    .hero-stats a { display: block; }
     .hero-stats span { display: block; white-space: nowrap; }
     .highlight-media { grid-template-columns: 88px minmax(0, 1fr); gap: 16px; padding: 16px; }
 }
