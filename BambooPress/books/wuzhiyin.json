@@ -3,15 +3,15 @@
   "title": "无只因生还",
   "date": "2022.08.19",
   "authors": [
-    "BCE",
-    "Wkz",
+    "纯鹿人",
+    "开着",
     "真爱困",
-    "Lth",
+    "直升机",
     "SmallPot",
-    "Frank",
-    "Wtc"
+    "梅川旁次",
+    "彼格丧"
   ],
-  "authorCredit": "「竹林七贤」BCE / Wkz / 真爱困 / Lth / SmallPot / Frank / Wtc",
+  "authorCredit": "「竹林七贤」纯鹿人 / 开着 / 真爱困 / 直升机 / SmallPot / 梅川旁次 / 彼格丧",
   "description": "灰色中分已然绽放。",
   "coverColor": "#31584b",
   "coverImage": "images/wuzhiyin.jpeg",
@@ -23,7 +23,7 @@
       "parts": [
         {
           "id": "c0-s0",
-          "author": "BCE"
+          "author": "纯鹿人"
         }
       ],
       "paragraphs": [
@@ -54,11 +54,11 @@
       "parts": [
         {
           "id": "c1-s1",
-          "author": "BCE"
+          "author": "纯鹿人"
         },
         {
           "id": "c1-s2",
-          "author": "Wkz"
+          "author": "开着"
         },
         {
           "id": "c1-s3",
@@ -66,7 +66,7 @@
         },
         {
           "id": "c1-s4",
-          "author": "Lth"
+          "author": "直升机"
         },
         {
           "id": "c1-s5",
@@ -74,15 +74,15 @@
         },
         {
           "id": "c1-s6",
-          "author": "BCE"
+          "author": "纯鹿人"
         },
         {
           "id": "c1-s7",
-          "author": "Wkz"
+          "author": "开着"
         },
         {
           "id": "c1-s8",
-          "author": "Lth"
+          "author": "直升机"
         },
         {
           "id": "c1-s9",
@@ -94,7 +94,7 @@
         },
         {
           "id": "c1-s11",
-          "author": "BCE"
+          "author": "纯鹿人"
         }
       ],
       "paragraphs": [
@@ -552,7 +552,7 @@
       "parts": [
         {
           "id": "c2-s1",
-          "author": "Wkz"
+          "author": "开着"
         },
         {
           "id": "c2-s2",
@@ -560,7 +560,7 @@
         },
         {
           "id": "c2-s3",
-          "author": "Lth"
+          "author": "直升机"
         },
         {
           "id": "c2-s4",
@@ -568,11 +568,11 @@
         },
         {
           "id": "c2-s5",
-          "author": "BCE"
+          "author": "纯鹿人"
         },
         {
           "id": "c2-s6",
-          "author": "Wkz"
+          "author": "开着"
         },
         {
           "id": "c2-s7",
@@ -580,7 +580,7 @@
         },
         {
           "id": "c2-s8",
-          "author": "Lth"
+          "author": "直升机"
         },
         {
           "id": "c2-s9",
@@ -588,15 +588,15 @@
         },
         {
           "id": "c2-s10",
-          "author": "BCE"
+          "author": "纯鹿人"
         },
         {
           "id": "c2-s11",
-          "author": "Wkz"
+          "author": "开着"
         },
         {
           "id": "c2-s12",
-          "author": "Frank"
+          "author": "梅川旁次"
         }
       ],
       "paragraphs": [
@@ -1184,7 +1184,7 @@
         },
         {
           "id": "c3-s2",
-          "author": "Lth"
+          "author": "直升机"
         },
         {
           "id": "c3-s3",
@@ -1192,15 +1192,15 @@
         },
         {
           "id": "c3-s4",
-          "author": "BCE"
+          "author": "纯鹿人"
         },
         {
           "id": "c3-s5",
-          "author": "Wkz"
+          "author": "开着"
         },
         {
           "id": "c3-s6",
-          "author": "Frank"
+          "author": "梅川旁次"
         }
       ],
       "paragraphs": [
@@ -1627,7 +1627,7 @@
       "parts": [
         {
           "id": "c4-continued",
-          "author": "Frank"
+          "author": "梅川旁次"
         },
         {
           "id": "c4-s1",
@@ -1635,7 +1635,7 @@
         },
         {
           "id": "c4-s2",
-          "author": "Lth"
+          "author": "直升机"
         },
         {
           "id": "c4-s3",
@@ -1899,19 +1899,19 @@
       "parts": [
         {
           "id": "c5-s1",
-          "author": "BCE"
+          "author": "纯鹿人"
         },
         {
           "id": "c5-s2",
-          "author": "Wtc"
+          "author": "彼格丧"
         },
         {
           "id": "c5-s3",
-          "author": "Wkz"
+          "author": "开着"
         },
         {
           "id": "c5-s4",
-          "author": "Frank"
+          "author": "梅川旁次"
         },
         {
           "id": "c5-s5",
@@ -2402,11 +2402,11 @@
       "parts": [
         {
           "id": "c6-s1",
-          "author": "Lth"
+          "author": "直升机"
         },
         {
           "id": "c6-s2",
-          "author": "BCE"
+          "author": "纯鹿人"
         },
         {
           "id": "c6-s3",
@@ -2414,7 +2414,7 @@
         },
         {
           "id": "c6-s4",
-          "author": "Wtc"
+          "author": "彼格丧"
         }
       ],
       "paragraphs": [
@@ -2692,15 +2692,15 @@
       "parts": [
         {
           "id": "c7-continued",
-          "author": "Wtc"
+          "author": "彼格丧"
         },
         {
           "id": "c7-s1",
-          "author": "Wkz"
+          "author": "开着"
         },
         {
           "id": "c7-s2",
-          "author": "Frank"
+          "author": "梅川旁次"
         },
         {
           "id": "c7-s3",
@@ -2708,7 +2708,7 @@
         },
         {
           "id": "c7-s4",
-          "author": "Lth"
+          "author": "直升机"
         },
         {
           "id": "c7-s5",
@@ -3007,19 +3007,19 @@
       "parts": [
         {
           "id": "c8-s1",
-          "author": "BCE"
+          "author": "纯鹿人"
         },
         {
           "id": "c8-s2",
-          "author": "Wtc"
+          "author": "彼格丧"
         },
         {
           "id": "c8-s3",
-          "author": "Wkz"
+          "author": "开着"
         },
         {
           "id": "c8-s4",
-          "author": "BCE"
+          "author": "纯鹿人"
         },
         {
           "id": "c8-s5",
@@ -3027,15 +3027,15 @@
         },
         {
           "id": "c8-s6",
-          "author": "Wkz"
+          "author": "开着"
         },
         {
           "id": "c8-s7",
-          "author": "Wtc"
+          "author": "彼格丧"
         },
         {
           "id": "c8-s8",
-          "author": "Frank"
+          "author": "梅川旁次"
         },
         {
           "id": "c8-s9",
@@ -3043,11 +3043,11 @@
         },
         {
           "id": "c8-s10",
-          "author": "Lth"
+          "author": "直升机"
         },
         {
           "id": "c8-s11",
-          "author": "BCE"
+          "author": "纯鹿人"
         }
       ],
       "paragraphs": [
@@ -3304,7 +3304,7 @@
       "parts": [
         {
           "id": "c9-s0",
-          "author": "BCE"
+          "author": "纯鹿人"
         },
         {
           "id": "c9-s1",
@@ -3312,15 +3312,15 @@
         },
         {
           "id": "c9-s2",
-          "author": "Frank"
+          "author": "梅川旁次"
         },
         {
           "id": "c9-s3",
-          "author": "Wkz"
+          "author": "开着"
         },
         {
           "id": "c9-s4",
-          "author": "Lth"
+          "author": "直升机"
         },
         {
           "id": "c9-s5",
@@ -3328,7 +3328,7 @@
         },
         {
           "id": "c9-s6",
-          "author": "Wtc"
+          "author": "彼格丧"
         }
       ],
       "paragraphs": [
