@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {books} from '../books.js?v=20261108-hymn-align';
-import {findBook, loadBook, searchLibrary, progressKey, escapeHtml} from '../library.js?v=20261108-hymn-align';
+import {books} from '../books.js?v=20261109-heitonghua-soft-purple';
+import {findBook, loadBook, searchLibrary, progressKey, escapeHtml} from '../library.js?v=20261109-heitonghua-soft-purple';
 import {search} from '../search.js?v=20261107-scene-breaks';
 
 const original = await loadBook(findBook());
