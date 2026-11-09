@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {findBook, loadBook} from '../library.js?v=20261109-heitonghua-soft-purple';
+import {findBook, loadBook} from '../library.js?v=20261109-heitonghua-title';
 const novel = await loadBook(findBook('vx1'));
 import {search} from '../search.js?v=20261107-scene-breaks';
 

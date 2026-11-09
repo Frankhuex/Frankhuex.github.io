@@ -7,7 +7,7 @@
     "SmallPot",
     "#"
   ],
-  "description": "一盘棋过后，凯特琳公主、她的姐姐艾琳和两国王室被卷进了一连串离奇事件。",
+  "description": "黑 重 活",
   "coverImage": "images/heitonghua.png",
   "coverColor": "#49364e",
   "themeColor": "#65496d",
@@ -16,7 +16,7 @@
   "chapters": [
     {
       "id": "c0",
-      "title": "正文",
+      "title": "黑童话",
       "parts": [
         {
           "id": "c0-s0",

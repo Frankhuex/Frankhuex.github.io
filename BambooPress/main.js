@@ -1,8 +1,8 @@
-import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261109-heitonghua-soft-purple';
-import {books} from './books.js?v=20261109-heitonghua-soft-purple';
+import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261109-heitonghua-title';
+import {books} from './books.js?v=20261109-heitonghua-title';
 import {read,save,setupSettings} from './settings.js?v=20261105-settings2';
 import {search,highlight} from './search.js?v=20261107-scene-breaks';
-import {renderReader,route} from './reader.js?v=20261109-heitonghua-soft-purple';
+import {renderReader,route} from './reader.js?v=20261109-heitonghua-title';
 history.scrollRestoration = 'manual';
 setupSettings();
 const app=document.querySelector('#app');

@@ -1,4 +1,4 @@
-import {progressKey, escapeHtml} from './library.js?v=20261109-heitonghua-soft-purple';
+import {progressKey, escapeHtml} from './library.js?v=20261109-heitonghua-title';
 import {highlight} from './search.js?v=20261107-scene-breaks';
 import {read, save} from './settings.js?v=20261105-settings2';
 export function route(values={}) { return '#'+new URLSearchParams(values).toString(); }
@@ -179,11 +179,15 @@ export function renderReader(app, novel, chapter, params) {
   for(const [label,target] of [['上一章',index-1],['下一章',index+1]]) {
     if(novel.chapters[target]) {const a=document.createElement('a');a.href=bookRoute({view:'read',chapter:novel.chapters[target].id});a.textContent=`${label} · ${novel.chapters[target].title}`;nav.append(a);}
   }
-  if(index===novel.chapters.length-1) nav.innerHTML+='<span>已读完，<a href="#">返回书架</a></span>';
-  const topNav = nav.cloneNode(true);
-  topNav.classList.add('chapter-nav-top');
-  topNav.setAttribute('aria-label', '章节导航');
-  app.querySelector('.chapter-heading').before(topNav);
+  if (nav.childElementCount) {
+    const topNav = nav.cloneNode(true);
+    topNav.classList.add('chapter-nav-top');
+    topNav.setAttribute('aria-label', '章节导航');
+    app.querySelector('.chapter-heading').before(topNav);
+  }
+  if (index === novel.chapters.length - 1) {
+    nav.insertAdjacentHTML('beforeend', '<span class="chapter-finished">已读完，<a href="#">返回书架</a></span>');
+  }
   const target=document.getElementById(params.get('part')||params.get('paragraph')||'');
   const atChapterStart = !params.has('part') && !params.has('q') &&
     (!params.has('paragraph') || params.get('paragraph') === 'p0') &&

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {findBook, loadBook, searchLibrary} from '../library.js?v=20261109-heitonghua-soft-purple';
+import {findBook, loadBook, searchLibrary} from '../library.js?v=20261109-heitonghua-title';
 import {search} from '../search.js?v=20261107-scene-breaks';
 
 const novel = await loadBook(findBook('heitonghua'));
 assert.equal(novel.date, '2023.3.13');
-assert.deepEqual(novel.chapters.map(chapter => chapter.title), ['正文']);
+assert.deepEqual(novel.chapters.map(chapter => chapter.title), ['黑童话']);
 
 const [{parts, paragraphs, sceneBreaks}] = novel.chapters;
 const authors = new Map(parts.map(({id, author}) => [id, author]));

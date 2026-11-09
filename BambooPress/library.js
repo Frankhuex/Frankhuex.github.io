@@ -1,4 +1,4 @@
-import {books} from './books.js?v=20261109-heitonghua-soft-purple';
+import {books} from './books.js?v=20261109-heitonghua-title';
 
 export function findBook(id) {
   return id ? books.find(book => book.id === id || book.previousIds?.includes(id)) : books.find(book => book.legacyDefault);
