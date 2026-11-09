@@ -176,8 +176,16 @@ export function renderReader(app, novel, chapter, params) {
   });
   const index = novel.chapters.indexOf(chapter);
   const nav=app.querySelector('.chapter-nav');
-  for(const [label,target] of [['上一章',index-1],['下一章',index+1]]) {
-    if(novel.chapters[target]) {const a=document.createElement('a');a.href=bookRoute({view:'read',chapter:novel.chapters[target].id});a.textContent=`${label} · ${novel.chapters[target].title}`;nav.append(a);}
+  for (const [label, target, className] of [
+    ['上一章', novel.chapters[index - 1], 'chapter-prev'],
+    ['下一章', novel.chapters[index + 1], 'chapter-next']
+  ]) {
+    if (!target) continue;
+    const link = document.createElement('a');
+    link.className = className;
+    link.href = bookRoute({view:'read', chapter:target.id});
+    link.textContent = `${label} · ${target.title}`;
+    nav.append(link);
   }
   if (nav.childElementCount) {
     const topNav = nav.cloneNode(true);

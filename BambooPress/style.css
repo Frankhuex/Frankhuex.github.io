@@ -859,9 +859,10 @@ header nav {
   border-top: 0;
   border-bottom: 0;
 }
-.chapter-nav > a:only-child,
+.chapter-nav > .chapter-next,
 .chapter-nav > .chapter-finished {
   margin-left: auto;
+  text-align: right;
 }
 
 #settings .close {

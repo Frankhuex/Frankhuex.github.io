@@ -2,7 +2,7 @@ import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './libr
 import {books} from './books.js?v=20261109-heitonghua-title';
 import {read,save,setupSettings} from './settings.js?v=20261105-settings2';
 import {search,highlight} from './search.js?v=20261107-scene-breaks';
-import {renderReader,route} from './reader.js?v=20261109-heitonghua-title';
+import {renderReader,route} from './reader.js?v=20261109-chapter-nav-sides';
 history.scrollRestoration = 'manual';
 setupSettings();
 const app=document.querySelector('#app');
