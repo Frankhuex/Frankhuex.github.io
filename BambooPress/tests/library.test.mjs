@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {books} from '../books.js?v=20261115-punctuation';
+import {books} from '../books.js?v=20261116-terry';
 import {findBook, loadBook, searchLibrary, progressKey, escapeHtml} from '../library.js?v=20261115-punctuation';
 import {search} from '../search.js?v=20261115-codeblock-restored';
 
