@@ -9,7 +9,7 @@
     "梅川旁次",
     "纯鹿人"
   ],
-  "description": "三章接龙小说。",
+  "description": "蜂鸟，象征着生命、创造、灵感、承诺。",
   "coverImage": "images/hummingbird.png",
   "coverColor": "#568f83",
   "themeColor": "#3f7f73",
@@ -3906,18 +3906,6 @@
         [
           {
             "text": "我的背后张开了一对一尘不染的白翼。身体逐渐浮空，我飞出了挤奶房，飞向了远方的浩瀚天堂。",
-            "part": "c2-s10"
-          }
-        ],
-        [
-          {
-            "text": "The End",
-            "part": "c2-s10"
-          }
-        ],
-        [
-          {
-            "text": "2023.6.2",
             "part": "c2-s10"
           }
         ]
