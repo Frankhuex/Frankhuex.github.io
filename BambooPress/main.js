@@ -1,6 +1,6 @@
 import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261115-punctuation';
 import {books} from './books.js?v=20261115-punctuation';
-import {read,save,setupSettings} from './settings.js?v=20261105-settings2';
+import {read,save,setupSettings} from './settings.js?v=20261115-tone-paper';
 import {search,highlight} from './search.js?v=20261115-codeblock-restored';
 import {renderReader,route} from './reader.js?v=20261115-toc-same-line';
 history.scrollRestoration = 'manual';

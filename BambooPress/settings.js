@@ -4,15 +4,37 @@ export function read(key, fallback) {
 export function save(key, value) {
   try { localStorage.setItem(`bamboo-${key}`, JSON.stringify(value)); } catch { /* Reading remains available when storage is full. */ }
 }
-export const settings = read('settings', {font: innerWidth < 960 ? 18 : 19, leading:1.9,theme:'warm',signatures:true});
+const LEGACY_THEMES = {
+  white: ['light', 'clean'],
+  black: ['dark', 'clean'],
+  warm: ['light', 'warm'],
+  night: ['dark', 'warm'],
+  'immerse-light': ['light', 'immerse'],
+  'immerse-dark': ['dark', 'immerse']
+};
+export const settings = read('settings', {font: innerWidth < 960 ? 18 : 19, leading:1.9, tone:'auto', paper:'immerse', signatures:true});
+if (!settings.tone || !settings.paper) {
+  const [tone, paper] = LEGACY_THEMES[settings.theme] || ['auto', 'immerse'];
+  settings.tone ??= tone;
+  settings.paper ??= paper;
+}
+const darkScheme = typeof matchMedia === 'function' ? matchMedia('(prefers-color-scheme: dark)') : {matches: false};
+export function resolvedTheme() {
+  const isDark = settings.tone === 'dark' || (settings.tone === 'auto' && darkScheme.matches);
+  const themes = isDark
+    ? {clean: 'black', warm: 'night', immerse: 'immerse-dark'}
+    : {clean: 'white', warm: 'warm', immerse: 'immerse-light'};
+  return themes[settings.paper] || (isDark ? 'immerse-dark' : 'immerse-light');
+}
 export function applySettings() {
   document.documentElement.style.setProperty('--font', `${settings.font}px`);
   document.documentElement.style.setProperty('--leading', settings.leading);
-  document.body.dataset.theme = settings.theme;
+  document.body.dataset.theme = resolvedTheme();
   document.body.classList.toggle('hide-signatures', !settings.signatures);
 }
 export function setupSettings() {
   applySettings();
+  darkScheme.addEventListener?.('change', applySettings);
   const dialog = document.querySelector('#settings');
   let closing = false;
   function closeSettings() {
@@ -56,13 +78,15 @@ export function setupSettings() {
   });
 
   document.querySelector('#settings-open').onclick = () => dialog.showModal();
-  for (const radio of dialog.querySelectorAll('[name=paper]')) {
-    radio.checked = radio.value === settings.theme;
-    radio.onchange = () => {
-      settings.theme = radio.value;
-      applySettings();
-      save('settings', settings);
-    };
+  for (const key of ['tone', 'paper']) {
+    for (const radio of dialog.querySelectorAll(`[name=${key}]`)) {
+      radio.checked = radio.value === settings[key];
+      radio.onchange = () => {
+        settings[key] = radio.value;
+        applySettings();
+        save('settings', settings);
+      };
+    }
   }
   for (const key of ['font','leading','signatures']) {
     const input = document.getElementById(key);

@@ -27,12 +27,29 @@ body[data-theme=white] {
   --paper:#fffefa;
   --line:#e6e4de
 }
-body[data-theme=night] {
+body[data-theme=immerse-light] {
+  --paper:color-mix(in srgb, var(--book-accent, #31584b) 6%, #f8f5ed);
+  --muted:#64675c;
+  --line:color-mix(in srgb, var(--book-accent, #31584b) 10%, #e2dfd5)
+}
+body[data-theme=black],
+body[data-theme=night],
+body[data-theme=immerse-dark] {
   --paper:#202722;
   --ink:#e2e2d5;
   --muted:#a5b0a4;
   --accent:var(--book-accent-night, #acc8ad);
   --line:#414d43
+}
+body[data-theme=black] {
+  --paper:#151615;
+  --ink:#e4e4de;
+  --muted:#9a9c96;
+  --line:#2e302e
+}
+body[data-theme=immerse-dark] {
+  --paper:color-mix(in srgb, var(--book-accent, #31584b) 18%, #181a1c);
+  --line:color-mix(in srgb, var(--book-accent, #31584b) 24%, #36393c)
 }
 a {
   color:inherit;
@@ -938,13 +955,15 @@ header nav {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+  padding-top: 0;
   min-width: 0;
 }
 .paper-options legend {
+  grid-column: 1 / -1;
   float: left;
   width: 100%;
-  padding: 0;
-  margin-bottom: 16px;
+  padding: 24px 0 0;
+  margin: 0 0 3px;
 }
 .paper-options label {
   position: relative;
@@ -964,9 +983,19 @@ header nav {
   border-radius: 5px;
   transition: box-shadow 160ms ease;
 }
-.paper-white { background: #fffefa; color: #282b26; }
+.tone-options span { background: transparent; color: var(--ink); }
+.paper-clean { background: #fffefa; color: #282b26; }
 .paper-warm { background: #f6f2e8; color: #282b26; }
-.paper-night { background: #202722; color: #e2e2d5; }
+.paper-immerse { background: color-mix(in srgb, var(--book-accent, #31584b) 6%, #f8f5ed); color: #282b26; }
+body[data-theme=black] .paper-clean,
+body[data-theme=night] .paper-clean,
+body[data-theme=immerse-dark] .paper-clean { background: #151615; color: #e4e4de; }
+body[data-theme=black] .paper-warm,
+body[data-theme=night] .paper-warm,
+body[data-theme=immerse-dark] .paper-warm { background: #202722; color: #e2e2d5; }
+body[data-theme=black] .paper-immerse,
+body[data-theme=night] .paper-immerse,
+body[data-theme=immerse-dark] .paper-immerse { background: color-mix(in srgb, var(--book-accent, #31584b) 18%, #181a1c); color: #e2e2d5; }
 .paper-options input:checked + span {
   box-shadow: 0 0 0 2px var(--accent);
 }
@@ -1275,7 +1304,7 @@ header #search-form {
 }
 .detail .primary {
   background: var(--accent);
-  color: #f6f2e8;
+  color: var(--paper);
 }
 .book-enter .detail-top h1 { --enter-delay: 100ms; }
 .book-enter .detail-top p:not(.authors) { --enter-delay: 300ms; }
@@ -1650,7 +1679,9 @@ header .brand {
   border-radius: 6px;
   overflow-x: auto;
 }
-body[data-theme="night"] #prose p[data-style="monospace"] {
+body[data-theme="black"] #prose p[data-style="monospace"],
+body[data-theme="night"] #prose p[data-style="monospace"],
+body[data-theme="immerse-dark"] #prose p[data-style="monospace"] {
   background: #161b22;
   color: #e6edf3;
 }
@@ -1696,7 +1727,9 @@ body[data-theme="night"] #prose p[data-style="monospace"] {
 #prose .handoff-first-line .signature-inline { top: calc(var(--font) * -.65); }
 
 .shelf-book { --accent: var(--book-accent, #31584b); }
-body[data-theme="night"] .shelf-book { --accent: var(--book-accent-night, #acc8ad); }
+body[data-theme="black"] .shelf-book,
+body[data-theme="night"] .shelf-book,
+body[data-theme="immerse-dark"] .shelf-book { --accent: var(--book-accent-night, #acc8ad); }
 .shelf-book:is(:hover, :focus-visible) h2 { color: var(--accent); }
 
 #query::placeholder { color: var(--muted); opacity: 1; }
