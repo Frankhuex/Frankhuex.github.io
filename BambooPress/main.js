@@ -1,4 +1,3 @@
-import {normalizeHistory, recordSearch, renderSearchHistory} from './search-history.js?v=20261115-history';
 import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261115-punctuation';
 import {books} from './books.js?v=20261115-punctuation';
 import {read,save,setupSettings} from './settings.js?v=20261105-settings2';
@@ -124,9 +123,8 @@ async function renderContent() {
         const query=(params.get('q')||'').trim();
         const {results, failed} = await searchLibrary(query, search);
         if (currentRevision !== revision) return;
-        app.innerHTML='<section class="results"><section class="search-history" aria-label="搜索历史"></section><p class="result-count"></p><div class="result-list"></div></section>';
+        app.innerHTML='<section class="results"><p class="result-count"></p><div class="result-list"></div></section>';
         app.querySelector('.results').prepend(document.querySelector('#search-form'));
-        showSearchHistory();
         app.querySelector('.result-count').textContent=query?`“${query}”${results.length} 处结果`:'';
         if(query&&!results.length)app.querySelector('.result-count').textContent+='，换一段文字再试试。';
         if (failed.length) app.querySelector('.result-count').append(document.createTextNode(`（${failed.length} 本作品暂未加载成功）`));
@@ -144,23 +142,9 @@ const searchForm = document.querySelector('#search-form');
 const searchInput = document.querySelector('#query');
 const searchSubmit = document.querySelector('#search-submit');
 const searchReveal = searchForm.querySelector('.search-reveal');
-function showSearchHistory() {
-  const container = app.querySelector('.search-history');
-  if (!container) return;
-  const history = normalizeHistory(read('search-history', []));
-  renderSearchHistory(container, history, {
-    search: query => { searchInput.value = query; runSearch(query); },
-    remove: query => {
-      save('search-history', normalizeHistory(read('search-history', [])).filter(item => item.query !== query));
-      showSearchHistory();
-    },
-    clear: () => { save('search-history', []); showSearchHistory(); }
-  });
-}
 function runSearch(query) {
   query = query.trim();
   if (!query) return;
-  save('search-history', recordSearch(read('search-history', []), query));
   const next = route({view:'search', q:query});
   if (location.hash === next) render();
   else location.hash = next;

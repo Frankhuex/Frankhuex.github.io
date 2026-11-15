@@ -10,7 +10,6 @@
 - `main.js`：公共页面控制器，负责路由、书架、作品详情、搜索结果及页面切换。
 - `reader.js`：公共阅读器，负责目录、正文、署名、章节导航、定位、进度保存及事件清理。
 - `reader-position.js`：阅读位置与目录选中的通用判定，同一视觉行内保留已选择的作者。
-- `search-history.js`：搜索历史数据整理、去重和列表显示。历史由公共存储封装保存在本地 `bamboo-search-history`，最多 50 条，按最近搜索时间排列，重复关键词更新时间。仅主动搜索及点击历史时记录，刷新或返回结果页不重新记录。支持单条删除和清除全部。
 - `search.js`：正文和元数据匹配、结果排序、高亮。
 - `settings.js`：阅读设置及本地存储封装。
 - `index.html`、`search.html`：页面外壳；共用脚本、样式及阅读设置结构。
@@ -92,7 +91,7 @@
 2. 将封面放入 `images/`，在作品 JSON 填写封面路径，并在 `books.js` 登记作品，按任务要求确定书架顺序。
 3. 检查作品 ID 唯一、章节和片段 ID 唯一、片段引用有效、作者归属正确，以及所有图片和模块路径有效。
 4. 涉及正文导入时，为有实际风险的内容边界增加针对性校验，例如章节缺失、段内交接或番外署名；避免只复述实现的测试。
-5. 在仓库根目录运行 `node BambooPress/tests/library.test.mjs` 和 `node BambooPress/tests/vx1.test.mjs`；后续新增的相关验证脚本也应运行，包括 `node BambooPress/tests/hummingbird.test.mjs` 、`node BambooPress/tests/reader-position.test.mjs` 和 `node BambooPress/tests/search-history.test.mjs`。提交前运行 `git diff --check`。
+5. 在仓库根目录运行 `node BambooPress/tests/library.test.mjs` 和 `node BambooPress/tests/vx1.test.mjs`；后续新增的相关验证脚本也应运行，包括 `node BambooPress/tests/hummingbird.test.mjs` 和 `node BambooPress/tests/reader-position.test.mjs`。提交前运行 `git diff --check`。
 6. 修改页面行为或排版时，通过本地 HTTP 服务检查书架、详情、阅读、上下章、目录定位、搜索跳转及刷新后继续阅读；涉及布局时检查桌面和移动端。浏览器验证与数据脚本验证分别如实报告。
 
 ## 维护本文档
