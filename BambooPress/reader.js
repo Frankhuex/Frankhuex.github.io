@@ -1,5 +1,5 @@
-import {progressKey, escapeHtml} from './library.js?v=20261109-heitonghua-title';
-import {highlight} from './search.js?v=20261107-scene-breaks';
+import {progressKey, escapeHtml} from './library.js?v=20261115-hummingbird';
+import {highlight} from './search.js?v=20261115-hummingbird';
 import {read, save} from './settings.js?v=20261105-settings2';
 export function route(values={}) { return '#'+new URLSearchParams(values).toString(); }
 let tocSelection;
@@ -147,7 +147,9 @@ export function renderReader(app, novel, chapter, params) {
   const sceneBreaks = new Set(chapter.sceneBreaks);
   const seen = new Set();
   chapter.paragraphs.forEach((segments,index)=>{
-    const p = document.createElement('p');p.id=`p${index}`;
+    const p = document.createElement(segments[0]?.type === 'image' ? 'figure' : 'p');p.id=`p${index}`;
+    p.dataset.paragraph = '';
+    if (segments[0]?.type === 'image') p.className = 'prose-image';
     const alignment = chapter.paragraphAlignments?.[index];
     if (alignment === 'center' || alignment === 'right') p.dataset.align = alignment;
     for (const segment of segments) {
@@ -155,6 +157,18 @@ export function renderReader(app, novel, chapter, params) {
       if (segment.part && !seen.has(segment.part)) {
         seen.add(segment.part);span.id=segment.part;
         const name = document.createElement('small');name.className='signature';name.textContent=chapter.parts.find(part=>part.id===segment.part).author;span.append(name);
+      }
+      if (segment.type === 'image') {
+        const image = document.createElement('img');
+        image.src = segment.src;
+        image.alt = segment.alt;
+        image.width = segment.width;
+        image.height = segment.height;
+        image.loading = 'lazy';
+        image.decoding = 'async';
+        span.append(image);
+        p.append(span);
+        continue;
       }
       for (const line of segment.text.split('\n')) {
         if (!line.trim()) continue;
@@ -237,14 +251,14 @@ export function renderReader(app, novel, chapter, params) {
   let timer;
   const initialProgress = {chapter:chapter.id, paragraph:params.get('paragraph') || 'p0', ratio:Number(params.get('ratio')) || 0};
   if(params.has('part')) {
-    const paragraph = target?.closest('p');
+    const paragraph = target?.closest('[data-paragraph]');
     if(paragraph) initialProgress.paragraph = paragraph.id;
   }
   save(progressKey(novel.id), initialProgress);
   const onScroll=()=>{
     updateHeader();
     clearTimeout(timer);timer=setTimeout(()=>{
-      const paragraphs=[...app.querySelectorAll('#prose > p')];
+      const paragraphs=[...app.querySelectorAll('#prose > [data-paragraph]')];
       const readingTop = header.offsetHeight + 32;
       const current=paragraphs.find(p=>p.getBoundingClientRect().bottom>readingTop)||paragraphs.at(-1);
       if(!current)return;

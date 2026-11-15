@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {findBook, loadBook, searchLibrary} from '../library.js?v=20261109-heitonghua-title';
-import {search} from '../search.js?v=20261107-scene-breaks';
+import {findBook, loadBook, searchLibrary} from '../library.js?v=20261115-hummingbird';
+import {search} from '../search.js?v=20261115-hummingbird';
 
 const novel = await loadBook(findBook('heitonghua'));
 assert.equal(novel.date, '2023.3.13');

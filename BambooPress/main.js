@@ -1,8 +1,8 @@
-import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261109-heitonghua-title';
-import {books} from './books.js?v=20261109-heitonghua-title';
+import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261115-hummingbird';
+import {books} from './books.js?v=20261115-hummingbird';
 import {read,save,setupSettings} from './settings.js?v=20261105-settings2';
-import {search,highlight} from './search.js?v=20261107-scene-breaks';
-import {renderReader,route} from './reader.js?v=20261109-chapter-nav-sides';
+import {search,highlight} from './search.js?v=20261115-hummingbird';
+import {renderReader,route} from './reader.js?v=20261115-hummingbird';
 history.scrollRestoration = 'manual';
 setupSettings();
 const app=document.querySelector('#app');

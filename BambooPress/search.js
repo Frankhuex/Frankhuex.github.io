@@ -6,7 +6,7 @@ export function search(novel, query) {
   const results = [];
   for (const chapter of novel.chapters) {
     chapter.paragraphs.forEach((segments, index) => {
-      const text = segments.map(s=>s.text).join('');
+      const text = segments.map(s => s.type === 'image' ? s.alt : s.text).join('');
       const offset = text.toLocaleLowerCase().indexOf(term);
       const authors = [...new Set(segments.map(s=>chapter.parts.find(p=>p.id===s.part)?.author).filter(Boolean))].join(' / ');
       const metadata = titleMatch || `${novel.title} ${chapter.title} ${authors}`.toLocaleLowerCase().includes(term);

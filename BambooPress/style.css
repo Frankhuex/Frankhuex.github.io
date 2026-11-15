@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Bamboo Song';
-  src: url('./fonts/reading-serif.woff?v=20261109-heitonghua') format('woff');
+  src: url('./fonts/reading-serif.woff?v=20261115-hummingbird') format('woff');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;
@@ -1625,3 +1625,7 @@ header .brand {
   background: currentColor;
   transform: rotate(45deg);
 }
+
+/* Standalone illustrations retain their natural proportions in every reading mode. */
+#prose .prose-image { margin: 1.8em 0; scroll-margin-top: calc(var(--header-height) + 32px); }
+#prose .prose-image img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-radius: 3px; }
