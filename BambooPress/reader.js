@@ -1,5 +1,6 @@
-import {progressKey, escapeHtml} from './library.js?v=20261115-hummingbird';
-import {highlight} from './search.js?v=20261115-hummingbird';
+import {partAtReadingLine} from './reader-position.js?v=20261115-toc-same-line';
+import {progressKey, escapeHtml} from './library.js?v=20261115-punctuation';
+import {highlight} from './search.js?v=20261115-codeblock-restored';
 import {read, save} from './settings.js?v=20261105-settings2';
 export function route(values={}) { return '#'+new URLSearchParams(values).toString(); }
 let tocSelection;
@@ -150,13 +151,28 @@ export function renderReader(app, novel, chapter, params) {
     const p = document.createElement(segments[0]?.type === 'image' ? 'figure' : 'p');p.id=`p${index}`;
     p.dataset.paragraph = '';
     if (segments[0]?.type === 'image') p.className = 'prose-image';
+    if (chapter.paragraphStyles?.[index] === 'monospace') p.dataset.style = 'monospace';
     const alignment = chapter.paragraphAlignments?.[index];
     if (alignment === 'center' || alignment === 'right') p.dataset.align = alignment;
-    for (const segment of segments) {
+    const body = document.createElement('span');
+    body.className = 'prose-text';
+    for (const [segmentIndex, segment] of segments.entries()) {
       const span = document.createElement('span');
+      let signature;
       if (segment.part && !seen.has(segment.part)) {
-        seen.add(segment.part);span.id=segment.part;
-        const name = document.createElement('small');name.className='signature';name.textContent=chapter.parts.find(part=>part.id===segment.part).author;span.append(name);
+        seen.add(segment.part);
+        span.id = segment.part;
+        signature = document.createElement('small');
+        signature.className = 'signature';
+        signature.textContent = chapter.parts.find(part => part.id === segment.part).author;
+        if (segmentIndex === 0) {
+          const heading = document.createElement('span');
+          heading.id = span.id;
+          span.removeAttribute('id');
+          heading.className = 'part-heading';
+          heading.append(signature);
+          p.append(heading);
+        }
       }
       if (segment.type === 'image') {
         const image = document.createElement('img');
@@ -170,15 +186,35 @@ export function renderReader(app, novel, chapter, params) {
         p.append(span);
         continue;
       }
-      for (const line of segment.text.split('\n')) {
-        if (!line.trim()) continue;
-        const textLine = document.createElement('span');
-        textLine.className = 'prose-line';
-        highlight(textLine, line, params.get('q') || '');
-        span.append(textLine);
+      const textLine = document.createElement('span');
+      textLine.className = 'prose-line';
+      highlight(textLine, segment.text, params.get('q') || '');
+      if (signature && segmentIndex > 0) {
+        // Keep the label and first character together across automatic line wraps.
+        const start = document.createElement('span');
+        start.className = 'handoff-start';
+        signature.classList.add('signature-inline');
+        const firstCharacter = [...segment.text][0];
+        const first = document.createElement('span');
+        first.className = 'handoff-character';
+        // Split the already-highlighted first character without losing a search match.
+        const leading = [...textLine.childNodes].find(node => node.textContent.length);
+        if (leading.nodeType === Node.TEXT_NODE) {
+          first.textContent = firstCharacter;
+          leading.deleteData(0, firstCharacter.length);
+        } else {
+          const mark = document.createElement('mark');
+          mark.textContent = firstCharacter;
+          first.append(mark);
+          leading.firstChild.deleteData(0, firstCharacter.length);
+        }
+        start.append(signature, first);
+        textLine.prepend(start);
       }
-      p.append(span);
+      span.append(textLine);
+      body.append(span);
     }
+    if (body.childElementCount) p.append(body);
     prose.append(p);
     if (sceneBreaks.has(index)) {
       const separator = document.createElement('div');
@@ -188,6 +224,35 @@ export function renderReader(app, novel, chapter, params) {
       prose.append(separator);
     }
   });
+  // The paragraph heading already provides space above its first text line.
+  const headedParagraphs = [...prose.querySelectorAll('p')].filter(paragraph =>
+    paragraph.querySelector('.part-heading') && paragraph.querySelector('.handoff-start'));
+  function updateFirstLineHandoffs() {
+    const updates = [];
+    for (const paragraph of headedParagraphs) {
+      const firstLine = paragraph.querySelector('.prose-line');
+      const walker = document.createTreeWalker(firstLine, NodeFilter.SHOW_TEXT);
+      let text = walker.nextNode();
+      while (text && !text.textContent.length) text = walker.nextNode();
+      if (!text) continue;
+      const range = document.createRange();
+      range.setStart(text, 0);
+      range.setEnd(text, [...text.textContent][0].length);
+      const firstBottom = range.getBoundingClientRect().bottom;
+      for (const start of paragraph.querySelectorAll('.handoff-start')) {
+        const bottom = start.querySelector('.handoff-character').getBoundingClientRect().bottom;
+        updates.push([start, Math.abs(bottom - firstBottom) < 1]);
+      }
+    }
+    for (const [start, firstLine] of updates) start.classList.toggle('handoff-first-line', firstLine);
+  }
+  updateFirstLineHandoffs();
+  const handoffSize = new ResizeObserver(updateFirstLineHandoffs);
+  handoffSize.observe(prose);
+  const handoffSettings = new MutationObserver(updateFirstLineHandoffs);
+  handoffSettings.observe(document.documentElement, {attributes:true, attributeFilter:['style']});
+  handoffSettings.observe(document.body, {attributes:true, attributeFilter:['class']});
+  document.fonts.addEventListener('loadingdone', updateFirstLineHandoffs);
   const index = novel.chapters.indexOf(chapter);
   const nav=app.querySelector('.chapter-nav');
   for (const [label, target, className] of [
@@ -210,7 +275,8 @@ export function renderReader(app, novel, chapter, params) {
   if (index === novel.chapters.length - 1) {
     nav.insertAdjacentHTML('beforeend', '<span class="chapter-finished">已读完，<a href="#">返回书架</a></span>');
   }
-  const target=document.getElementById(params.get('part')||params.get('paragraph')||'');
+  const anchor = document.getElementById(params.get('part') || params.get('paragraph') || '');
+  const target = params.has('part') ? anchor?.querySelector('.handoff-start') || anchor : anchor;
   const atChapterStart = !params.has('part') && !params.has('q') &&
     (!params.has('paragraph') || params.get('paragraph') === 'p0') &&
     !(Number(params.get('ratio')) > 0);
@@ -264,10 +330,18 @@ export function renderReader(app, novel, chapter, params) {
       if(!current)return;
       const box=current.getBoundingClientRect();
       save(progressKey(novel.id),{chapter:chapter.id,paragraph:current.id,ratio:Math.max(0,(readingTop-box.top)/box.height)});
-      const part=[...app.querySelectorAll('#prose span[id]')].filter(s=>s.getBoundingClientRect().top<180).at(-1);
-      selectPart(part?.id || chapter.paragraphs[0]?.[0]?.part);
+      const markers = [...prose.querySelectorAll('span[id]')].map(span => {
+        // Compare the text line for both paragraph headings and inline handoffs.
+        const text = span.classList.contains('part-heading')
+          ? span.closest('[data-paragraph]').querySelector('.prose-line, img') || span
+          : span.querySelector('.handoff-character') || span;
+        return {id:span.id, top:text.getClientRects()[0]?.top ?? Infinity};
+      });
+      const lineHeight = parseFloat(getComputedStyle(prose).lineHeight);
+      selectPart(partAtReadingLine(markers, readingTop + lineHeight, selectedPart,
+        chapter.paragraphs[0]?.[0]?.part));
     },120);
   };
   addEventListener('scroll',onScroll,{passive:true});
-  return ()=>{if(tocSelection?.book===novel.id){tocSelection.scrollTop=toc.scrollTop;if(!indicator.hidden)tocSelection.top=indicator.getBoundingClientRect().top-items.getBoundingClientRect().top;}selectionSize.disconnect();selectionAnimation?.cancel();headerSize.disconnect();cancelAnimationFrame(headerFrame);clearTimeout(timer);removeEventListener('scroll',onScroll);document.removeEventListener('keydown',escape);desktop.removeEventListener('change',resize);header.removeEventListener('focusin',revealHeader);header.classList.remove('header-hidden');document.body.classList.remove('sidebar-collapsed');};
+  return ()=>{if(tocSelection?.book===novel.id){tocSelection.scrollTop=toc.scrollTop;if(!indicator.hidden)tocSelection.top=indicator.getBoundingClientRect().top-items.getBoundingClientRect().top;}handoffSize.disconnect();handoffSettings.disconnect();document.fonts.removeEventListener('loadingdone', updateFirstLineHandoffs);selectionSize.disconnect();selectionAnimation?.cancel();headerSize.disconnect();cancelAnimationFrame(headerFrame);clearTimeout(timer);removeEventListener('scroll',onScroll);document.removeEventListener('keydown',escape);desktop.removeEventListener('change',resize);header.removeEventListener('focusin',revealHeader);header.classList.remove('header-hidden');document.body.classList.remove('sidebar-collapsed');};
 }

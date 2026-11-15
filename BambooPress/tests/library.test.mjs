@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {books} from '../books.js?v=20261115-hummingbird';
-import {findBook, loadBook, searchLibrary, progressKey, escapeHtml} from '../library.js?v=20261115-hummingbird';
-import {search} from '../search.js?v=20261115-hummingbird';
+import {books} from '../books.js?v=20261115-punctuation';
+import {findBook, loadBook, searchLibrary, progressKey, escapeHtml} from '../library.js?v=20261115-punctuation';
+import {search} from '../search.js?v=20261115-codeblock-restored';
 
 const original = await loadBook(findBook());
 const second = {

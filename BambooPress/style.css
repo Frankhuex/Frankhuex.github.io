@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Bamboo Song';
-  src: url('./fonts/reading-serif.woff?v=20261115-hummingbird') format('woff');
+  src: url('./fonts/reading-serif.woff?v=20261115-punctuation') format('woff');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;
@@ -1588,24 +1588,25 @@ header .brand {
   margin-right: auto;
 }
 
-/* Indent text itself, independently of the flush-left author label. */
+/* Natural paragraphs flow continuously; author headings remain flush left. */
 #prose p {
   text-align: left;
   text-indent: 0;
   white-space: normal;
 }
-#prose .prose-line {
+#prose .prose-text {
   display: block;
   text-indent: 2em;
   white-space: pre-wrap;
 }
+#prose .prose-line { display: inline; }
 #prose p[data-align="center"] {
   text-align: center;
 }
 #prose p[data-align="right"] {
   text-align: right;
 }
-#prose p[data-align] .prose-line {
+#prose p[data-align] .prose-text {
   text-indent: 0;
 }
 #prose .signature {
@@ -1629,3 +1630,65 @@ header .brand {
 /* Standalone illustrations retain their natural proportions in every reading mode. */
 #prose .prose-image { margin: 1.8em 0; scroll-margin-top: calc(var(--header-height) + 32px); }
 #prose .prose-image img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-radius: 3px; }
+
+#prose p[data-style="monospace"] .prose-line {
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-variant-ligatures: none;
+  letter-spacing: 0;
+  text-indent: 0;
+  white-space: pre;
+  overflow-wrap: normal;
+  font-size: .9em;
+  line-height: 1.6;
+}
+#prose p[data-style="monospace"] {
+  background: #f0f1f3;
+  color: #24292f;
+  padding: 1em 1.2em;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+body[data-theme="night"] #prose p[data-style="monospace"] {
+  background: #161b22;
+  color: #e6edf3;
+}
+
+/* A small annotation above the first new-author character stays out of text width. */
+#prose .handoff-start {
+  display: inline-block;
+  position: relative;
+  padding-top: .65em;
+  text-indent: 0;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+#prose .signature-inline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.hide-signatures #prose .handoff-start { display: inline; padding-top: 0; }
+#prose p[data-style="monospace"] .prose-text { text-indent: 0; }
+
+#prose .part-heading {
+  display: block;
+  position: relative;
+  height: calc(var(--font) * .65);
+}
+#prose .part-heading .signature {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.hide-signatures #prose .part-heading { display: none; }
+
+#prose .handoff-first-line { padding-top: 0; }
+#prose .handoff-first-line .signature-inline { top: calc(var(--font) * -.65); }

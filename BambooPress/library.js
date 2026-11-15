@@ -1,4 +1,4 @@
-import {books} from './books.js?v=20261115-hummingbird';
+import {books} from './books.js?v=20261115-punctuation';
 
 export function findBook(id) {
   return id ? books.find(book => book.id === id || book.previousIds?.includes(id)) : books.find(book => book.legacyDefault);
