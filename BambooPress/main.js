@@ -40,8 +40,19 @@ let cleanup=()=>{};
 let revision=0;
 const scrollPositions=new Map();
 let previous=location.hash;
+const HEX_COLOR = /^#[0-9a-f]{6}$/i;
+const DEFAULT_THEME_COLOR = '#31584b';
+function syncThemeColor(color) {
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.name = 'theme-color';
+    document.head.append(meta);
+  }
+  meta.content = color;
+}
 function cover(book) {
-  const color = /^#[0-9a-f]{6}$/i.test(book.coverColor || '') ? book.coverColor : '#3b3b3b';
+  const color = HEX_COLOR.test(book.coverColor || '') ? book.coverColor : '#3b3b3b';
   if (book.coverImage) {
     const imageUrl = new URL(book.coverImage, import.meta.url).href;
     return `<div class="cover cover-image"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)}封面" decoding="async"></div>`;
@@ -50,7 +61,7 @@ function cover(book) {
 }
 function bookThemeStyle(book) {
   return [['themeColor', '--book-accent'], ['themeColorNight', '--book-accent-night']]
-    .filter(([field]) => /^#[0-9a-f]{6}$/i.test(book[field] || ''))
+    .filter(([field]) => HEX_COLOR.test(book[field] || ''))
     .map(([field, property]) => `${property}:${book[field]}`).join(';');
 }
 function resume(book, novel) {
@@ -84,9 +95,10 @@ async function renderContent() {
   back.href = view === 'search' ? searchOrigin() : !view ? '/#fiction' : view === 'read' ? route({view:'book', book:book?.id}) : '#';
   const brand = document.querySelector('.brand');
   const inBook = !missingBook && (view === 'book' || view === 'read');
+  syncThemeColor(inBook && HEX_COLOR.test(book.themeColor || '') ? book.themeColor : DEFAULT_THEME_COLOR);
   for (const [field, property] of [['themeColor', '--book-accent'], ['themeColorNight', '--book-accent-night']]) {
     const color = inBook ? book[field] : null;
-    if (/^#[0-9a-f]{6}$/i.test(color || '')) document.body.style.setProperty(property, color);
+    if (HEX_COLOR.test(color || '')) document.body.style.setProperty(property, color);
     else document.body.style.removeProperty(property);
   }
   brand.textContent = view === 'search' ? '搜索' : inBook ? book.title : 'BambooPress';

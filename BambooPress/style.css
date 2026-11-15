@@ -305,7 +305,9 @@ details a.active {
   margin:0 8px 0 0;
   vertical-align:middle;
   text-indent:0;
-  display:inline
+  display:inline;
+  -webkit-user-select:none;
+  user-select:none
 }
 .hide-signatures .signature {
   display:none

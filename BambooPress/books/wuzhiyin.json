@@ -14,6 +14,8 @@
   "authorCredit": "「竹林七贤」纯鹿人 / 开着 / 真爱困 / 直升机 / SmallPot / 梅川旁次 / 彼格丧",
   "description": "灰色中分已然绽放。",
   "coverColor": "#31584b",
+  "themeColor": "#55585c",
+  "themeColorNight": "#b8bcc0",
   "coverImage": "images/wuzhiyin.jpeg",
   "chapters": [
     {
@@ -3267,7 +3269,7 @@
         ],
         [
           {
-            "text": "“可以吗”双方似乎同时开口。不觉脸红异常，缓缓抬头，目光相触，焦灼异常，他们的脸颊慢慢靠近。",
+            "text": "“可以吗？”双方似乎同时开口。不觉脸红异常，缓缓抬头，目光相触，焦灼异常，他们的脸颊慢慢靠近。",
             "part": "c8-s6"
           },
           {
