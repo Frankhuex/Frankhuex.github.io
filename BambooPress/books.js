@@ -2,7 +2,7 @@ import hummingbird from './books/hummingbird.json?v=20261115-hummingbird-clean' 
 import heitonghua from './books/heitonghua.json?v=20261115-heitonghua-color' with {type: 'json'};
 import wuli from './books/wuli.json?v=20261115-punctuation' with {type: 'json'};
 import vx1 from './books/vx1.json?v=20261115-punctuation' with {type: 'json'};
-import wuzhiyin from './books/wuzhiyin.json?v=20261115-wuzhiyin-color' with {type: 'json'};
+import wuzhiyin from './books/wuzhiyin.json?v=20261115-wuzhiyin-epilogue2' with {type: 'json'};
 
 function register(novel, compatibility) {
   return {
