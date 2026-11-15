@@ -1,3 +1,4 @@
+import {normalizeHistory, recordSearch, renderSearchHistory} from './search-history.js?v=20261115-history';
 import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './library.js?v=20261115-punctuation';
 import {books} from './books.js?v=20261115-punctuation';
 import {read,save,setupSettings} from './settings.js?v=20261105-settings2';
@@ -47,6 +48,11 @@ function cover(book) {
     return `<div class="cover cover-image"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)}封面" decoding="async"></div>`;
   }
   return `<div class="cover" style="--cover-color:${color}"><strong>${escapeHtml(book.title)}</strong></div>`;
+}
+function bookThemeStyle(book) {
+  return [['themeColor', '--book-accent'], ['themeColorNight', '--book-accent-night']]
+    .filter(([field]) => /^#[0-9a-f]{6}$/i.test(book[field] || ''))
+    .map(([field, property]) => `${property}:${book[field]}`).join(';');
 }
 function resume(book, novel) {
   const oldProgress = (book.previousIds || []).map(id => read(progressKey(id), null)).find(Boolean);
@@ -100,7 +106,7 @@ async function renderContent() {
     return;
   }
   if(!view) {
-    app.innerHTML = `<section class="shelf" aria-label="书架"><div class="bookshelf">${books.map((shelfBook, index) => `<a class="shelf-book" data-book="${escapeHtml(shelfBook.id)}" style="--book-index:${index}" href="${route({view:'book', book:shelfBook.id})}">${cover(shelfBook)}<h2>${escapeHtml(shelfBook.title)}</h2></a>`).join('')}</div></section>`;
+    app.innerHTML = `<section class="shelf" aria-label="书架"><div class="bookshelf">${books.map((shelfBook, index) => `<a class="shelf-book" data-book="${escapeHtml(shelfBook.id)}" style="--book-index:${index};${bookThemeStyle(shelfBook)}" href="${route({view:'book', book:shelfBook.id})}">${cover(shelfBook)}<h2>${escapeHtml(shelfBook.title)}</h2></a>`).join('')}</div></section>`;
   } else {
     if (view !== 'read' || !app.querySelector('.reader')) app.innerHTML='<p class="loading">正在加载…</p>';
     try {
@@ -118,14 +124,15 @@ async function renderContent() {
         const query=(params.get('q')||'').trim();
         const {results, failed} = await searchLibrary(query, search);
         if (currentRevision !== revision) return;
-        app.innerHTML='<section class="results"><p class="result-count"></p><div class="result-list"></div></section>';
+        app.innerHTML='<section class="results"><section class="search-history" aria-label="搜索历史"></section><p class="result-count"></p><div class="result-list"></div></section>';
         app.querySelector('.results').prepend(document.querySelector('#search-form'));
-        app.querySelector('.result-count').textContent=query?`“${query}” · ${results.length} 处结果`:'';
+        showSearchHistory();
+        app.querySelector('.result-count').textContent=query?`“${query}”${results.length} 处结果`:'';
         if(query&&!results.length)app.querySelector('.result-count').textContent+='，换一段文字再试试。';
         if (failed.length) app.querySelector('.result-count').append(document.createTextNode(`（${failed.length} 本作品暂未加载成功）`));
         for(const result of results) {
           const a=document.createElement('a');a.className='result';a.href=new URL('./', location.href).href+route({view:'read',book:result.book.id,chapter:result.chapter.id,paragraph:`p${result.index}`,q:query});
-          const label=document.createElement('small');label.textContent=`${result.book.title} / ${result.chapter.title} / ${result.authors}`;a.append(label);
+          const label=document.createElement('small');label.textContent=`${result.book.title} - ${result.chapter.title} - ${result.authors}`;a.append(label);
           const p=document.createElement('p');const start=Math.max(0,result.offset-35);highlight(p,(start?'…':'')+result.text.slice(start,start+150)+(result.text.length>start+150?'…':''),query);a.append(p);app.querySelector('.result-list').append(a);
         }
       } else {app.innerHTML='<section class="detail"><h1>请从书架选择作品</h1><a href="#">返回书架</a></section>';}
@@ -137,6 +144,27 @@ const searchForm = document.querySelector('#search-form');
 const searchInput = document.querySelector('#query');
 const searchSubmit = document.querySelector('#search-submit');
 const searchReveal = searchForm.querySelector('.search-reveal');
+function showSearchHistory() {
+  const container = app.querySelector('.search-history');
+  if (!container) return;
+  const history = normalizeHistory(read('search-history', []));
+  renderSearchHistory(container, history, {
+    search: query => { searchInput.value = query; runSearch(query); },
+    remove: query => {
+      save('search-history', normalizeHistory(read('search-history', [])).filter(item => item.query !== query));
+      showSearchHistory();
+    },
+    clear: () => { save('search-history', []); showSearchHistory(); }
+  });
+}
+function runSearch(query) {
+  query = query.trim();
+  if (!query) return;
+  save('search-history', recordSearch(read('search-history', []), query));
+  const next = route({view:'search', q:query});
+  if (location.hash === next) render();
+  else location.hash = next;
+}
 function setSearchOpen(open) {
   searchForm.classList.toggle('search-open', open);
   searchReveal.inert = !open;
@@ -150,8 +178,7 @@ searchForm.onsubmit = event => {
     location.href = new URL('search.html', location.href).href;
     return;
   }
-  const query = searchInput.value.trim();
-  if (query) location.hash = route({view:'search', q:query});
+  runSearch(searchInput.value);
 };
 document.querySelector('#search-cancel').onclick = () => {
   if (location.pathname.endsWith('/search.html')) location.href = new URL('./', location.href).href;

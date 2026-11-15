@@ -10,6 +10,7 @@
 - `main.js`：公共页面控制器，负责路由、书架、作品详情、搜索结果及页面切换。
 - `reader.js`：公共阅读器，负责目录、正文、署名、章节导航、定位、进度保存及事件清理。
 - `reader-position.js`：阅读位置与目录选中的通用判定，同一视觉行内保留已选择的作者。
+- `search-history.js`：搜索历史数据整理、去重和列表显示。历史由公共存储封装保存在本地 `bamboo-search-history`，最多 50 条，按最近搜索时间排列，重复关键词更新时间。仅主动搜索及点击历史时记录，刷新或返回结果页不重新记录。支持单条删除和清除全部。
 - `search.js`：正文和元数据匹配、结果排序、高亮。
 - `settings.js`：阅读设置及本地存储封装。
 - `index.html`、`search.html`：页面外壳；共用脚本、样式及阅读设置结构。
@@ -21,7 +22,7 @@
 2. 禁止在公共渲染、搜索、路由或 CSS 中按具体书名、作者名、作品 ID 编写作品专属分支。可选显示内容应通过数据字段表达；扩展能力时定义通用字段及默认行为。
 3. 书架、目录、章节导航、署名和搜索结果必须由数据生成，不手写每本作品的页面或章节列表。
 4. 封面统一读取 `coverImage`；无图片时使用 `coverColor` 和书名生成占位封面。颜色使用六位十六进制格式，图片路径相对 `BambooPress/`。
-   作品主题色应用于详情和阅读内容；顶栏按钮与链接保持站点默认颜色，并适配夜间模式。
+   作品主题色应用于书架书名悬浮、详情和阅读内容，以及作品目录页和阅读页的顶栏按钮、链接及菜单内按钮的悬浮颜色，并适配夜间模式。书架每本作品分别读取自身主题色，无主题色时使用站点默认值。
 5. 作品属性统一维护在各自的 JSON 文件。各页面共用 `title`，`authors` 保存作者身份，`authorCredit` 可保存含团体名或署名标记的展示文案。
 6. 阅读设置在站内共用，阅读进度按作品隔离。旧链接和旧进度通过 `previousIds`、`legacyDefault` 等通用配置兼容，保持兼容逻辑集中管理。
 7. 脚注、富文本、多卷等能力超出现有文本结构；实现前先扩展统一数据格式，再同步调整渲染、搜索和验证，避免为单本作品复制页面。
@@ -91,7 +92,7 @@
 2. 将封面放入 `images/`，在作品 JSON 填写封面路径，并在 `books.js` 登记作品，按任务要求确定书架顺序。
 3. 检查作品 ID 唯一、章节和片段 ID 唯一、片段引用有效、作者归属正确，以及所有图片和模块路径有效。
 4. 涉及正文导入时，为有实际风险的内容边界增加针对性校验，例如章节缺失、段内交接或番外署名；避免只复述实现的测试。
-5. 在仓库根目录运行 `node BambooPress/tests/library.test.mjs` 和 `node BambooPress/tests/vx1.test.mjs`；后续新增的相关验证脚本也应运行，包括 `node BambooPress/tests/hummingbird.test.mjs` 和 `node BambooPress/tests/reader-position.test.mjs`。提交前运行 `git diff --check`。
+5. 在仓库根目录运行 `node BambooPress/tests/library.test.mjs` 和 `node BambooPress/tests/vx1.test.mjs`；后续新增的相关验证脚本也应运行，包括 `node BambooPress/tests/hummingbird.test.mjs` 、`node BambooPress/tests/reader-position.test.mjs` 和 `node BambooPress/tests/search-history.test.mjs`。提交前运行 `git diff --check`。
 6. 修改页面行为或排版时，通过本地 HTTP 服务检查书架、详情、阅读、上下章、目录定位、搜索跳转及刷新后继续阅读；涉及布局时检查桌面和移动端。浏览器验证与数据脚本验证分别如实报告。
 
 ## 维护本文档

@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {normalizeHistory, recordSearch} from '../search-history.js?v=20261115-history';
+assert.deepEqual(normalizeHistory({}), []);
+assert.deepEqual(normalizeHistory([null, {query:'x',time:'bad'}, {query:' ',time:100}, {query:'x',time:1e30}]), []);
+let history = recordSearch([], ' 蜂鸟 ', 100);
+history = recordSearch(history, '小说', 200);
+history = recordSearch(history, '蜂鸟', 300);
+assert.deepEqual(history, [{query:'蜂鸟',time:300},{query:'小说',time:200}]);
+assert.deepEqual(recordSearch(history, ' ', 400), history);
+assert.equal(normalizeHistory(Array.from({length:60}, (_,i)=>({query:String(i),time:i+1}))).length, 50);
+assert.deepEqual(recordSearch([], '<img src=x>', 400), [{query:'<img src=x>',time:400}]);
+console.log('PASS: valid local history, duplicate timestamp update, blank queries, record cap and literal keywords');
