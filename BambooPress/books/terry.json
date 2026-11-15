@@ -2,7 +2,7 @@
   "id": "terry",
   "title": "Terry",
   "authors": [
-    "竹林中学"
+    "BFC (Bamboo Fiction Community)"
   ],
   "description": "再见。",
   "coverColor": "#84b86b",
@@ -15,7 +15,7 @@
       "parts": [
         {
           "id": "c0-s0",
-          "author": "竹林中学"
+          "author": "BFC (Bamboo Fiction Community)"
         }
       ],
       "sceneBreaks": [
@@ -2311,7 +2311,7 @@
         ],
         [
           {
-            "text": "\"I don't wanna live，wanna laugh，wanna love",
+            "text": "“I don't wanna live，wanna laugh，wanna love",
             "part": "c0-s0"
           }
         ],
@@ -2323,7 +2323,7 @@
         ],
         [
           {
-            "text": "Don't wanna live my best life，",
+            "text": "Don't wanna live my best life",
             "part": "c0-s0"
           }
         ],
@@ -2335,7 +2335,7 @@
         ],
         [
           {
-            "text": "I don't wanna live，wanna laugh，wanna love.\"",
+            "text": "I don't wanna live，wanna laugh，wanna love”",
             "part": "c0-s0"
           }
         ],

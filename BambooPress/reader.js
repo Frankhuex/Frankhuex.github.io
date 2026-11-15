@@ -2,6 +2,7 @@ import {partAtReadingLine} from './reader-position.js?v=20261115-toc-same-line';
 import {progressKey, escapeHtml} from './library.js?v=20261115-punctuation';
 import {highlight} from './search.js?v=20261115-codeblock-restored';
 import {read, save} from './settings.js?v=20261105-settings2';
+import {mountComments} from './comments.js?v=20261116-comments';
 export function route(values={}) { return '#'+new URLSearchParams(values).toString(); }
 let tocSelection;
 export function renderReader(app, novel, chapter, params) {
@@ -343,5 +344,10 @@ export function renderReader(app, novel, chapter, params) {
     },120);
   };
   addEventListener('scroll',onScroll,{passive:true});
-  return ()=>{if(tocSelection?.book===novel.id){tocSelection.scrollTop=toc.scrollTop;if(!indicator.hidden)tocSelection.top=indicator.getBoundingClientRect().top-items.getBoundingClientRect().top;}handoffSize.disconnect();handoffSettings.disconnect();document.fonts.removeEventListener('loadingdone', updateFirstLineHandoffs);selectionSize.disconnect();selectionAnimation?.cancel();headerSize.disconnect();cancelAnimationFrame(headerFrame);clearTimeout(timer);removeEventListener('scroll',onScroll);document.removeEventListener('keydown',escape);desktop.removeEventListener('change',resize);header.removeEventListener('focusin',revealHeader);header.classList.remove('header-hidden');document.body.classList.remove('sidebar-collapsed');};
+  const cleanupComments = mountComments(app.querySelector('.reader'), {
+    kind: 'chapter',
+    term: `bamboopress:book:${novel.id}:chapter:${chapter.id}`,
+    label: '本章评论'
+  });
+  return ()=>{cleanupComments();if(tocSelection?.book===novel.id){tocSelection.scrollTop=toc.scrollTop;if(!indicator.hidden)tocSelection.top=indicator.getBoundingClientRect().top-items.getBoundingClientRect().top;}handoffSize.disconnect();handoffSettings.disconnect();document.fonts.removeEventListener('loadingdone', updateFirstLineHandoffs);selectionSize.disconnect();selectionAnimation?.cancel();headerSize.disconnect();cancelAnimationFrame(headerFrame);clearTimeout(timer);removeEventListener('scroll',onScroll);document.removeEventListener('keydown',escape);desktop.removeEventListener('change',resize);header.removeEventListener('focusin',revealHeader);header.classList.remove('header-hidden');document.body.classList.remove('sidebar-collapsed');};
 }

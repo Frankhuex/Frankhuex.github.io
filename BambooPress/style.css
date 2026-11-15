@@ -1733,3 +1733,10 @@ body[data-theme="immerse-dark"] .shelf-book { --accent: var(--book-accent-night,
 .shelf-book:is(:hover, :focus-visible) h2 { color: var(--accent); }
 
 #query::placeholder { color: var(--muted); opacity: 1; }
+
+.comments-section {
+  margin-top: 48px;
+}
+.comments-section .giscus {
+  min-height: 120px;
+}

@@ -2,7 +2,8 @@ import {findBook, progressKey, escapeHtml, loadBook, searchLibrary} from './libr
 import {books} from './books.js?v=20261116-terry';
 import {read,save,setupSettings} from './settings.js?v=20261115-tone-paper';
 import {search,highlight} from './search.js?v=20261115-codeblock-restored';
-import {renderReader,route} from './reader.js?v=20261115-toc-same-line';
+import {renderReader,route} from './reader.js?v=20261116-comments';
+import {mountComments} from './comments.js?v=20261116-comments';
 history.scrollRestoration = 'manual';
 setupSettings();
 const app=document.querySelector('#app');
@@ -114,6 +115,7 @@ async function renderContent() {
   }
   if(!view) {
     app.innerHTML = `<section class="shelf" aria-label="书架"><div class="bookshelf">${books.map((shelfBook, index) => `<a class="shelf-book" data-book="${escapeHtml(shelfBook.id)}" style="--book-index:${index};${bookThemeStyle(shelfBook)}" href="${route({view:'book', book:shelfBook.id})}">${cover(shelfBook)}<h2>${escapeHtml(shelfBook.title)}</h2></a>`).join('')}</div></section>`;
+    cleanup = mountComments(app.querySelector('.shelf'), {kind:'shelf', term:'bamboopress:shelf', label:'书架评论'});
   } else {
     if (view !== 'read' || !app.querySelector('.reader')) app.innerHTML='<p class="loading">正在加载…</p>';
     try {
@@ -127,6 +129,7 @@ async function renderContent() {
       if(view==='book') {
         app.innerHTML=`<section class="detail book-enter book-pending"><div class="detail-top">${cover(book)}<div><h1>${escapeHtml(book.title)}</h1><p>${escapeHtml(book.description)}</p><p class="authors">${escapeHtml(book.authorCredit || book.authors.join(' / '))}</p>${novel.date ? `<p class="authors book-date">${escapeHtml(novel.date)}</p>` : ''}<a class="primary" href="${resume(book, novel)}">阅读 →</a><a class="secondary book-download" href="./books/${encodeURIComponent(book.id)}.json" download>下载</a></div></div><h2>目录</h2><div class="chapter-list"></div></section>`;
         novel.chapters.forEach(c=>{const a=document.createElement('a');a.href=route({view:'read',book:book.id,chapter:c.id});a.textContent=c.excerpt ? `${c.title}　${c.excerpt}` : c.title;app.querySelector('.chapter-list').append(a);});
+        cleanup = mountComments(app.querySelector('.detail'), {kind:'book', term:`bamboopress:book:${book.id}`, label:'书评'});
       } else if(view==='search') {
         const query=(params.get('q')||'').trim();
         const {results, failed} = await searchLibrary(query, search);
