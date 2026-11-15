@@ -67,7 +67,7 @@ async function renderContent() {
   closeHeaderMenu();
   const existingSearch = document.querySelector('#search-form');
   if (existingSearch && app.contains(existingSearch)) {
-    document.querySelector('header').append(existingSearch);
+    document.querySelector('.header-menu').append(existingSearch);
   }
   const params=new URLSearchParams(location.hash.slice(1));
   const view = location.pathname.endsWith('/search.html') ? 'search' : params.get('view');

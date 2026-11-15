@@ -1464,6 +1464,9 @@ body:has(.results) .results #search-form.search-open .search-reveal {
 .results .result-count:empty {
   display: none;
 }
+.header-menu {
+  display: contents;
+}
 #header-menu {
   display: none;
 }
@@ -1510,27 +1513,30 @@ body:has(.results) .results #search-form.search-open .search-reveal {
   header #search-form {
     display: none;
   }
-  header.menu-open nav {
+  header.menu-open .header-menu {
     display: flex;
+    flex-direction: column;
+    gap: 12px;
     position: absolute;
     top: calc(100% + 8px);
     right: 12px;
     width: 140px;
     padding: 8px;
-    padding-bottom: 48px;
     background: var(--paper);
     border: 1px solid var(--line);
     border-radius: 6px;
     box-shadow: 0 8px 24px #0002;
     z-index: 45;
   }
+  header.menu-open nav {
+    display: flex;
+    margin: 0;
+  }
   header.menu-open #search-form {
     display: flex;
-    position: absolute;
-    top: calc(100% + 56px);
-    right: 20px;
-    z-index: 46;
-    width: 124px;
+    position: static;
+    width: 100%;
+    margin: 0;
   }
   header.menu-open #search-submit {
     width: 100%;
