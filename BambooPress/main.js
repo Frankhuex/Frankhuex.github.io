@@ -81,11 +81,7 @@ async function renderContent() {
   const back = document.querySelector('#header-back');
   back.hidden = false;
   back.textContent = view === 'search' ? '返回' : !view ? '主站' : view === 'read' ? '返回目录' : '返回书架';
-  back.href = view === 'search' ? new URL('./', location.href).href : !view ? '/#fiction' : view === 'read' ? route({view:'book', book:book?.id}) : '#';
-  back.onclick = view === 'search' ? event => {
-    event.preventDefault();
-    history.back();
-  } : null;
+  back.href = view === 'search' ? searchOrigin() : !view ? '/#fiction' : view === 'read' ? route({view:'book', book:book?.id}) : '#';
   const brand = document.querySelector('.brand');
   const inBook = !missingBook && (view === 'book' || view === 'read');
   for (const [field, property] of [['themeColor', '--book-accent'], ['themeColorNight', '--book-accent-night']]) {
@@ -139,6 +135,13 @@ async function renderContent() {
   requestAnimationFrame(()=>scrollTo(0,scrollPositions.get(location.hash)||0));
 }
 const searchForm = document.querySelector('#search-form');
+function rememberSearchOrigin() {
+  try { sessionStorage.setItem('bamboo-search-origin', location.href); } catch { /* The back link falls back to the shelf. */ }
+}
+function searchOrigin() {
+  try { return sessionStorage.getItem('bamboo-search-origin') || new URL('./', location.href).href; }
+  catch { return new URL('./', location.href).href; }
+}
 const searchInput = document.querySelector('#query');
 const searchSubmit = document.querySelector('#search-submit');
 const searchReveal = searchForm.querySelector('.search-reveal');
@@ -159,6 +162,7 @@ function setSearchOpen(open) {
 searchForm.onsubmit = event => {
   event.preventDefault();
   if (!location.pathname.endsWith('/search.html')) {
+    rememberSearchOrigin();
     location.href = new URL('search.html', location.href).href;
     return;
   }
