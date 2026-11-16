@@ -23,7 +23,7 @@ assert.deepEqual(novel.chapters.map(chapter => chapter.title), ['入殓师', '�
 const [c0, c1] = novel.chapters;
 assert.equal(c0.parts.length, 33);
 assert.equal(c0.paragraphs.length, 293);
-assert.equal(c0.sceneBreaks.length, 11);
+assert.equal(c0.sceneBreaks.length, 12);
 assert.equal(c1.parts.length, 83);
 assert.equal(c1.paragraphs.length, 637);
 assert.equal(c1.sceneBreaks.length, 29);
