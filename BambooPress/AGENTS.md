@@ -83,16 +83,17 @@
 
 ## 更新阅读字体
 
-新增或修改作品后，使用完整的 [Noto Serif SC 可变字体](https://github.com/google/fonts/blob/main/ofl/notoserifsc/NotoSerifSC%5Bwght%5D.ttf) 重新生成站内字体。Python 环境需安装 `fonttools`。在仓库根目录执行 `python3 BambooPress/tools/build_reading_font.py "/path/to/NotoSerifSC[wght].ttf"`。脚本读取书库全部 JSON，检查汉字覆盖，并生成 `fonts/reading-serif.woff`。更新后同步调整两份 HTML 的字体预加载和样式表版本，以及 CSS 中字体引用的版本。保留字体许可证，原始 TTF 可存放在仓库外。
+新增或修改作品后，使用完整的 [Noto Serif SC 可变字体](https://github.com/google/fonts/blob/main/ofl/notoserifsc/NotoSerifSC%5Bwght%5D.ttf) 重新生成站内字体。Python 环境需安装 `fonttools`（当前本机可用 `/opt/homebrew/bin/python3.10`），原始字体当前位于 `/tmp/NotoSerifSC.ttf`。在仓库根目录执行 `python3 BambooPress/tools/build_reading_font.py "/tmp/NotoSerifSC.ttf"`（或对应的本地 TTF 路径）。脚本读取书库全部 JSON，检查汉字覆盖，并生成 `fonts/reading-serif.woff`。更新后同步调整两份 HTML 的字体预加载和样式表版本，以及 CSS 中字体引用的版本。保留字体许可证，原始 TTF 可存放在仓库外。
 
 ## 新增作品与验证
 
-1. 整理并核对原始文档，生成一份 `books/<id>.json`。
-2. 将封面放入 `images/`，在作品 JSON 填写封面路径，并在 `books.js` 登记作品，按任务要求确定书架顺序。
-3. 检查作品 ID 唯一、章节和片段 ID 唯一、片段引用有效、作者归属正确，以及所有图片和模块路径有效。
-4. 涉及正文导入时，为有实际风险的内容边界增加针对性校验，例如章节缺失、段内交接或番外署名；避免只复述实现的测试。
-5. 在仓库根目录运行 `node BambooPress/tests/library.test.mjs` 和 `node BambooPress/tests/vx1.test.mjs`；后续新增的相关验证脚本也应运行，包括 `node BambooPress/tests/hummingbird.test.mjs` 和 `node BambooPress/tests/reader-position.test.mjs`。提交前运行 `git diff --check`。
-6. 修改页面行为或排版时，通过本地 HTTP 服务检查书架、详情、阅读、上下章、目录定位、搜索跳转及刷新后继续阅读；涉及布局时检查桌面和移动端。浏览器验证与数据脚本验证分别如实报告。
+1. 整理并核对原始文档，生成一份 `books/<id>.json`；导入 Word 时同步核查公式对象（`m:oMath`）与内嵌图片，避免仅提取 `w:t` 时遗漏。
+2. 核查并规范标点符号：中文句子及中文注释中不得混用英文半角标点（`,` `.` `?` `!` `(` `)` `:` `;` 等）或中英文括号混配；中英混排的中文句子按中文标点收尾；独立英文句子/短语保留英文标点；数学物理公式、注音方括号及依赖半角符号的剧情梗（如阶乘 `!`）保留原半角符号。
+3. 将封面放入 `images/`，在作品 JSON 填写封面路径，并在 `books.js` 登记作品，按任务要求确定书架顺序。
+4. 检查作品 ID 唯一、章节和片段 ID 唯一、片段引用有效、作者归属正确，以及所有图片和模块路径有效。
+5. 涉及正文导入时，为有实际风险的内容边界增加针对性校验，例如章节缺失、段内交接或番外署名；避免只复述实现的测试。
+6. 在仓库根目录运行 `node BambooPress/tests/library.test.mjs` 和 `node BambooPress/tests/vx1.test.mjs`；后续新增的相关验证脚本也应运行，包括 `node BambooPress/tests/hummingbird.test.mjs`、`node BambooPress/tests/heitonghua.test.mjs`、`node BambooPress/tests/shengwu.test.mjs` 和 `node BambooPress/tests/reader-position.test.mjs`。提交前运行 `git diff --check`。
+7. 修改页面行为或排版时，通过本地 HTTP 服务检查书架、详情、阅读、上下章、目录定位、搜索跳转及刷新后继续阅读；涉及布局时检查桌面和移动端。浏览器验证与数据脚本验证分别如实报告。
 
 ## 维护本文档
 
