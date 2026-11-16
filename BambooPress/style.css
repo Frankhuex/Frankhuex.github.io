@@ -178,9 +178,14 @@ input[type=search] {
   align-self:center;
   background:#efe5cc;
   color:#293d31;
-  padding:17px 10px;
-  font:29px 'Bamboo Song','Songti SC',SimSun,serif;
+  /* Offset the trailing 5px letter-spacing below the last character and tighten line box for vertical centering. */
+  padding:17px 10px 12px;
+  font:29px/1 'Bamboo Song','Songti SC',SimSun,serif;
   letter-spacing:5px
+}
+.cover strong.cover-latin {
+  /* Rotated Latin glyphs sit toward the alphabetic baseline side in vertical-rl; rebalance horizontal padding. */
+  padding:17px 5px 12px 15px;
 }
 .cover span,.cover small {
   font-size:11px;

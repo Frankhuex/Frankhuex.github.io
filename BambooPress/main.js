@@ -58,7 +58,8 @@ function cover(book) {
     const imageUrl = new URL(book.coverImage, import.meta.url).href;
     return `<div class="cover cover-image"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(book.title)}封面" decoding="async"></div>`;
   }
-  return `<div class="cover" style="--cover-color:${color}"><strong>${escapeHtml(book.title)}</strong></div>`;
+  const latin = /^[\x20-\x7e]+$/.test(book.title.trim());
+  return `<div class="cover" style="--cover-color:${color}"><strong${latin ? ' class="cover-latin"' : ''}>${escapeHtml(book.title)}</strong></div>`;
 }
 function bookThemeStyle(book) {
   return [['themeColor', '--book-accent'], ['themeColorNight', '--book-accent-night']]
