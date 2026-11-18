@@ -104,9 +104,9 @@ async function renderContent() {
     else document.body.style.removeProperty(property);
   }
   brand.textContent = view === 'search' ? '搜索' : inBook ? book.title : 'BambooPress';
-  document.querySelector('#footer-brand').textContent = inBook ? `BambooPress · ${book.title}` : 'BambooPress';
+  document.querySelector('#footer-brand').textContent = inBook ? `${book.title} @BambooPress` : 'BambooPress';
   document.querySelector('#query').value=params.get('q')||'';
-  document.title = inBook ? `${book.title} · BambooPress` : view === 'search' ? '搜索 · BambooPress' : 'BambooPress';
+  document.title = inBook ? `${book.title} @BambooPress` : view === 'search' ? '搜索 · BambooPress' : 'BambooPress';
   if (missingBook) {
     back.textContent = '返回书架';
     back.href = '#';
@@ -124,7 +124,7 @@ async function renderContent() {
       if(currentRevision!==revision)return;
       if(view==='read') {
         const chapter=novel.chapters.find(c=>c.id===params.get('chapter'))||novel.chapters[0];
-        document.title=`${chapter.title} · ${novel.title} · BambooPress`;
+        document.title=`${chapter.title} · ${novel.title} @BambooPress`;
         cleanup=renderReader(app,novel,chapter,params);return;
       }
       if(view==='book') {

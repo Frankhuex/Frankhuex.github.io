@@ -264,7 +264,7 @@ export function renderReader(app, novel, chapter, params) {
     const link = document.createElement('a');
     link.className = className;
     link.href = bookRoute({view:'read', chapter:target.id});
-    link.textContent = `${label} · ${target.title}`;
+    link.textContent = `${label}：${target.title}`;
     nav.append(link);
   }
   if (nav.childElementCount) {
